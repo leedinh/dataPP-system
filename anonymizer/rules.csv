@@ -1,0 +1,183 @@
+antecedents,consequents,support,confidence
+frozenset({'gender:Male'}),frozenset({'capital-gain:0'}),0.5116,0.9733637747336379
+frozenset({'capital-gain:0'}),frozenset({'gender:Male'}),0.5116,0.5243952439524395
+frozenset({'native-country:United-States'}),frozenset({'marital-status:Never-married'}),0.8632,0.9275736084246723
+frozenset({'marital-status:Never-married'}),frozenset({'native-country:United-States'}),0.8632,0.9354139575205895
+frozenset({'race:White'}),frozenset({'marital-status:Never-married'}),0.8072,0.9235697940503432
+frozenset({'marital-status:Never-married'}),frozenset({'race:White'}),0.8072,0.8747290853922844
+frozenset({'capital-gain:0'}),frozenset({'marital-status:Never-married'}),0.9012,0.923739237392374
+frozenset({'marital-status:Never-married'}),frozenset({'capital-gain:0'}),0.9012,0.9765929778933681
+frozenset({'workclass:Private'}),frozenset({'marital-status:Never-married'}),0.8258,0.9206243032329988
+frozenset({'marital-status:Never-married'}),frozenset({'workclass:Private'}),0.8258,0.8948851322063286
+frozenset({'race:White'}),frozenset({'native-country:United-States'}),0.824,0.9427917620137299
+frozenset({'native-country:United-States'}),frozenset({'race:White'}),0.824,0.8854502471523747
+frozenset({'native-country:United-States'}),frozenset({'capital-gain:0'}),0.9078,0.9754996776273372
+frozenset({'capital-gain:0'}),frozenset({'native-country:United-States'}),0.9078,0.9305043050430505
+frozenset({'native-country:United-States'}),frozenset({'workclass:Private'}),0.8334,0.8955512572533849
+frozenset({'workclass:Private'}),frozenset({'native-country:United-States'}),0.8334,0.9290969899665552
+frozenset({'race:White'}),frozenset({'capital-gain:0'}),0.8524,0.9752860411899315
+frozenset({'capital-gain:0'}),frozenset({'race:White'}),0.8524,0.8737187371873719
+frozenset({'race:White'}),frozenset({'workclass:Private'}),0.7864,0.8997711670480549
+frozenset({'workclass:Private'}),frozenset({'race:White'}),0.7864,0.8767001114827202
+frozenset({'workclass:Private'}),frozenset({'capital-gain:0'}),0.8746,0.9750278706800446
+frozenset({'capital-gain:0'}),frozenset({'workclass:Private'}),0.8746,0.8964739647396475
+"frozenset({'race:White', 'native-country:United-States'})",frozenset({'marital-status:Never-married'}),0.7648,0.9281553398058253
+"frozenset({'race:White', 'marital-status:Never-married'})",frozenset({'native-country:United-States'}),0.7648,0.9474727452923687
+"frozenset({'native-country:United-States', 'marital-status:Never-married'})",frozenset({'race:White'}),0.7648,0.886005560704356
+frozenset({'race:White'}),"frozenset({'native-country:United-States', 'marital-status:Never-married'})",0.7648,0.8750572082379863
+frozenset({'native-country:United-States'}),"frozenset({'race:White', 'marital-status:Never-married'})",0.7648,0.8218353750268644
+frozenset({'marital-status:Never-married'}),"frozenset({'race:White', 'native-country:United-States'})",0.7648,0.8287819679237105
+"frozenset({'native-country:United-States', 'capital-gain:0'})",frozenset({'marital-status:Never-married'}),0.843,0.9286186384666225
+"frozenset({'native-country:United-States', 'marital-status:Never-married'})",frozenset({'capital-gain:0'}),0.843,0.976598702502317
+"frozenset({'capital-gain:0', 'marital-status:Never-married'})",frozenset({'native-country:United-States'}),0.843,0.9354194407456724
+frozenset({'native-country:United-States'}),"frozenset({'capital-gain:0', 'marital-status:Never-married'})",0.843,0.9058671824629271
+frozenset({'capital-gain:0'}),"frozenset({'native-country:United-States', 'marital-status:Never-married'})",0.843,0.8640836408364083
+frozenset({'marital-status:Never-married'}),"frozenset({'native-country:United-States', 'capital-gain:0'})",0.843,0.9135240572171651
+"frozenset({'native-country:United-States', 'workclass:Private'})",frozenset({'marital-status:Never-married'}),0.7714,0.925605951523878
+"frozenset({'native-country:United-States', 'marital-status:Never-married'})",frozenset({'workclass:Private'}),0.7714,0.8936515291936978
+"frozenset({'workclass:Private', 'marital-status:Never-married'})",frozenset({'native-country:United-States'}),0.7714,0.9341244853475418
+frozenset({'native-country:United-States'}),"frozenset({'workclass:Private', 'marital-status:Never-married'})",0.7714,0.8289275736084246
+frozenset({'workclass:Private'}),"frozenset({'native-country:United-States', 'marital-status:Never-married'})",0.7714,0.8599777034559642
+frozenset({'marital-status:Never-married'}),"frozenset({'native-country:United-States', 'workclass:Private'})",0.7714,0.8359341135674035
+"frozenset({'race:White', 'capital-gain:0'})",frozenset({'marital-status:Never-married'}),0.7882,0.9246832473017362
+"frozenset({'race:White', 'marital-status:Never-married'})",frozenset({'capital-gain:0'}),0.7882,0.9764618434093162
+"frozenset({'capital-gain:0', 'marital-status:Never-married'})",frozenset({'race:White'}),0.7882,0.8746116289391922
+frozenset({'race:White'}),"frozenset({'capital-gain:0', 'marital-status:Never-married'})",0.7882,0.9018306636155606
+frozenset({'capital-gain:0'}),"frozenset({'race:White', 'marital-status:Never-married'})",0.7882,0.8079130791307914
+frozenset({'marital-status:Never-married'}),"frozenset({'race:White', 'capital-gain:0'})",0.7882,0.8541395752058951
+"frozenset({'race:White', 'workclass:Private'})",frozenset({'marital-status:Never-married'}),0.7248,0.9216683621566633
+"frozenset({'race:White', 'marital-status:Never-married'})",frozenset({'workclass:Private'}),0.7248,0.8979187314172448
+"frozenset({'workclass:Private', 'marital-status:Never-married'})",frozenset({'race:White'}),0.7248,0.877694356987164
+frozenset({'race:White'}),"frozenset({'workclass:Private', 'marital-status:Never-married'})",0.7248,0.8292906178489703
+frozenset({'workclass:Private'}),"frozenset({'race:White', 'marital-status:Never-married'})",0.7248,0.8080267558528428
+frozenset({'marital-status:Never-married'}),"frozenset({'race:White', 'workclass:Private'})",0.7248,0.7854356306892069
+"frozenset({'workclass:Private', 'capital-gain:0'})",frozenset({'marital-status:Never-married'}),0.8058,0.9213354676423507
+"frozenset({'workclass:Private', 'marital-status:Never-married'})",frozenset({'capital-gain:0'}),0.8058,0.9757810607895374
+"frozenset({'capital-gain:0', 'marital-status:Never-married'})",frozenset({'workclass:Private'}),0.8058,0.8941411451398136
+frozenset({'workclass:Private'}),"frozenset({'capital-gain:0', 'marital-status:Never-married'})",0.8058,0.8983277591973243
+frozenset({'capital-gain:0'}),"frozenset({'workclass:Private', 'marital-status:Never-married'})",0.8058,0.8259532595325952
+frozenset({'marital-status:Never-married'}),"frozenset({'workclass:Private', 'capital-gain:0'})",0.8058,0.8732119635890767
+"frozenset({'race:White', 'native-country:United-States'})",frozenset({'capital-gain:0'}),0.8034,0.9750000000000001
+"frozenset({'race:White', 'capital-gain:0'})",frozenset({'native-country:United-States'}),0.8034,0.9425152510558423
+"frozenset({'native-country:United-States', 'capital-gain:0'})",frozenset({'race:White'}),0.8034,0.8849966953073364
+frozenset({'race:White'}),"frozenset({'native-country:United-States', 'capital-gain:0'})",0.8034,0.9192219679633867
+frozenset({'native-country:United-States'}),"frozenset({'race:White', 'capital-gain:0'})",0.8034,0.8633139909735654
+frozenset({'capital-gain:0'}),"frozenset({'race:White', 'native-country:United-States'})",0.8034,0.8234932349323493
+"frozenset({'race:White', 'native-country:United-States'})",frozenset({'workclass:Private'}),0.7402,0.8983009708737865
+"frozenset({'race:White', 'workclass:Private'})",frozenset({'native-country:United-States'}),0.7402,0.9412512716174974
+"frozenset({'native-country:United-States', 'workclass:Private'})",frozenset({'race:White'}),0.7402,0.8881689464842812
+frozenset({'race:White'}),"frozenset({'native-country:United-States', 'workclass:Private'})",0.7402,0.8469107551487414
+frozenset({'native-country:United-States'}),"frozenset({'race:White', 'workclass:Private'})",0.7402,0.7954008166774124
+frozenset({'workclass:Private'}),"frozenset({'race:White', 'native-country:United-States'})",0.7402,0.825195094760312
+"frozenset({'native-country:United-States', 'workclass:Private'})",frozenset({'capital-gain:0'}),0.8122,0.9745620350371971
+"frozenset({'workclass:Private', 'capital-gain:0'})",frozenset({'native-country:United-States'}),0.8122,0.9286530985593414
+"frozenset({'native-country:United-States', 'capital-gain:0'})",frozenset({'workclass:Private'}),0.8122,0.8946904604538445
+frozenset({'workclass:Private'}),"frozenset({'native-country:United-States', 'capital-gain:0'})",0.8122,0.9054626532887403
+frozenset({'native-country:United-States'}),"frozenset({'workclass:Private', 'capital-gain:0'})",0.8122,0.8727702557489792
+frozenset({'capital-gain:0'}),"frozenset({'native-country:United-States', 'workclass:Private'})",0.8122,0.8325133251332514
+"frozenset({'race:White', 'workclass:Private'})",frozenset({'capital-gain:0'}),0.7666,0.974821973550356
+"frozenset({'race:White', 'capital-gain:0'})",frozenset({'workclass:Private'}),0.7666,0.8993430314406381
+"frozenset({'workclass:Private', 'capital-gain:0'})",frozenset({'race:White'}),0.7666,0.8765149782757831
+frozenset({'race:White'}),"frozenset({'workclass:Private', 'capital-gain:0'})",0.7666,0.877116704805492
+frozenset({'workclass:Private'}),"frozenset({'race:White', 'capital-gain:0'})",0.7666,0.8546265328874024
+frozenset({'capital-gain:0'}),"frozenset({'race:White', 'workclass:Private'})",0.7666,0.7857728577285772
+"frozenset({'race:White', 'native-country:United-States', 'capital-gain:0'})",frozenset({'marital-status:Never-married'}),0.7466,0.9293004729897935
+"frozenset({'race:White', 'native-country:United-States', 'marital-status:Never-married'})",frozenset({'capital-gain:0'}),0.7466,0.9762029288702929
+"frozenset({'race:White', 'capital-gain:0', 'marital-status:Never-married'})",frozenset({'native-country:United-States'}),0.7466,0.9472215173813753
+"frozenset({'native-country:United-States', 'capital-gain:0', 'marital-status:Never-married'})",frozenset({'race:White'}),0.7466,0.8856465005931199
+"frozenset({'race:White', 'native-country:United-States'})","frozenset({'capital-gain:0', 'marital-status:Never-married'})",0.7466,0.9060679611650486
+"frozenset({'race:White', 'capital-gain:0'})","frozenset({'native-country:United-States', 'marital-status:Never-married'})",0.7466,0.8758798686062881
+"frozenset({'race:White', 'marital-status:Never-married'})","frozenset({'native-country:United-States', 'capital-gain:0'})",0.7466,0.9249256689791874
+"frozenset({'native-country:United-States', 'capital-gain:0'})","frozenset({'race:White', 'marital-status:Never-married'})",0.7466,0.8224278475435118
+"frozenset({'native-country:United-States', 'marital-status:Never-married'})","frozenset({'race:White', 'capital-gain:0'})",0.7466,0.8649212233549584
+"frozenset({'capital-gain:0', 'marital-status:Never-married'})","frozenset({'race:White', 'native-country:United-States'})",0.7466,0.828450954283178
+frozenset({'race:White'}),"frozenset({'native-country:United-States', 'capital-gain:0', 'marital-status:Never-married'})",0.7466,0.854233409610984
+frozenset({'native-country:United-States'}),"frozenset({'race:White', 'capital-gain:0', 'marital-status:Never-married'})",0.7466,0.8022781001504407
+frozenset({'capital-gain:0'}),"frozenset({'race:White', 'native-country:United-States', 'marital-status:Never-married'})",0.7466,0.7652726527265273
+frozenset({'marital-status:Never-married'}),"frozenset({'race:White', 'native-country:United-States', 'capital-gain:0'})",0.7466,0.8090593844820113
+"frozenset({'race:White', 'native-country:United-States', 'workclass:Private'})",frozenset({'marital-status:Never-married'}),0.6858,0.9265063496352337
+"frozenset({'race:White', 'native-country:United-States', 'marital-status:Never-married'})",frozenset({'workclass:Private'}),0.6858,0.896705020920502
+"frozenset({'race:White', 'workclass:Private', 'marital-status:Never-married'})",frozenset({'native-country:United-States'}),0.6858,0.9461920529801324
+"frozenset({'native-country:United-States', 'workclass:Private', 'marital-status:Never-married'})",frozenset({'race:White'}),0.6858,0.8890329271454498
+"frozenset({'race:White', 'native-country:United-States'})","frozenset({'workclass:Private', 'marital-status:Never-married'})",0.6858,0.8322815533980582
+"frozenset({'race:White', 'workclass:Private'})","frozenset({'native-country:United-States', 'marital-status:Never-married'})",0.6858,0.8720752797558494
+"frozenset({'race:White', 'marital-status:Never-married'})","frozenset({'native-country:United-States', 'workclass:Private'})",0.6858,0.8496035678889989
+"frozenset({'native-country:United-States', 'workclass:Private'})","frozenset({'race:White', 'marital-status:Never-married'})",0.6858,0.8228941684665226
+"frozenset({'native-country:United-States', 'marital-status:Never-married'})","frozenset({'race:White', 'workclass:Private'})",0.6858,0.7944856348470806
+"frozenset({'workclass:Private', 'marital-status:Never-married'})","frozenset({'race:White', 'native-country:United-States'})",0.6858,0.8304674255267619
+frozenset({'race:White'}),"frozenset({'native-country:United-States', 'workclass:Private', 'marital-status:Never-married'})",0.6858,0.7846681922196796
+frozenset({'native-country:United-States'}),"frozenset({'race:White', 'workclass:Private', 'marital-status:Never-married'})",0.6858,0.7369439071566731
+frozenset({'workclass:Private'}),"frozenset({'race:White', 'native-country:United-States', 'marital-status:Never-married'})",0.6858,0.7645484949832775
+frozenset({'marital-status:Never-married'}),"frozenset({'race:White', 'native-country:United-States', 'workclass:Private'})",0.6858,0.7431729518855656
+"frozenset({'native-country:United-States', 'workclass:Private', 'capital-gain:0'})",frozenset({'marital-status:Never-married'}),0.7526,0.9266190593449889
+"frozenset({'native-country:United-States', 'workclass:Private', 'marital-status:Never-married'})",frozenset({'capital-gain:0'}),0.7526,0.9756287269898886
+"frozenset({'marital-status:Never-married', 'workclass:Private', 'capital-gain:0'})",frozenset({'native-country:United-States'}),0.7526,0.9339786547530405
+"frozenset({'native-country:United-States', 'capital-gain:0', 'marital-status:Never-married'})",frozenset({'workclass:Private'}),0.7526,0.8927639383155398
+"frozenset({'native-country:United-States', 'workclass:Private'})","frozenset({'capital-gain:0', 'marital-status:Never-married'})",0.7526,0.9030477561795056
+"frozenset({'workclass:Private', 'capital-gain:0'})","frozenset({'native-country:United-States', 'marital-status:Never-married'})",0.7526,0.8605076606448663
+"frozenset({'workclass:Private', 'marital-status:Never-married'})","frozenset({'native-country:United-States', 'capital-gain:0'})",0.7526,0.9113586824897071
+"frozenset({'native-country:United-States', 'capital-gain:0'})","frozenset({'workclass:Private', 'marital-status:Never-married'})",0.7526,0.8290372328706763
+"frozenset({'native-country:United-States', 'marital-status:Never-married'})","frozenset({'workclass:Private', 'capital-gain:0'})",0.7526,0.8718721037998147
+"frozenset({'capital-gain:0', 'marital-status:Never-married'})","frozenset({'native-country:United-States', 'workclass:Private'})",0.7526,0.8351087438970263
+frozenset({'workclass:Private'}),"frozenset({'native-country:United-States', 'capital-gain:0', 'marital-status:Never-married'})",0.7526,0.8390189520624304
+frozenset({'native-country:United-States'}),"frozenset({'marital-status:Never-married', 'workclass:Private', 'capital-gain:0'})",0.7526,0.8087255534064045
+frozenset({'capital-gain:0'}),"frozenset({'native-country:United-States', 'workclass:Private', 'marital-status:Never-married'})",0.7526,0.7714227142271423
+frozenset({'marital-status:Never-married'}),"frozenset({'native-country:United-States', 'workclass:Private', 'capital-gain:0'})",0.7526,0.8155613350671869
+"frozenset({'race:White', 'workclass:Private', 'capital-gain:0'})",frozenset({'marital-status:Never-married'}),0.7072,0.9225150013044614
+"frozenset({'race:White', 'workclass:Private', 'marital-status:Never-married'})",frozenset({'capital-gain:0'}),0.7072,0.9757174392935983
+"frozenset({'race:White', 'capital-gain:0', 'marital-status:Never-married'})",frozenset({'workclass:Private'}),0.7072,0.8972342045166202
+"frozenset({'marital-status:Never-married', 'workclass:Private', 'capital-gain:0'})",frozenset({'race:White'}),0.7072,0.8776371308016878
+"frozenset({'race:White', 'workclass:Private'})","frozenset({'capital-gain:0', 'marital-status:Never-married'})",0.7072,0.8992878942014243
+"frozenset({'race:White', 'capital-gain:0'})","frozenset({'workclass:Private', 'marital-status:Never-married'})",0.7072,0.8296574378226185
+"frozenset({'race:White', 'marital-status:Never-married'})","frozenset({'workclass:Private', 'capital-gain:0'})",0.7072,0.8761149653121904
+"frozenset({'workclass:Private', 'capital-gain:0'})","frozenset({'race:White', 'marital-status:Never-married'})",0.7072,0.808598216327464
+"frozenset({'workclass:Private', 'marital-status:Never-married'})","frozenset({'race:White', 'capital-gain:0'})",0.7072,0.856381690481957
+"frozenset({'capital-gain:0', 'marital-status:Never-married'})","frozenset({'race:White', 'workclass:Private'})",0.7072,0.7847314691522415
+frozenset({'race:White'}),"frozenset({'marital-status:Never-married', 'workclass:Private', 'capital-gain:0'})",0.7072,0.8091533180778032
+frozenset({'workclass:Private'}),"frozenset({'race:White', 'capital-gain:0', 'marital-status:Never-married'})",0.7072,0.7884057971014493
+frozenset({'capital-gain:0'}),"frozenset({'race:White', 'workclass:Private', 'marital-status:Never-married'})",0.7072,0.7248872488724888
+frozenset({'marital-status:Never-married'}),"frozenset({'race:White', 'workclass:Private', 'capital-gain:0'})",0.7072,0.7663632423060253
+"frozenset({'race:White', 'native-country:United-States', 'workclass:Private'})",frozenset({'capital-gain:0'}),0.721,0.9740610645771414
+"frozenset({'race:White', 'workclass:Private', 'capital-gain:0'})",frozenset({'native-country:United-States'}),0.721,0.9405165666579703
+"frozenset({'race:White', 'native-country:United-States', 'capital-gain:0'})",frozenset({'workclass:Private'}),0.721,0.8974358974358974
+"frozenset({'native-country:United-States', 'workclass:Private', 'capital-gain:0'})",frozenset({'race:White'}),0.721,0.887712386111795
+"frozenset({'race:White', 'workclass:Private'})","frozenset({'native-country:United-States', 'capital-gain:0'})",0.721,0.9168362156663276
+"frozenset({'race:White', 'native-country:United-States'})","frozenset({'workclass:Private', 'capital-gain:0'})",0.721,0.875
+"frozenset({'race:White', 'capital-gain:0'})","frozenset({'native-country:United-States', 'workclass:Private'})",0.721,0.8458470201783199
+"frozenset({'native-country:United-States', 'workclass:Private'})","frozenset({'race:White', 'capital-gain:0'})",0.721,0.865130789536837
+"frozenset({'workclass:Private', 'capital-gain:0'})","frozenset({'race:White', 'native-country:United-States'})",0.721,0.8243768579922249
+"frozenset({'native-country:United-States', 'capital-gain:0'})","frozenset({'race:White', 'workclass:Private'})",0.721,0.7942278034809429
+frozenset({'race:White'}),"frozenset({'native-country:United-States', 'workclass:Private', 'capital-gain:0'})",0.721,0.8249427917620137
+frozenset({'workclass:Private'}),"frozenset({'race:White', 'native-country:United-States', 'capital-gain:0'})",0.721,0.8037904124860646
+frozenset({'native-country:United-States'}),"frozenset({'race:White', 'workclass:Private', 'capital-gain:0'})",0.721,0.7747689662583279
+frozenset({'capital-gain:0'}),"frozenset({'race:White', 'native-country:United-States', 'workclass:Private'})",0.721,0.7390323903239032
+"frozenset({'race:White', 'workclass:Private', 'capital-gain:0', 'marital-status:Never-married'})",frozenset({'native-country:United-States'}),0.6688,0.9457013574660632
+"frozenset({'race:White', 'native-country:United-States', 'capital-gain:0', 'marital-status:Never-married'})",frozenset({'workclass:Private'}),0.6688,0.8957942673452985
+"frozenset({'workclass:Private', 'native-country:United-States', 'capital-gain:0', 'marital-status:Never-married'})",frozenset({'race:White'}),0.6688,0.8886526707414296
+"frozenset({'race:White', 'workclass:Private', 'native-country:United-States', 'capital-gain:0'})",frozenset({'marital-status:Never-married'}),0.6688,0.9276005547850208
+"frozenset({'race:White', 'native-country:United-States', 'workclass:Private', 'marital-status:Never-married'})",frozenset({'capital-gain:0'}),0.6688,0.9752114319043452
+"frozenset({'race:White', 'capital-gain:0', 'marital-status:Never-married'})","frozenset({'native-country:United-States', 'workclass:Private'})",0.6688,0.848515605176351
+"frozenset({'workclass:Private', 'capital-gain:0', 'marital-status:Never-married'})","frozenset({'race:White', 'native-country:United-States'})",0.6688,0.8299826259617771
+"frozenset({'native-country:United-States', 'capital-gain:0', 'marital-status:Never-married'})","frozenset({'race:White', 'workclass:Private'})",0.6688,0.7933570581257414
+"frozenset({'race:White', 'workclass:Private', 'capital-gain:0'})","frozenset({'native-country:United-States', 'marital-status:Never-married'})",0.6688,0.8724236890164362
+"frozenset({'race:White', 'native-country:United-States', 'capital-gain:0'})","frozenset({'workclass:Private', 'marital-status:Never-married'})",0.6688,0.8324620363455314
+"frozenset({'workclass:Private', 'native-country:United-States', 'capital-gain:0'})","frozenset({'race:White', 'marital-status:Never-married'})",0.6688,0.8234425018468357
+"frozenset({'race:White', 'workclass:Private', 'marital-status:Never-married'})","frozenset({'native-country:United-States', 'capital-gain:0'})",0.6688,0.922737306843267
+"frozenset({'race:White', 'native-country:United-States', 'marital-status:Never-married'})","frozenset({'workclass:Private', 'capital-gain:0'})",0.6688,0.8744769874476986
+"frozenset({'native-country:United-States', 'workclass:Private', 'marital-status:Never-married'})","frozenset({'race:White', 'capital-gain:0'})",0.6688,0.8669950738916256
+"frozenset({'race:White', 'native-country:United-States', 'workclass:Private'})","frozenset({'capital-gain:0', 'marital-status:Never-married'})",0.6688,0.9035395838962442
+"frozenset({'capital-gain:0', 'marital-status:Never-married'})","frozenset({'race:White', 'native-country:United-States', 'workclass:Private'})",0.6688,0.7421216156236129
+"frozenset({'race:White', 'capital-gain:0'})","frozenset({'native-country:United-States', 'workclass:Private', 'marital-status:Never-married'})",0.6688,0.7846081651806662
+"frozenset({'workclass:Private', 'capital-gain:0'})","frozenset({'race:White', 'native-country:United-States', 'marital-status:Never-married'})",0.6688,0.7646924308255202
+"frozenset({'native-country:United-States', 'capital-gain:0'})","frozenset({'race:White', 'workclass:Private', 'marital-status:Never-married'})",0.6688,0.736726151134611
+"frozenset({'race:White', 'marital-status:Never-married'})","frozenset({'workclass:Private', 'native-country:United-States', 'capital-gain:0'})",0.6688,0.8285431119920713
+"frozenset({'workclass:Private', 'marital-status:Never-married'})","frozenset({'race:White', 'native-country:United-States', 'capital-gain:0'})",0.6688,0.8098813271978687
+"frozenset({'native-country:United-States', 'marital-status:Never-married'})","frozenset({'race:White', 'workclass:Private', 'capital-gain:0'})",0.6688,0.7747914735866542
+"frozenset({'race:White', 'workclass:Private'})","frozenset({'native-country:United-States', 'capital-gain:0', 'marital-status:Never-married'})",0.6688,0.8504577822990844
+"frozenset({'race:White', 'native-country:United-States'})","frozenset({'workclass:Private', 'capital-gain:0', 'marital-status:Never-married'})",0.6688,0.8116504854368932
+"frozenset({'native-country:United-States', 'workclass:Private'})","frozenset({'race:White', 'capital-gain:0', 'marital-status:Never-married'})",0.6688,0.802495800335973
+frozenset({'capital-gain:0'}),"frozenset({'race:White', 'native-country:United-States', 'workclass:Private', 'marital-status:Never-married'})",0.6688,0.6855268552685526
+frozenset({'marital-status:Never-married'}),"frozenset({'race:White', 'workclass:Private', 'native-country:United-States', 'capital-gain:0'})",0.6688,0.7247507585609015
+frozenset({'race:White'}),"frozenset({'workclass:Private', 'native-country:United-States', 'capital-gain:0', 'marital-status:Never-married'})",0.6688,0.7652173913043477
+frozenset({'workclass:Private'}),"frozenset({'race:White', 'native-country:United-States', 'capital-gain:0', 'marital-status:Never-married'})",0.6688,0.7455964325529543
+frozenset({'native-country:United-States'}),"frozenset({'race:White', 'workclass:Private', 'capital-gain:0', 'marital-status:Never-married'})",0.6688,0.718676122931442

@@ -4,9 +4,9 @@
 FROM node:16-alpine as build-step
 WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
-COPY package.json yarn.lock ./
-COPY ./src ./src
-COPY ./public ./public
+COPY my-app/package.json my-app/yarn.lock ./
+COPY my-app/src ./src
+COPY my-app/public ./public
 RUN yarn install
 RUN yarn build
 

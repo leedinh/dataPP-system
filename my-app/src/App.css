@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans&display=swap');
 .App {
   text-align: center;
+  font-family: 'DM Sans', sans-serif;
 }
 
 .App-logo {
@@ -35,4 +37,8 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.rounded-bl {
+  border-radius: 0 0 0 250px;
 }

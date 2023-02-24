@@ -21,24 +21,22 @@ def not_found(e):
     return app.send_static_file('index.html')
 
 
-users = {
-    "test": "password"
-}
-
 # Route to generate JWT token
 
 
 @app.route("/api/login", methods=["POST"])
 def login():
-    username = request.json.get("username")
+    email = request.json.get("email")
     password = request.json.get("password")
 
-    user = User.query.filter_by(username=username).first()
-    print(type(user))
+    user = User.query.filter_by(email=email).first()
     if not user or password != user.password:
         return jsonify({"msg": "Bad username or password"}), 401
 
-    access_token = create_access_token(identity=username)
+    userId = user.id
+    custom_claims = {'role': 'admin', 'user_id': userId}
+    access_token = create_access_token(
+        identity=email, additional_claims=custom_claims)
     return jsonify(access_token=access_token)
 
 # Protected route

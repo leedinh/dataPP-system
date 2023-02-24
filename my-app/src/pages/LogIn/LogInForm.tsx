@@ -2,17 +2,29 @@ import React from "react";
 import { Button, Checkbox, Form, Input } from "antd";
 
 const onFinish = async (values: any) => {
+  console.log(JSON.stringify(values));
+
   const requestOptions = {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json'
+    },
     body: JSON.stringify(values)
   };
 
-  const response = await fetch('http://127.0.0.1:5000/api/login', requestOptions);
+  const response = await fetch('/api/login', requestOptions);
   const data = await response.json();
+
+  if (data.access_token) {
+    localStorage.setItem('access_token', data.access_token);
+    console.log('Access token stored:', data.access_token);
+  } else {
+    console.log('Access token not found in response');
+  }
 
   console.log(data);
 };
+
 
 const onFinishFailed = (errorInfo: any) => {
   console.log("Failed:", errorInfo);

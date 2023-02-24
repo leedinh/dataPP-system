@@ -1,8 +1,17 @@
 import React from "react";
 import { Button, Checkbox, Form, Input } from "antd";
 
-const onFinish = (values: any) => {
-  console.log("Success:", values);
+const onFinish = async (values: any) => {
+  const requestOptions = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(values)
+  };
+
+  const response = await fetch('http://127.0.0.1:5000/api/login', requestOptions);
+  const data = await response.json();
+
+  console.log(data);
 };
 
 const onFinishFailed = (errorInfo: any) => {

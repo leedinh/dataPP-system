@@ -2,9 +2,9 @@ import argparse
 from anonymize import Anonymizer
 
 parser = argparse.ArgumentParser('main.py')
-parser.add_argument('--k', type=int, default=2,
+parser.add_argument('--k', type=int, default=5,
                     help="K-Anonymity or L-Diversity")
-parser.add_argument('--dataset', type=str, default='adult.csv',
+parser.add_argument('--dataset', type=str, default='input.csv',
                     help="Dataset to anonymize")
 parser.add_argument('--conf', type=float, default=0.5,
                     help="Confidence value")

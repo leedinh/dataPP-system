@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Checkbox, Form, Input } from "antd";
+import { Button, Checkbox, Col, Form, Input, Row } from "antd";
 
 const onFinish = async (values: any) => {
   console.log(JSON.stringify(values));
@@ -25,62 +25,68 @@ const onFinish = async (values: any) => {
   console.log(data);
 };
 
-
 const onFinishFailed = (errorInfo: any) => {
   console.log("Failed:", errorInfo);
 };
 
 const LogInForm: React.FC = () => (
-  <div className="place-self-center w-1/3">
-    <div className="text-5xl mb-8 font-semibold">Sign In</div>
-    <Form
-      name="basic"
-      labelCol={{ span: 8 }}
-      style={{ maxWidth: 600 }}
-      initialValues={{ remember: true }}
-      onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
-      autoComplete="off"
-      layout="vertical"
-    >
-      <Form.Item
-        label="Email"
-        name="email"
-        rules={[{ required: true, message: "Please input your username!" }]}
+  <Row justify="center" align="middle" style={{ minHeight: "100vh" }}>
+    <Col xs={24} sm={20} md={16} lg={12} xl={10} xxl={8}>
+      <div className="text-center mb-8">
+        <h1 className="text-5xl font-semibold">Sign In</h1>
+      </div>
+      <Form
+        name="basic"
+        labelCol={{ span: 8 }}
+        style={{ maxWidth: 600 }}
+        initialValues={{ remember: true }}
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
+        autoComplete="off"
+        layout="vertical"
       >
-        <Input size="large" />
-      </Form.Item>
-
-      <Form.Item
-        label="Password"
-        name="password"
-        rules={[{ required: true, message: "Please input your password!" }]}
-      >
-        <Input.Password size="large" />
-      </Form.Item>
-
-      <Form.Item>
-        <div className="flex justify-between">
-          <Form.Item name="remember" valuePropName="checked" noStyle>
-            <Checkbox>Remember me</Checkbox>
-          </Form.Item>
-
-          <a className="login-form-forgot">Forgot password</a>
-        </div>
-      </Form.Item>
-
-      <Form.Item>
-        <Button
-          type="primary"
-          htmlType="submit"
-          className="w-full"
-          size="large"
+        <Form.Item
+          label="Email"
+          name="email"
+          rules={[{ required: true, message: "Please input your email!" }]}
         >
-          Submit
-        </Button>
-      </Form.Item>
-    </Form>
-  </div>
+          <Input size="large" />
+        </Form.Item>
+
+        <Form.Item
+          label="Password"
+          name="password"
+          rules={[{ required: true, message: "Please input your password!" }]}
+        >
+          <Input.Password size="large" />
+        </Form.Item>
+
+        <Form.Item>
+          <Row justify="space-between">
+            <Col xs={16}>
+              <Form.Item name="remember" valuePropName="checked" noStyle>
+                <Checkbox>Remember me</Checkbox>
+              </Form.Item>
+            </Col>
+            <Col xs={8}>
+              <a className="login-form-forgot">Forgot password</a>
+            </Col>
+          </Row>
+        </Form.Item>
+
+        <Form.Item>
+          <Button
+            type="primary"
+            htmlType="submit"
+            className="w-full"
+            size="large"
+          >
+            Submit
+          </Button>
+        </Form.Item>
+      </Form>
+    </Col>
+  </Row>
 );
 
 export default LogInForm;

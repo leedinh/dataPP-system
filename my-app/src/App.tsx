@@ -1,10 +1,11 @@
+import { RouterProvider } from "react-router-dom";
+import routes from "config/routes";
 import "./App.css";
-import LogIn from "./pages/LogIn/LogIn";
 
 function App() {
   return (
     <div className="App">
-      <LogIn />
+      <RouterProvider router={routes} />
     </div>
   );
 }

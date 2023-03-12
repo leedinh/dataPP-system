@@ -1,5 +1,5 @@
 const Main: React.FC = () => {
-  return <></>;
+  return <>Main</>;
 };
 
 export default Main;

@@ -12,7 +12,7 @@ const { Title } = Typography;
 const items: MenuProps["items"] = [
   {
     label: "Home",
-    key: "home",
+    key: "/",
     icon: <MailOutlined />,
   },
   {

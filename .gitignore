@@ -1,7 +1,5 @@
 test_*
 venv
-<<<<<<< HEAD
 *.pyc
-=======
 __pycache__
->>>>>>> 86240bc (Complete login route with jwt)
+.DS*

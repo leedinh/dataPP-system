@@ -4,269 +4,240 @@ import os
 import math
 import collections
 import random
+from apriori import Rule
+
 
 class Anonymizer:
     def __init__(self, args):
-        self.k = args.k                                                         # k value of k-anoynimity
-        self.dataset = args.dataset                                             # file name of the dataset
-        self.conf = args.conf                                                   # confidence value from user input
-        self.sup = args.sup                                                     # support value from user input
-        self.qsi = args.qsi 
-        
-        
-        self.anon_folder =  os.path.join('results', "test")               # init the result folder
+        # k value of k-anoynimity
+        self.k = args.k
+        # confidence value from user input
+        self.conf = args.conf
+        # support value from user input
+        self.sup = args.sup
+        self.qsi = args.qsi
+
+        # init the result folder
+        self.anon_folder = os.path.join('results', "test")
         os.makedirs(self.anon_folder, exist_ok=True)
-        
-        self.ds = pd.read_csv(self.dataset)
-        
+
+        self.ds = pd.read_csv(args.dataset)
+        self.ds.replace("?", pd.NaT, inplace=True)
+        self.ds.dropna(inplace=True)
+        self.n = len(self.ds)
+
         # get list of column indexes as qsi-identifier
         if self.qsi is None:
             raise Exception("You must provide a QSI list")
         columns = list(self.ds.columns)
         self.quasiID = [columns[i] for i in self.qsi]
-        
-    
-    def _budgets(self):
-        self._budgets = {}
-        for r in self.rule_care:
-            rule = (tuple([tuple(r[0]),tuple(r[1])]))
-            if r[4]:
-                self._budgets[rule]= min((r[2]-self.sup), r[2]*(r[3]-self.conf)/r[3])
-            else:
-                self._budgets[rule]= min((r[2]-self.sup), r[2]*(r[3]-self.conf)/(r[3]*(1-self.conf)))
-            assert(self._budgets[rule] > 0)
-            
-        assert(len(self._budgets) == len(self.rule_care))
-            
-            
-    def _clean(self, dataset):
-        dataset.dropna(inplace=True, axis=0)
-        for lab, row in dataset.iterrows():
-            for cell in row:
-                if cell == '?':
-                    dataset.drop(lab, inplace=True)
-                    break
-        return dataset
-    
 
-    # Read rules from the rule set file
-    # Rules template: [LHS, RHS, sup, conf]
-    #       + LHS = RHS = [column_name:value]
-    # We need to extract the rule_care from the rule set
-    def setup_rule_care(self, path_rule):
-        rules = pd.read_csv(path_rule)
-        rs = [[list(eval(rules['antecedents'].iloc[i])), list(eval(rules['consequents'].iloc[i])), rules['support'].iloc[i], rules['confidence'].iloc[i]] for i in range(len(rules))]
-        self.rule_care = []
-        for r in rs:
-            has_qsi = False
-            rhs = False
-            for i in r[0]:
-                if i.split(':')[0] in self.quasiID:
-                    has_qsi = True
-                    break
-            
-            for i in r[1]:
-                if i.split(':')[0] in self.quasiID:
-                    has_qsi = True
-                    rhs = True
-                    break
-            if has_qsi:
-                self.rule_care.append(r + [rhs])
-                
-    
     def prepare_input(self, input):
-        for i in range(len(input)):
-            for j in input.columns:
-                input[j].iloc[i] = j + ":" + str(input[j].iloc[i])
-        subset = input[self.quasiID]
-        tuples = [tuple(x) for x in subset.to_numpy()]
-        assert( len(tuples) == len(self.ds))
-        freq= dict(collections.Counter(tuples)) #GROUPING EACH ROW WITH ITS KEY AS TUPLE OF QSI VALUE
-                
-        index_map = {}
-        for index, row in input[self.quasiID].iterrows():
-            t = tuple(row)
-            if t in index_map:
-                index_map[t].append(index)
-            else:
-                index_map[t] = [index]
-        
-        return freq, index_map
-    
-    
-    ## Utility functions
-    def is_safe(self,g):
-        return self.freq[g]>=self.k or self.freq[g] == 0    
-    
-    def risk(m,k):
-        # if m == 0:
-        #     return 0
-        if m >=k:
-            return 0
-        else:
-            return 2*k - m
-        
-    def count_Rt(rules, t):
-        res = []
-        for  r in rules:
-            check = True
-            for i in r[0]+r[1]:
-                if i not in t:
-                    check = False
-                    break
-            if check:
-                res.append(r)
-        return res
-    
-       
-    def check_budget(self, gi, gj):
-        qij = [gi[k] for k in range(len(gi)) if gj[k]!=gi[k]]
-        rij= self.count_Rt(self.rule_care, qij)
-        for r in rij:
-                tr = tuple(r[0]+r[1])
-                if (self._budgets[tr] <=0):
-                    return False
-        return True
-    ## End of utility function    
-    
-    def check_flow(i, j):
-        if i == -1 and j == 1:
-            return True
-        if i == -1 and j == 0:
-            return True
-        if i == 0 and j == 1:
-            return True
-        if i == 0 and j == 0:
-            return True
-        return False
-        
-    def initial_state(self):
-        sg = []
-        ug = []
-        ug_small = []
-        ug_big = []
-        um = []
 
-        #STATE OF EACH GROUP CAN GIVE OR BE GIVEN
-        state = self.freq.copy()
-        for i in state:
-            state[i]=0
+        groups = input.groupby(self.quasiID)
+        indexes = groups.apply(lambda x: list(x.index))
+        index_dict = dict(zip(groups.groups.keys(), indexes))
 
-        for i in self.freq:
-            if self.freq[i] >= self.k:
-                sg.append(i)
+        index_sizes = groups.apply(lambda x: len(x.index))
+        freq = dict(zip(groups.groups.keys(), index_sizes))
+        assert (len(groups) == len(index_dict) == len(freq))
+        return groups.groups.keys(), index_dict, freq
+
+    def find_group_to_migrate(self, SelG, remaining_groups, k):
+
+        def risk(m):
+            return 0 if m >= k else 2 * k - m
+
+        def check_rule(s, g, migrated_count):
+            aff_rules = self.rule.get_affected_rules(s, g)
+            affected_budgets = self.rule.rule_care.loc[aff_rules, 'budget'].tolist(
+            )
+            assert (len(aff_rules) == len(affected_budgets))
+
+            new_budget = [budget - (migrated_count / self.n)
+                          for budget in affected_budgets]
+            return all(self.rule.rule_care['budget'] > 0), new_budget, aff_rules
+            # initialize variables
+
+        max_risk_reduction = 0
+        selected_group = None
+        migrate_from_selg = False
+        migrate_count = 0
+        new_budget = None
+        affected_rule = None
+
+        # calculate the risk of the selected group
+        SelG_risk = risk(self.freq[SelG])
+        print("Risk SelG: ", SelG, SelG_risk)
+
+        # loop through the remaining groups to find the most useful group to migrate to
+        for group in remaining_groups:
+            print(group, self.freq[group])
+            # calculate the risk of the group
+            group_risk = risk(self.freq[group])
+            print("Risk group: ", group, group_risk)
+            # break
+
+            # SelG is always unsafe
+            # calculate the number of tuples to migrate from SelG to group
+            selg_to_g_count = 0
+
+            if group_risk > 0:  # SelG is unsafe and group is unsafe
+
+                # migrate from selG to group
+                if (self.freq[SelG] >= self.freq[group] or self.freq[SelG] >= k - self.freq[group]) and not self.is_received[SelG]:
+                    current_migrate_from_selg = True
+                    current_num_records_to_migrate = min(
+                        self.freq[SelG], k - self.freq[group])
+
+                # migrate from group to selG
+                elif (self.freq[group] > self.freq[SelG] or self.freq[group] >= k - self.freq[SelG]) and not self.is_received[group]:
+                    current_migrate_from_selg = False
+                    current_num_records_to_migrate = min(
+                        self.freq[group], k - self.freq[SelG])
+
+            elif group_risk == 0:  # SelG is unsafe and group is safe, can only move from SelG to group all of it tuple
+                current_migrate_from_selg = True
+                current_num_records_to_migrate = self.freq[SelG]
+
+            # calculate the new risk of SelG and the group after migrating tuples
+            if current_migrate_from_selg:  # from selg to group
+                new_selg_risk = risk(
+                    self.freq[SelG] - current_num_records_to_migrate)
+                new_group_risk = risk(
+                    self.freq[group] + current_num_records_to_migrate)
             else:
-                ug.append(i)
-                if self.freq[i] <= self.k/2:
-                    ug_small.append(i)
+                new_selg_risk = risk(
+                    self.freq[SelG] + current_num_records_to_migrate)
+                new_group_risk = risk(
+                    self.freq[group] - current_num_records_to_migrate)
+
+            # Calculate risk reduction
+            risk_reduction = SelG_risk + group_risk - new_selg_risk - new_group_risk
+
+            # check if this group is more useful than the current selected group
+            if abs(risk_reduction) > max_risk_reduction:
+                ok, cur_new_budget, cur_aff_rule = check_rule(
+                    SelG, group, current_num_records_to_migrate)
+
+                if not ok:
+                    continue
+
+                max_risk_reduction = risk_reduction
+                selected_group = group
+                migrate_from_selg = current_migrate_from_selg
+                migrate_count = current_num_records_to_migrate
+                new_budget = cur_new_budget
+                affected_rule = cur_aff_rule
+
+            if new_selg_risk == 0 or new_group_risk == 0:
+                # selected_group = group
+                # migrate_from_selg = current_migrate_from_selg
+                # migrate_count = current_num_records_to_migrate
+                break
+
+            print('cuu tui')
+        return selected_group, migrate_from_selg, migrate_count, new_budget, affected_rule
+
+    def k_anoymize(self):
+
+        def isSafe(group):
+            return self.freq[group] >= self.k or self.freq[group] == 0
+
+        # Update number of tupple of each group after calculation
+        def do_migrate_tuples(selg, g, migrate_count, migrate_from_selg, affected_rule, new_budget):
+            if migrate_from_selg:  # from selg to g
+                self.is_received[g] = True
+                self.freq[selg] -= migrate_count
+                self.freq[g] += migrate_count
+                for i in range(migrate_count):
+                    self.index_map[g].append(self.index_map[selg].pop())
+            else:  # from g to selg
+                self.is_received[self] = True
+                self.freq[selg] += migrate_count
+                self.freq[g] -= migrate_count
+                for i in range(migrate_count):
+                    self.index_map[selg].append(self.index_map[g].pop())
+            assert (self.freq[selg] == len(self.index_map[selg]))
+            assert (self.freq[g] == len(self.index_map[g]))
+
+            self.ds.loc[affected_rule, 'budgets'] = new_budget
+            double_check = self.ds.iloc[affected_rule]['budgets'].tolist()
+            assert (double_check == new_budget)
+
+        SG = list(filter(lambda g: self.freq[g] >= self.k, self.groups))
+        UG = list(filter(lambda g: self.freq[g] < self.k, self.groups))
+        UG_BIG = list(filter(lambda g: len(g) > self.k//2, UG))
+        UG_SMALL = list(filter(lambda g: len(g) <= self.k//2, UG))
+        assert (len(SG) + len(UG) == len(self.groups))
+        assert (len(UG_BIG) + len(UG_SMALL) == len(UG))
+        UG = list(sorted(UG, key=lambda x: self.freq[x]))
+        self.is_received = {key: False for key in self.freq}
+        print(self.is_received)
+
+        # print(UG)
+
+        SelG = None
+        UM = []
+        while len(UG) > 0 or SelG is not None:
+            if SelG is None:
+                SelG = UG.pop(0)
+                if SelG in UG_SMALL:
+                    UG_SMALL.remove(SelG)
+                elif SelG in UG_BIG:
+                    UG_BIG.remove(SelG)
+                assert (len(UG_BIG) + len(UG_SMALL) == len(UG))
+                print(SelG, self.freq[SelG])
+            if self.freq[SelG] <= self.k//2:
+                remaining_groups = UG_BIG + UG_SMALL + SG
+            else:
+                remaining_groups = UG_SMALL + UG_BIG + SG
+            assert (len(remaining_groups) + len(UM) == len(UG) + len(SG))
+
+            g, migrate_from_selg, migrate_count, new_budget, affected_rule = self.find_group_to_migrate(
+                SelG, remaining_groups, self.k)
+
+            if g is None:
+                UM.append(SelG)
+                SelG = None
+            else:
+                do_migrate_tuples(SelG, g, migrate_count,
+                                  migrate_from_selg, affected_rule, new_budget)
+
+                if isSafe(SelG):
+                    if SelG in UG:
+                        UG.remove(SelG)
+                    if SelG in UG_BIG:
+                        UG_BIG.remove(SelG)
+                    if SelG in UG_SMALL:
+                        UG_SMALL.remove(SelG)
+                    if self.freq[SelG] > 0:
+                        SG.append(SelG)
+
+                if isSafe(g):
+                    if g in UG:
+                        UG.remove(g)
+                    if g in UG_BIG:
+                        UG_BIG.remove(g)
+                    if g in UG_SMALL:
+                        UG_SMALL.remove(g)
+                    if self.freq[g] > 0:
+                        SG.append(g)
+                if isSafe(SelG) and isSafe(g):
+                    SelG = None
                 else:
-                    ug_big.append(i)
+                    if not isSafe(g):
+                        SelG = g
+        if len(UM) > 0:
+            pass
 
-        ug = sorted(ug, key=lambda x: self.freq[x])
-        # print(self.k)
-        # [print(i, self.freq[i]) for i in ug]
-                
-        
-        
-    def find_group_to_migrate(self, selg, rmg):
-        # target = None
-    # state = 0
-    #POLICY
-    #1. Nếu 1 group cho tuple thì nó sẽ luôn luôn luôn cho, và ngược lại nhận thì sẽ luôn luôn nhận
-    #2. gi -> gj (Vr thuoc Ri,gi->gj, Budget_r > 0)
-    #3. Give 2 group gi, gj. Assume gi is k-unsafe group(freq[gi] < k). The number of migrant tuples (mgrtN) is determined:
-    #    Case 1: gj is k-unsafe group(freq[gj] < k). If gi->gj, then mgrtN = min(|gi|, k - |gj|). If gi <- gj then mgrtN = min(|gj|, k - |gi|)
-    #    Case 2: gj is k-safe group(freq[gj] >= k). If gi->gj, then mgrtN = |gi|. If gi <- gj then mgrtN <= Min(k - |gi|, |gj|-k, |origin(gj)|), 
-    #       when min(|origin(gj)|, |gj|-k) = 0 then gi <= gj is impossible.
-    
-        candidates = None
-        max_reduction = -100
-        for g in rmg: # UGB + USG + SG -> rate risk_after = 0
-            init_risk = self.risk(self.freq[selg],self.k) + self.risk(self.freq[g],self.k)
-            
-            if not (self.check_flow(self.state[selg], self.state[g]) or (self.check_flow(self.state[g], self.state[selg]))):
-                continue
-                
-            if not self.is_safe(g): # g is k-unsafe group
-                # selfg -> g    
-                if self.check_flow(state[selg], state[g]):
-                    #Check Budget selg -> g
-                    if not self.check_budget(selg,g):
-                        continue
-                    
-                    mgrntN1 = min(self.freq[selg], self.k - self.freq[g])
-                    after_risk1 = self.risk(self.freq[selg] - mgrntN1,self.k) + self.risk(self.freq[g] + mgrntN1,self.k)
-                    risk_reduce1 = init_risk - after_risk1
-                    
-                    if after_risk1 == 0:
-                        return (g, mgrntN1, 1)
-                    
-                    if risk_reduce1 > max_reduction:
-                        max_reduction = risk_reduce1
-                        candidates = (g, mgrntN1, 1)
-                
-                        
-                if self.check_flow(self.state[g], self.state[selg]):
-                # selfg <- g 
-                
-                    #Check Budget g -> selfg
-                    if not self.check_budget(g,selg):
-                        continue
-
-                    mgrntN2 = min(self.freq[selg], self.k - self.freq[g])
-                    after_risk2 = self.risk(self.freq[selg] + mgrntN2,self.k) + self.risk(self.freq[g] - mgrntN2,self.k)
-                    risk_reduce2 = init_risk - after_risk2
-            
-                    if after_risk2 == 0:
-                        return (g, mgrntN2, -1)
-                    
-                    if risk_reduce2 > max_reduction:
-                        max_reduction = risk_reduce2
-                        candidates = (g, mgrntN2, -1)
-            else:
-                if self.check_flow(self.state[g], self.state[selg]):
-                    #Check Budget g -> selfg
-                    if not self.check_budget(g,selg):
-                        continue
-                    
-                    if self.freq[g] == self.k: 
-                        continue
-                    mgrntN2 = min(self.k - self.freq[selg], self.freq[g]-self.k)
-                    after_risk2 = self.risk(self.freq[selg] + mgrntN2, self.k) + self.risk(self.freq[g] - mgrntN2, self.k)
-                    risk_reduce2 = init_risk - after_risk2
-            
-                    if after_risk2 == 0:
-                        return (g, mgrntN2, -1)
-                    
-                    if risk_reduce2 > max_reduction:
-                        max_reduction = risk_reduce2
-                        candidates = (g, mgrntN2, -1)
-                        
-                        
-                if self.check_flow(self.state[selg], self.state[g]):
-                    if not self.check_budget(selg,g):
-                        continue
-
-                    mgrntN1 = self.freq[selg]
-                    after_risk1 = self.risk( self.freq[selg] - mgrntN1, self.k) + self.risk(self.freq[g] + mgrntN1, self.k)
-                    risk_reduce1 = init_risk - after_risk1
-                    
-                    if after_risk1 == 0:
-                        return (g, mgrntN1, 1)
-                    
-                    if risk_reduce1 > max_reduction:
-                        max_reduction = risk_reduce1
-                        candidates = (g, mgrntN1, 1)
-                            
-    
-        return candidates
- 
     def anonymize(self):
-        # qsi_name = self.get_qsi_list()
-        self.setup_rule_care(r"./rules.csv")
-        print(self.rule_care)
-        # self.freq, self.index_map = self.prepare_input(self.ds)
-        # self.initial_state()
-        
+        self.groups, self.index_map, self.freq = self.prepare_input(self.ds)
+
+        self.rule = Rule(self.ds, self.quasiID, self.sup, self.conf)
+        self.rule.generate_rules()
+        self.rule.calculate_budgets()
+        self.k_anoymize()
+
     def test(self):
-        print("Hello, world")    
+        print("Hello, world")

@@ -21,10 +21,15 @@ const routes = createBrowserRouter([
         element: <Main />,
       },
       {
+        path: "home",
+        element: <Main />,
+      },
+      {
         path: "upload",
         element: <UploadDataset />,
         children: [
           {
+            index: true,
             element: <Step1 />,
           },
           {

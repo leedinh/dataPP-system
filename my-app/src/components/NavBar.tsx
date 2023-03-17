@@ -12,7 +12,7 @@ const { Title } = Typography;
 const items: MenuProps["items"] = [
   {
     label: "Home",
-    key: "/",
+    key: "home",
     icon: <MailOutlined />,
   },
   {
@@ -27,7 +27,6 @@ const NavBar: React.FC = () => {
   const navigate = useNavigate();
 
   const onClick: MenuProps["onClick"] = (e) => {
-    console.log(e.key);
     setCurrent(e.key);
     navigate(`/${e.key}`);
   };

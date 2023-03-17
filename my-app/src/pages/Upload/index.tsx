@@ -4,7 +4,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 
 const items = [
   {
-    title: "Finished",
+    title: "Raw Dataset",
   },
   {
     title: "In Progress",

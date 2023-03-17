@@ -17,6 +17,8 @@ parser.add_argument('--rule', type=str, default='adult',
 
 
 if __name__ == '__main__':
-    args = parser.parse_args()
-    anonymizer = Anonymizer(args)
+    input = r'./adult.csv'
+    output = r'results/output.csv'
+    anonymizer = Anonymizer(input, 5, 0.5, 0.5, [1, 2, 3, 4], output)
     anonymizer.anonymize()
+    anonymizer.output(f'results/new_data.csv')

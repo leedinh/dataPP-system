@@ -8,20 +8,20 @@ from apriori import Rule
 
 
 class Anonymizer:
-    def __init__(self, args):
+    def __init__(self, input, k: int, conf: float, sup: float, qsi: list(), output):
         # k value of k-anoynimity
-        self.k = args.k
+        self.k = k
         # confidence value from user input
-        self.conf = args.conf
+        self.conf = conf
         # support value from user input
-        self.sup = args.sup
-        self.qsi = args.qsi
+        self.sup = sup
+        self.qsi = qsi
 
         # init the result folder
         self.anon_folder = os.path.join('results', "test")
         os.makedirs(self.anon_folder, exist_ok=True)
 
-        self.ds = pd.read_csv(args.dataset)
+        self.ds = pd.read_csv(input)
         self.ds.replace("?", pd.NaT, inplace=True)
         self.ds.dropna(inplace=True)
         self.n = len(self.ds)
@@ -68,15 +68,11 @@ class Anonymizer:
 
         # calculate the risk of the selected group
         SelG_risk = risk(self.freq[SelG])
-        print("Risk SelG: ", SelG, SelG_risk)
 
         # loop through the remaining groups to find the most useful group to migrate to
         for group in remaining_groups:
-            print(group, self.freq[group])
             # calculate the risk of the group
             group_risk = risk(self.freq[group])
-            print("Risk group: ", group, group_risk)
-            # break
 
             # SelG is always unsafe
             # calculate the number of tuples to migrate from SelG to group
@@ -136,10 +132,16 @@ class Anonymizer:
                 # migrate_count = current_num_records_to_migrate
                 break
 
-            print('cuu tui')
         return selected_group, migrate_from_selg, migrate_count, new_budget, affected_rule
 
     def k_anoymize(self):
+
+        def disperse(selg):
+            id = random.randint(0, len(SG)-1)
+            self.index_map[SG[id]] += self.index_map[selg]
+            self.index_map[selg] = []
+            self.freq[SG[id]] += self.freq[selg]
+            self.freq[selg] = 0
 
         def isSafe(group):
             return self.freq[group] >= self.k or self.freq[group] == 0
@@ -162,8 +164,6 @@ class Anonymizer:
             assert (self.freq[g] == len(self.index_map[g]))
 
             self.ds.loc[affected_rule, 'budgets'] = new_budget
-            double_check = self.ds.iloc[affected_rule]['budgets'].tolist()
-            assert (double_check == new_budget)
 
         SG = list(filter(lambda g: self.freq[g] >= self.k, self.groups))
         UG = list(filter(lambda g: self.freq[g] < self.k, self.groups))
@@ -173,13 +173,13 @@ class Anonymizer:
         assert (len(UG_BIG) + len(UG_SMALL) == len(UG))
         UG = list(sorted(UG, key=lambda x: self.freq[x]))
         self.is_received = {key: False for key in self.freq}
-        print(self.is_received)
 
         # print(UG)
 
         SelG = None
         UM = []
         while len(UG) > 0 or SelG is not None:
+            print(len(SG), len(UG))
             if SelG is None:
                 SelG = UG.pop(0)
                 if SelG in UG_SMALL:
@@ -187,7 +187,6 @@ class Anonymizer:
                 elif SelG in UG_BIG:
                     UG_BIG.remove(SelG)
                 assert (len(UG_BIG) + len(UG_SMALL) == len(UG))
-                print(SelG, self.freq[SelG])
             if self.freq[SelG] <= self.k//2:
                 remaining_groups = UG_BIG + UG_SMALL + SG
             else:
@@ -228,8 +227,17 @@ class Anonymizer:
                 else:
                     if not isSafe(g):
                         SelG = g
+
+        # assert sum(self.freq.values()) == self.n
         if len(UM) > 0:
-            pass
+            for um in UM:
+                self.disperse(um)
+
+    def last_update(self):
+        for group, indexes in self.index_map.items():
+            values = list(group)
+            for i in indexes:
+                self.ds.loc[i, self.quasiID] = values
 
     def anonymize(self):
         self.groups, self.index_map, self.freq = self.prepare_input(self.ds)
@@ -238,6 +246,9 @@ class Anonymizer:
         self.rule.generate_rules()
         self.rule.calculate_budgets()
         self.k_anoymize()
+        assert all(val >= self.k or val == 0 for val in self.freq.values())
+        self.last_update()
 
-    def test(self):
-        print("Hello, world")
+    def output(self, path):
+        self.ds = self.ds.drop('budgets', axis=1)
+        self.ds.to_csv(path, index=False)

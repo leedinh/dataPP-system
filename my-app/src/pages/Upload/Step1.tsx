@@ -6,8 +6,9 @@ const { Dragger } = Upload;
 
 const props: UploadProps = {
   name: "file",
-  multiple: true,
+  multiple: false,
   accept: ".csv",
+  action: '/api/upload' ,
   maxCount: 1,
   onChange(info) {
     const { status } = info.file;

@@ -28,10 +28,9 @@ class Rule:
         # Find the affected rules
         affected_rules = []
         for index, r in self.rule_care.iterrows():
-            for unique_value in unique_values:
-                if any(value in unique_value for value in r['antecedents']) or any(value in unique_value for value in r['consequents']):
-                    affected_rules.append(index)
-                    break
+            if any(value in unique_values for value in r['antecedents']) or any(value in unique_values for value in r['consequents']):
+                affected_rules.append(index)
+                break
 
         # for rule, budget in self.budgets.items():
         #     antecedents, consequents = rule

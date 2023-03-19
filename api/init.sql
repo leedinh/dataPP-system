@@ -1,8 +1,10 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 CREATE TABLE "user" (
-    id SERIAL PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     email VARCHAR(80) UNIQUE NOT NULL,
-    password VARCHAR(80) NOT NULL
+    hash_password VARCHAR(120) NOT NULL
 );
 
 
-INSERT INTO "user" (email, password) VALUES ('test@gmail.com', 'password');
+INSERT INTO "user" (email, hash_password) VALUES ('test@gmail.com', 'password');

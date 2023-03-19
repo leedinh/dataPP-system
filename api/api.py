@@ -6,6 +6,7 @@ from model import User
 from rq_server import *
 from task import *
 import os
+from werkzeug.security import generate_password_hash, check_password_hash
 import psycopg2
 
 
@@ -34,13 +35,38 @@ def enqueue_anonymize():
 # Route to generate JWT token
 
 
+@app.route("/api/signup", methods=["POST"])
+def signup():
+    email = request.json.get("email")
+    password = request.json.get("password")
+    print(email, password)
+    if not email or not password:
+        return jsonify({"msg": "Email and password are required"}), 400
+
+    if User.query.filter_by(email=email).first():
+        return jsonify({"msg": "Email already registered"}), 409
+
+    hashed_password = generate_password_hash(password)
+    new_user = User(email=email, hash_password=hashed_password)
+    print(new_user)
+    try:
+        db.session.add(new_user)
+        db.session.commit()
+    except Exception as err:
+        print(err)
+        db.session.rollback()
+        return jsonify({"msg": "Failed to create user"}), 500
+
+    return jsonify({"msg": "User created successfully"}), 201
+
+
 @app.route("/api/login", methods=["POST"])
 def login():
     email = request.json.get("email")
     password = request.json.get("password")
 
     user = User.query.filter_by(email=email).first()
-    if not user or password != user.password:
+    if not user or not check_password_hash(user.hash_password, password):
         return jsonify({"msg": "Bad username or password"}), 401
 
     userId = user.id

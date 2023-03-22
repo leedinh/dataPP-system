@@ -1,0 +1,44 @@
+.topDataset {
+  border-radius: 11px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+  .header {
+    height: 40px;
+    font-size: 1.5rem;
+    text-align: left;
+  }
+}
+
+.rankDetail {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+
+  div {
+    flex: 1;
+  }
+}
+
+.banner {
+  height: 200px;
+  width: 100%;
+  border: 1px solid black;
+  border-radius: 20px;
+}
+
+.datasetCard {
+  width: 100%;
+  border-radius: 20px;
+
+  .img {
+    padding: 16px;
+    height: 90px;
+    border: 1px solid black;
+    border-radius: 18px;
+    margin-bottom: 16px;
+  }
+}

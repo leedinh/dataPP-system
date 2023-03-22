@@ -4,24 +4,24 @@ import os
 import math
 import collections
 import random
-from apriori import Rule
+from .apriori import Rule
 
 
 class Anonymizer:
-    def __init__(self, input, k: int, conf: float, sup: float, qsi: list(), output):
+    def __init__(self, args):
         # k value of k-anoynimity
-        self.k = k
+        self.k = args['k']
         # confidence value from user input
-        self.conf = conf
+        self.conf = args['conf']
         # support value from user input
-        self.sup = sup
-        self.qsi = qsi
+        self.sup = args['sup']
+        self.qsi = args['qsi']
 
         # init the result folder
         self.anon_folder = os.path.join('results', "test")
         os.makedirs(self.anon_folder, exist_ok=True)
 
-        self.ds = pd.read_csv(input)
+        self.ds = pd.read_csv(args['input'])
         self.ds.replace("?", pd.NaT, inplace=True)
         self.ds.dropna(inplace=True)
         self.n = len(self.ds)

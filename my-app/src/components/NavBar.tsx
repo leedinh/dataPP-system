@@ -1,11 +1,16 @@
 import React, { useState } from "react";
-import { AppstoreOutlined, MailOutlined } from "@ant-design/icons";
-import { Typography } from "antd";
+import { useNavigate } from "react-router-dom";
+import {
+  AppstoreOutlined,
+  MailOutlined,
+  SearchOutlined,
+} from "@ant-design/icons";
+import { Button, Typography } from "antd";
 import type { MenuProps } from "antd";
-import { Menu } from "antd";
+import { Menu, Input } from "antd";
 
 import UserAvatar from "./UserAvatar";
-import { useNavigate } from "react-router-dom";
+import styles from "./styles.module.scss";
 
 const { Title } = Typography;
 
@@ -31,21 +36,32 @@ const NavBar: React.FC = () => {
     navigate(`/${e.key}`);
   };
 
+  const onSearch = (value: string) => console.log(value);
+
   return (
     <div className="flex items-stretch px-4">
       <div className="flex-auto text-left">
         <Title className="inline-block align-top">LOGO</Title>
       </div>
-      <div className="flex-2 self-center">
-        <Menu
-          onClick={onClick}
-          selectedKeys={[current]}
-          mode="horizontal"
-          items={items}
-        />
-      </div>
-      <div className="self-center">
-        <UserAvatar />
+      <div className={`self-center ${styles.navBar}`}>
+        <div className="self-center">
+          <Input
+            className={styles.searchBar}
+            placeholder="dataset name"
+            prefix={<Button type="ghost" icon={<SearchOutlined />} />}
+          />
+        </div>
+        <div className="flex-2 self-center">
+          <Menu
+            onClick={onClick}
+            selectedKeys={[current]}
+            mode="horizontal"
+            items={items}
+          />
+        </div>
+        <div className="self-center">
+          <UserAvatar />
+        </div>
       </div>
     </div>
   );

@@ -1,10 +1,11 @@
 import { Outlet } from "react-router-dom";
 
 import NavBar from "components/NavBar";
+import styles from "pages/styles.module.scss";
 
 const HomePage: React.FunctionComponent = () => {
   return (
-    <div className="mx-8">
+    <div className={styles.main}>
       <NavBar />
       <Outlet />
     </div>

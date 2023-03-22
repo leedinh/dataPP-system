@@ -13,7 +13,7 @@ const onFinish = async (values: any) => {
     body: JSON.stringify(values),
   };
 
-  const response = await fetch("/api/login", requestOptions);
+  const response = await fetch("/api/signup", requestOptions);
   const data = await response.json();
 
   if (data.access_token) {

@@ -1,6 +1,6 @@
 import time
 from flask import Flask, jsonify, request
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt
 from db import db
 from model import User
 from rq_server import *
@@ -8,6 +8,8 @@ from task import *
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
 import psycopg2
+import uuid
+import hashlib
 
 
 app = Flask(__name__, static_folder='../my-app/build', static_url_path='/')
@@ -70,7 +72,7 @@ def login():
         return jsonify({"msg": "Bad username or password"}), 401
 
     userId = user.id
-    custom_claims = {'role': 'admin', 'user_id': userId}
+    custom_claims = {'user_id': userId}
     access_token = create_access_token(
         identity=email, additional_claims=custom_claims)
     return jsonify(access_token=access_token)
@@ -82,22 +84,39 @@ def secure_filename(name):
     return 'secure_' + name
 
 
+def generate_uuid():
+    uuid_string = str(uuid.uuid4())
+
+    # Generate the SHA-256 hash of the UUID
+    hash_object = hashlib.sha256(uuid_string.encode())
+    hash_hex = hash_object.hexdigest()
+
+    # Take the first 8 characters of the hash as the unique ID
+    unique_id = str(hash_hex[:10])
+    return unique_id
+
+
 @app.route('/api/upload', methods=['POST'])
+@jwt_required()
 def upload_file():
     if 'file' not in request.files:
         return 'No file part in the request', 400
 
     file = request.files['file']
-
     if file.filename == '':
         return 'No file selected', 400
 
-    if file:
-        filename = secure_filename(file.filename)
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        return 'File uploaded successfully', 200
+    claims = get_jwt()
+    user_id = claims['user_id']
+    file_id = generate_uuid()
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], user_id, file_id)
 
-    return 'Invalid file type', 400
+    if not os.path.exists(file_path):
+        os.makedirs(file_path)
+
+    file.save(os.path.join(file_path, file.filename))
+
+    return 'File uploaded successfully', 200
 
 
 @app.route("/api/protected", methods=["GET"])

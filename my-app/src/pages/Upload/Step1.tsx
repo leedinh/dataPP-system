@@ -4,11 +4,17 @@ import { InboxOutlined } from "@ant-design/icons";
 
 const { Dragger } = Upload;
 
+const access_token = localStorage.getItem("access_token")
+
+
 const props: UploadProps = {
   name: "file",
   multiple: false,
   accept: ".csv",
-  action: '/api/upload' ,
+  action: '/api/upload',
+  headers: {
+    Authorization: 'Bearer ' + access_token,
+  },
   maxCount: 1,
   onChange(info) {
     const { status } = info.file;

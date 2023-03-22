@@ -11,3 +11,12 @@
   padding-right: 24px;
   height: 100vh;
 }
+
+$bg-img: url("../assets/bg.png");
+
+.bgLogIn {
+  background-image: $bg-img;
+  background-repeat: no-repeat;
+  height: 100vh;
+  border-bottom-left-radius: 200px;
+}

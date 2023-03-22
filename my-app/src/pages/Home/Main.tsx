@@ -54,7 +54,7 @@ const Main: React.FC = () => {
       <div className="p-4">
         <TopDataset title={"Download"} data={fakeDataset} />
       </div>
-      <div className="col-span-3 p-4">
+      <div className="col-span-3 p-4 mx-16">
         <Banner />
         <div className={styles.header}>Dataset</div>
         <div className="grid grid-cols-4 gap-8 justify-items-center">

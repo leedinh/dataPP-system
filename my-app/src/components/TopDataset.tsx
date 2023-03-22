@@ -14,7 +14,7 @@ export type RankInfo = {
 
 const TopDataset: React.FC<TopDatasetProps> = ({ title, data }) => {
   return (
-    <div className={styles.topDataset}>
+    <div className={`mx-8 ${styles.topDataset}`}>
       <div className={styles.header}>{title}</div>
       {data.map((item) => {
         return <RankDetail key={item.name} {...item} />;

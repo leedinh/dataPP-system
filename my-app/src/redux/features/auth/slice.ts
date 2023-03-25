@@ -1,30 +1,21 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { stateLoading } from "redux/common";
 
+import { CommonState } from "redux/common/types";
 import { StatusEnum } from "redux/constant";
 import { RootState } from "redux/reducers";
-import { getAuthThunk } from "./thunks";
+import { logInThunk, signUpThunk } from "./thunks";
 
-export interface AuthState {
-  status: StatusEnum;
-  statusAuth: StatusEnum;
-  error: string | null;
-  accessToken: string | null;
-}
+export type AuthState = {
+  accessToken?: string;
+  email?: string;
+  statusSignUp: StatusEnum;
+} & CommonState;
 
 const initialState: AuthState = {
-  accessToken: null,
-  ...{
-    status: StatusEnum.IDLE,
-    error: null,
-    userInfo: null,
-  },
-  ...{
-    statusAuth: StatusEnum.IDLE,
-    errorAuth: null,
-    userPermissions: [],
-    moduleIdsList: [],
-    permissionList: [],
-  },
+  status: StatusEnum.IDLE,
+  error: undefined,
+  statusSignUp: StatusEnum.IDLE,
 };
 
 const KEY_ACCESS_TOKEN = "accessToken";
@@ -33,22 +24,44 @@ const slice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    logout: () => {
+    logout: (state) => {
       localStorage.removeItem(KEY_ACCESS_TOKEN);
+      state.email = undefined;
       return { ...initialState };
     },
   },
   extraReducers: (builder) =>
     builder
-      .addCase(getAuthThunk.pending, (state) => {
-        state.statusAuth = StatusEnum.LOADING;
+      .addCase(signUpThunk.rejected, (state) => {
+        state.statusSignUp = StatusEnum.FAILED;
       })
-      .addCase(getAuthThunk.fulfilled, (state, action) => {
+      .addCase(signUpThunk.pending, (state) => {
+        state.statusSignUp = StatusEnum.LOADING;
+      })
+      .addCase(logInThunk.rejected, (state) => {
+        state.status = StatusEnum.FAILED;
+      })
+      .addCase(logInThunk.pending, (state) => {
+        state.status = StatusEnum.LOADING;
+      })
+      .addCase(signUpThunk.fulfilled, (state, action) => {
+        console.log("Set success");
+        state.statusSignUp = StatusEnum.SUCCEEDED;
+        state.email = action.meta.arg.email;
+        console.log(action);
+      })
+      .addCase(logInThunk.fulfilled, (state, action) => {
         const response = action.payload;
 
-        console.log("Redux", response.json());
+        console.log(action);
 
-        state.statusAuth = StatusEnum.SUCCEEDED;
+        if (response["access_token"]) {
+          localStorage.setItem(KEY_ACCESS_TOKEN, response.access_token);
+          state.email = action.meta.arg.email;
+          state.status = StatusEnum.SUCCEEDED;
+        } else {
+          state.status = StatusEnum.FAILED;
+        }
       }),
 });
 
@@ -67,15 +80,25 @@ export const selectAuthError = createSelector(
 
 export const selectAuthStatus = createSelector(
   selectAuthState,
-  (state) => state.statusAuth
-);
-
-export const selectUserStatus = createSelector(
-  selectAuthState,
-  (state) => state.status
+  (state) => !!state.email && !!localStorage.getItem(KEY_ACCESS_TOKEN)
 );
 
 export const selectAccessToken = createSelector(
   selectAuthState,
   (state) => state.accessToken
+);
+
+export const selectEmail = createSelector(
+  selectAuthState,
+  (state) => state.email
+);
+
+export const selectLogInStatus = createSelector(
+  selectAuthState,
+  (state) => state.status
+);
+
+export const selectSignUpStatus = createSelector(
+  selectAuthState,
+  (state) => state.statusSignUp
 );

@@ -4,19 +4,8 @@ import { configureStore, Action } from "@reduxjs/toolkit";
 
 import rootReducer, { RootState } from "./reducers";
 
-const isDebug = () => {
-  if (
-    process.env.NODE_ENV === "production" &&
-    process.env.REACT_APP_DEBUG === "false"
-  )
-    return false;
-
-  return true;
-};
-
 const store = configureStore({
   reducer: rootReducer,
-  devTools: isDebug(),
 });
 
 export type AppDispatch = typeof store.dispatch;

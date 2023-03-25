@@ -1,16 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   AppstoreOutlined,
   MailOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
-import { Button, Typography } from "antd";
+import { Button, Typography, Menu, Input } from "antd";
 import type { MenuProps } from "antd";
-import { Menu, Input } from "antd";
 
 import UserAvatar from "./UserAvatar";
 import styles from "./styles.module.scss";
+import { useAppSelector } from "redux/store";
+import { selectAuthStatus } from "redux/features/auth/slice";
 
 const { Title } = Typography;
 
@@ -30,6 +31,7 @@ const items: MenuProps["items"] = [
 const NavBar: React.FC = () => {
   const [current, setCurrent] = useState("home");
   const navigate = useNavigate();
+  const authStatus = useAppSelector(selectAuthStatus);
 
   const onClick: MenuProps["onClick"] = (e) => {
     setCurrent(e.key);
@@ -37,6 +39,8 @@ const NavBar: React.FC = () => {
   };
 
   const onSearch = (value: string) => console.log(value);
+
+  useEffect(() => {}, [authStatus]);
 
   return (
     <div className="flex items-stretch px-4">
@@ -60,7 +64,17 @@ const NavBar: React.FC = () => {
           />
         </div>
         <div className="self-center">
-          <UserAvatar />
+          {authStatus && <UserAvatar />}
+          {!authStatus && (
+            <>
+              <Button key="logIn" onClick={() => navigate("/logIn")}>
+                Log In
+              </Button>
+              <Button key="signUp" onClick={() => navigate("/signUp")}>
+                Sign Up
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </div>

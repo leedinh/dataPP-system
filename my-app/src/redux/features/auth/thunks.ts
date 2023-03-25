@@ -1,6 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { fetchData } from "redux/common/dispatch";
+import { fetchData } from "redux/common/fetch";
 
-export const getAuthThunk = createAsyncThunk("auth", async (request: any) => {
-  return await fetchData(request);
+export const logInThunk = createAsyncThunk("logIn", async (request: any) => {
+  return fetchData("/api/login", request).then((res: any) => res.json());
+});
+
+export const signUpThunk = createAsyncThunk("signUp", async (request: any) => {
+  return fetchData("/api/signup", request).then((res: any) => res.json());
 });

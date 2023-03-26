@@ -1,0 +1,23 @@
+.header {
+  margin-top: 16px;
+  margin-bottom: 16px;
+  font-size: 2rem;
+  text-align: left;
+}
+
+.main {
+  background-color: #F4F7FE;
+  padding-left: 24px;
+  padding-right: 24px;
+  height: 100vh;
+}
+
+$bg-img: url("../assets/bg.png");
+
+.bgLogIn {
+  background-image: $bg-img;
+  background-repeat: no-repeat;
+  height: 100vh;
+  border-bottom-left-radius: 200px;
+  background-position: center;
+}

@@ -1,6 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button, Col, Form, Input, Row } from "antd";
 import { useForm } from "antd/es/form/Form";
+
+import { useAppDispatch, useAppSelector } from "redux/store";
+import { signUpThunk } from "redux/features/auth/thunks";
+import { selectSignUpStatus } from "redux/features/auth/slice";
+import { StatusEnum } from "redux/constant";
 
 const onFinish = async (values: any) => {
   console.log(JSON.stringify(values));
@@ -32,6 +38,19 @@ const onFinishFailed = (errorInfo: any) => {
 
 const LogInForm: React.FC = () => {
   const [signUpForm] = useForm();
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const status = useAppSelector(selectSignUpStatus);
+  const signUp = async (values: any) => {
+    dispatch(signUpThunk(values));
+  };
+
+  useEffect(() => {
+    console.log(status);
+    if (status === StatusEnum.SUCCEEDED) {
+      navigate("/logIn");
+    }
+  }, [status, dispatch]);
 
   return (
     <Row justify="center" align="middle" style={{ minHeight: "100vh" }}>
@@ -45,7 +64,7 @@ const LogInForm: React.FC = () => {
           labelCol={{ span: 8 }}
           style={{ maxWidth: 600 }}
           initialValues={{ remember: true }}
-          onFinish={onFinish}
+          onFinish={signUp}
           onFinishFailed={onFinishFailed}
           autoComplete="off"
           layout="vertical"

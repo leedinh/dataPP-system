@@ -1,4 +1,4 @@
-export const fetchData = async (body: any) => {
+export const fetchData = (path: string, body: any) => {
   const requestOptions = {
     method: "POST",
     headers: {
@@ -7,5 +7,5 @@ export const fetchData = async (body: any) => {
     body: JSON.stringify(body),
   };
 
-  return await fetch("http://127.0.0.1:5000/api/login", requestOptions);
+  return fetch(path, requestOptions);
 };

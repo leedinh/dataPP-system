@@ -1,12 +1,13 @@
 import SignUpForm from "./SignUpForm";
+import styles from "pages/styles.module.scss";
 
-const LogIn: React.FC = () => {
+const SignUp: React.FC = () => {
   return (
     <div className="w-screen h-screen grid grid-cols-2">
       <SignUpForm />
-      <div className="bg-cyan-400 h-screen rounded-bl"></div>
+      <div className={styles.bgLogIn}></div>
     </div>
   );
 };
 
-export default LogIn;
+export default SignUp;

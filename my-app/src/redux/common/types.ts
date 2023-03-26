@@ -1,4 +1,4 @@
-import { StatusEnum } from 'redux/constant';
+import { StatusEnum } from "redux/constant";
 
 export interface CommonState {
   error?: string;

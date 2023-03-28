@@ -9,3 +9,5 @@ numpy
 pandas
 mlxtend
 bcrypt
+redis
+rq

@@ -4,7 +4,7 @@ import { InboxOutlined } from "@ant-design/icons";
 
 const { Dragger } = Upload;
 
-const access_token = localStorage.getItem("access_token")
+const access_token = localStorage.getItem("accessToken")
 
 
 const props: UploadProps = {

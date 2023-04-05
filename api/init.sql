@@ -6,5 +6,19 @@ CREATE TABLE "user" (
     hash_password VARCHAR(120) NOT NULL
 );
 
+CREATE TYPE dataset_status AS ENUM ('pending', 'anonymizing', 'completed', 'idle');
+
+CREATE TABLE "dataset" (
+    did VARCHAR(50) PRIMARY KEY,
+    uid UUID NOT NULL REFERENCES "user" (id),
+    filename VARCHAR(255) NOT NULL,
+    path VARCHAR(255) NOT NULL,
+    date DATE NOT NULL,
+    title VARCHAR(255),
+    desc VARCHAR(255),
+    is_anonymized BOOLEAN,
+    status dataset_status DEFAULT 'idle' NOT NULL
+); 
+
 
 INSERT INTO "user" (email, hash_password) VALUES ('test@gmail.com', 'password');

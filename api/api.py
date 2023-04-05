@@ -2,7 +2,7 @@ import time
 from flask import Flask, jsonify, request
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt
 from db import db
-from model import User
+from model import User, Dataset
 from rq_server import *
 from task import *
 import os
@@ -80,10 +80,6 @@ def login():
 # Protected route
 
 
-def secure_filename(name):
-    return 'secure_' + name
-
-
 def generate_uuid():
     uuid_string = str(uuid.uuid4())
 
@@ -115,6 +111,9 @@ def upload_file():
         os.makedirs(file_path)
 
     file.save(os.path.join(file_path, file.filename))
+
+    dataset = Dataset(file_id, user_id, file.filename, file_path)
+    dataset.save_to_db()
 
     return 'File uploaded successfully', 200
 

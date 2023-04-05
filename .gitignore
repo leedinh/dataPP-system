@@ -5,3 +5,4 @@ __pycache__
 .DS*
 anonymizer/adult.csv
 results/
+*.csv

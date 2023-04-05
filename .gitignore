@@ -6,3 +6,4 @@ __pycache__
 anonymizer/adult.csv
 results/
 *.csv
+output*

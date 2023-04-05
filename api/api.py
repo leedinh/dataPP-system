@@ -10,11 +10,13 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import psycopg2
 import uuid
 import hashlib
-
+from datetime import timedelta
 
 app = Flask(__name__, static_folder='../my-app/build', static_url_path='/')
 app.config["JWT_SECRET_KEY"] = "super-secret"  # Change this!
 app.config['UPLOAD_FOLDER'] = "/Users/dinh.le/School/dataPP-system/upload"
+app.config['RESULT_FOLDER'] = "/Users/dinh.le/School/dataPP-system/results"
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1)
 jwt = JWTManager(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://myuser:mypassword@localhost:5432/mydatabase'
@@ -28,11 +30,25 @@ def not_found(e):
     return app.send_static_file('index.html')
 
 
-@app.route('/api/anonymize', methods=['POST'])
-def enqueue_anonymize():
-    args = request.json  # assuming you're sending arguments in the request body
-    rq_queue.enqueue(anonymize, args)  # enqueue the function
-    return 'Task enqueued'
+@app.route('/api/anonymize/<string:did>', methods=['POST'])
+@jwt_required()
+def enqueue_anonymize(did):
+    ds = Dataset.find_by_did(did)
+    if ds:
+        args = request.json  # assuming you're sending arguments in the request body
+        claims = get_jwt()
+        user_id = claims['user_id']
+        if user_id != str(ds.uid):
+            return 'You have no access to this file', 400
+        file_path = os.path.join(app.config['RESULT_FOLDER'], user_id, did)
+        if not os.path.exists(file_path):
+            os.makedirs(file_path)
+        args['input'] = ds.path
+        args['output'] = os.path.join(file_path, ds.filename)
+        rq_queue.enqueue(anonymize, args)  # enqueue the function
+        return 'Task enqueued', 200
+    else:
+        return 'Dataset not found', 404
 
 # Route to generate JWT token
 
@@ -75,7 +91,7 @@ def login():
     custom_claims = {'user_id': userId}
     access_token = create_access_token(
         identity=email, additional_claims=custom_claims)
-    return jsonify(access_token=access_token)
+    return jsonify(access_token=access_token), 200
 
 # Protected route
 
@@ -92,6 +108,19 @@ def generate_uuid():
     return unique_id
 
 
+@app.route('/api/metadata/<string:did>', methods=['GET'])
+@jwt_required()
+def get_metadata(did):
+    dataset = Dataset.find_by_did(did)
+    if dataset:
+        path = dataset.path
+        import pandas as pd
+        ds = pd.read_csv(path)
+        return jsonify({"columns": list(ds.columns), "row": len(ds)}), 200
+    else:
+        return 'Dataset not found', 400
+
+
 @app.route('/api/upload', methods=['POST'])
 @jwt_required()
 def upload_file():
@@ -100,7 +129,7 @@ def upload_file():
 
     file = request.files['file']
     if file.filename == '':
-        return 'No file selected', 400
+        return 'No file selected', 404
 
     claims = get_jwt()
     user_id = claims['user_id']
@@ -112,10 +141,11 @@ def upload_file():
 
     file.save(os.path.join(file_path, file.filename))
 
-    dataset = Dataset(file_id, user_id, file.filename, file_path)
+    dataset = Dataset(file_id, user_id, file.filename,
+                      os.path.join(file_path, file.filename))
     dataset.save_to_db()
 
-    return 'File uploaded successfully', 200
+    return jsonify({'msg': 'File uploaded successfully', 'file_id': file_id}), 200
 
 
 @app.route("/api/protected", methods=["GET"])

@@ -1,10 +1,11 @@
+from .asscRule import Rule
+import random
+import collections
+import math
+import os
 import numpy as np
 import pandas as pd
-import os
-import math
-import collections
-import random
-from .apriori import Rule
+pd.options.mode.chained_assignment = None  # default='warn'
 
 
 class Anonymizer:
@@ -33,7 +34,6 @@ class Anonymizer:
         self.quasiID = [columns[i] for i in self.qsi]
 
     def prepare_input(self, input):
-
         groups = input.groupby(self.quasiID)
         indexes = groups.apply(lambda x: list(x.index))
         index_dict = dict(zip(groups.groups.keys(), indexes))
@@ -46,57 +46,23 @@ class Anonymizer:
     def find_group_to_migrate(self, SelG, remaining_groups, k):
 
         def risk(m):
-            return 0 if m >= k else 2 * k - m
+            return 0 if m >= k or m == 0 else 2 * k - m
 
         def check_rule(s, g, migrated_count):
-            aff_rules = self.rule.get_affected_rules(s, g)
+            aff_rules = self.rule.get_affected_rules(s, self.quasiID)
+            if aff_rules == []:
+                return True, [], []
             affected_budgets = self.rule.rule_care.loc[aff_rules, 'budget'].tolist(
             )
             assert (len(aff_rules) == len(affected_budgets))
 
-            new_budget = [budget - (migrated_count / self.n)
-                          for budget in affected_budgets]
-            return all(self.rule.rule_care['budget'] > 0), new_budget, aff_rules
+            new_budgets = [budget - (migrated_count * self.sup / self.n)
+                           for budget in affected_budgets]
+
+            return all(budget > 1e-03 for budget in new_budgets), new_budgets, aff_rules
             # initialize variables
 
-        max_risk_reduction = 0
-        selected_group = None
-        migrate_from_selg = False
-        migrate_count = 0
-        new_budget = None
-        affected_rule = None
-
-        # calculate the risk of the selected group
-        SelG_risk = risk(self.freq[SelG])
-
-        # loop through the remaining groups to find the most useful group to migrate to
-        for group in remaining_groups:
-            # calculate the risk of the group
-            group_risk = risk(self.freq[group])
-
-            # SelG is always unsafe
-            # calculate the number of tuples to migrate from SelG to group
-            selg_to_g_count = 0
-
-            if group_risk > 0:  # SelG is unsafe and group is unsafe
-
-                # migrate from selG to group
-                if (self.freq[SelG] >= self.freq[group] or self.freq[SelG] >= k - self.freq[group]) and not self.is_received[SelG]:
-                    current_migrate_from_selg = True
-                    current_num_records_to_migrate = min(
-                        self.freq[SelG], k - self.freq[group])
-
-                # migrate from group to selG
-                elif (self.freq[group] > self.freq[SelG] or self.freq[group] >= k - self.freq[SelG]) and not self.is_received[group]:
-                    current_migrate_from_selg = False
-                    current_num_records_to_migrate = min(
-                        self.freq[group], k - self.freq[SelG])
-
-            elif group_risk == 0:  # SelG is unsafe and group is safe, can only move from SelG to group all of it tuple
-                current_migrate_from_selg = True
-                current_num_records_to_migrate = self.freq[SelG]
-
-            # calculate the new risk of SelG and the group after migrating tuples
+        def calculate_local_risk(current_migrate_from_selg, current_num_records_to_migrate):
             if current_migrate_from_selg:  # from selg to group
                 new_selg_risk = risk(
                     self.freq[SelG] - current_num_records_to_migrate)
@@ -107,37 +73,105 @@ class Anonymizer:
                     self.freq[SelG] + current_num_records_to_migrate)
                 new_group_risk = risk(
                     self.freq[group] - current_num_records_to_migrate)
+            return new_selg_risk, new_group_risk
 
-            # Calculate risk reduction
-            risk_reduction = SelG_risk + group_risk - new_selg_risk - new_group_risk
+        max_risk_reduction = 0
+        selected_group = None
+        selected_num_records_to_migrate = None
+        selected_migrate_from_selg = None
+        migrate_count = 0
+        new_budget = None
+        affected_rule = None
 
-            # check if this group is more useful than the current selected group
-            if abs(risk_reduction) > max_risk_reduction:
-                ok, cur_new_budget, cur_aff_rule = check_rule(
-                    SelG, group, current_num_records_to_migrate)
+        # calculate the risk of the selected group
+        SelG_risk = risk(self.freq[SelG])
 
-                if not ok:
-                    continue
+        # loop through the remaining groups to find the most useful group to migrate to
 
-                max_risk_reduction = risk_reduction
-                selected_group = group
-                migrate_from_selg = current_migrate_from_selg
-                migrate_count = current_num_records_to_migrate
-                new_budget = cur_new_budget
-                affected_rule = cur_aff_rule
+        for id, group in enumerate(remaining_groups):
+            if self.freq[group] == 0:
+                continue
+            # print(id)
+            # calculate the risk of the group
+            group_risk = risk(self.freq[group])
 
-            if new_selg_risk == 0 or new_group_risk == 0:
-                # selected_group = group
-                # migrate_from_selg = current_migrate_from_selg
-                # migrate_count = current_num_records_to_migrate
-                break
+            # SelG is always unsafe
+            # calculate the number of tuples to migrate from SelG to group
+            if group_risk > 0:  # SelG is unsafe and group is unsafe
+                # migrate from selG to group
+                if not self.is_received[SelG]:
+                    migrate_from_selg = True
+                    num_records_to_migrate = min(
+                        self.freq[SelG], k - self.freq[group])
+                    new_selg_risk, new_group_risk = calculate_local_risk(
+                        migrate_from_selg, num_records_to_migrate)
+                    risk_reduction = SelG_risk + group_risk - new_selg_risk - new_group_risk
+                    if abs(risk_reduction) > max_risk_reduction:
+                        ok, cur_new_budget, cur_aff_rule = check_rule(
+                            SelG, group, num_records_to_migrate)
+                        if ok:
+                            max_risk_reduction = abs(risk_reduction)
+                            selected_group = group
+                            selected_migrate_from_selg = True
+                            selected_num_records_to_migrate = num_records_to_migrate
+                            new_budget = cur_new_budget
+                            affected_rule = cur_aff_rule
+                            if (new_selg_risk + new_group_risk) == 0:
+                                break
 
-        return selected_group, migrate_from_selg, migrate_count, new_budget, affected_rule
+                # Migrate from group to SelG
+                if not self.is_received[group]:
+                    migrate_from_selg = False
+                    num_records_to_migrate = min(
+                        self.freq[group], k - self.freq[SelG])
+                    new_selg_risk, new_group_risk = calculate_local_risk(
+                        migrate_from_selg, num_records_to_migrate)
+                    risk_reduction = SelG_risk + group_risk - new_selg_risk - new_group_risk
+                    if abs(risk_reduction) > max_risk_reduction:
+                        ok, cur_new_budget, cur_aff_rule = check_rule(
+                            group, SelG, num_records_to_migrate)
+                        if ok:
+                            max_risk_reduction = abs(risk_reduction)
+                            selected_group = group
+                            selected_migrate_from_selg = False
+                            selected_num_records_to_migrate = num_records_to_migrate
+                            new_budget = cur_new_budget
+                            affected_rule = cur_aff_rule
+                            if (new_selg_risk + new_group_risk) == 0:
+                                break
+
+            elif group_risk == 0:  # SelG is unsafe and group is safe, can only move from SelG to group all of it tuple
+                migrate_from_selg = True
+                num_records_to_migrate = self.freq[SelG]
+                new_selg_risk, new_group_risk = calculate_local_risk(
+                    migrate_from_selg, num_records_to_migrate)
+                risk_reduction = SelG_risk + group_risk - new_selg_risk - new_group_risk
+                if abs(risk_reduction) > max_risk_reduction:
+                    ok, cur_new_budget, cur_aff_rule = check_rule(
+                        SelG, group, num_records_to_migrate)
+                    if ok:
+                        max_risk_reduction = abs(risk_reduction)
+                        selected_group = group
+                        selected_migrate_from_selg = True
+                        selected_num_records_to_migrate = num_records_to_migrate
+                        new_budget = cur_new_budget
+                        affected_rule = cur_aff_rule
+                        if (new_selg_risk + new_group_risk) == 0:
+                            break
+
+            # calculate the new risk of SelG and the group after migrating tuples
+
+        return selected_group, selected_migrate_from_selg, selected_num_records_to_migrate, new_budget, affected_rule
 
     def k_anoymize(self):
 
         def disperse(selg):
-            id = random.randint(0, len(SG)-1)
+            non_empty_sg = [id for id in range(
+                len(SG)) if self.freq[SG[id]] > 0]
+            if len(non_empty_sg) == 0:
+                return
+
+            id = random.choice(non_empty_sg)
             self.index_map[SG[id]] += self.index_map[selg]
             self.index_map[selg] = []
             self.freq[SG[id]] += self.freq[selg]
@@ -155,7 +189,7 @@ class Anonymizer:
                 for i in range(migrate_count):
                     self.index_map[g].append(self.index_map[selg].pop())
             else:  # from g to selg
-                self.is_received[self] = True
+                self.is_received[selg] = True
                 self.freq[selg] += migrate_count
                 self.freq[g] -= migrate_count
                 for i in range(migrate_count):
@@ -163,38 +197,41 @@ class Anonymizer:
             assert (self.freq[selg] == len(self.index_map[selg]))
             assert (self.freq[g] == len(self.index_map[g]))
 
-            self.ds.loc[affected_rule, 'budgets'] = new_budget
+            self.rule.rule_care.loc[affected_rule, 'budget'] = new_budget
 
         SG = list(filter(lambda g: self.freq[g] >= self.k, self.groups))
         UG = list(filter(lambda g: self.freq[g] < self.k, self.groups))
-        UG_BIG = list(filter(lambda g: len(g) > self.k//2, UG))
-        UG_SMALL = list(filter(lambda g: len(g) <= self.k//2, UG))
+        UG_BIG = list(filter(lambda g: self.freq[g] > self.k//2, UG))
+        UG_BIG = list(sorted(UG_BIG, key=lambda x: self.freq[x], reverse=True))
+        UG_SMALL = list(filter(lambda g: self.freq[g] <= self.k//2, UG))
+        UG_SMALL = list(sorted(UG_SMALL, key=lambda x: self.freq[x]))
+        print([self.freq[i] for i in UG_BIG])
+        print([self.freq[i] for i in UG_SMALL])
         assert (len(SG) + len(UG) == len(self.groups))
         assert (len(UG_BIG) + len(UG_SMALL) == len(UG))
         UG = list(sorted(UG, key=lambda x: self.freq[x]))
+        print([self.freq[i] for i in UG])
         self.is_received = {key: False for key in self.freq}
-
-        # print(UG)
 
         SelG = None
         UM = []
         while len(UG) > 0 or SelG is not None:
-            print(len(SG), len(UG))
             if SelG is None:
                 SelG = UG.pop(0)
                 if SelG in UG_SMALL:
                     UG_SMALL.remove(SelG)
-                elif SelG in UG_BIG:
+                if SelG in UG_BIG:
                     UG_BIG.remove(SelG)
                 assert (len(UG_BIG) + len(UG_SMALL) == len(UG))
             if self.freq[SelG] <= self.k//2:
                 remaining_groups = UG_BIG + UG_SMALL + SG
             else:
                 remaining_groups = UG_SMALL + UG_BIG + SG
-            assert (len(remaining_groups) + len(UM) == len(UG) + len(SG))
-
+            print('Choosing SelG: ', SelG, self.freq[SelG])
             g, migrate_from_selg, migrate_count, new_budget, affected_rule = self.find_group_to_migrate(
                 SelG, remaining_groups, self.k)
+
+            print('Have matched with: ', g)
 
             if g is None:
                 UM.append(SelG)
@@ -204,14 +241,11 @@ class Anonymizer:
                                   migrate_from_selg, affected_rule, new_budget)
 
                 if isSafe(SelG):
-                    if SelG in UG:
-                        UG.remove(SelG)
-                    if SelG in UG_BIG:
-                        UG_BIG.remove(SelG)
-                    if SelG in UG_SMALL:
-                        UG_SMALL.remove(SelG)
-                    if self.freq[SelG] > 0:
-                        SG.append(SelG)
+                    SG.append(SelG)
+                    SelG = None
+
+                if g not in UG:
+                    continue
 
                 if isSafe(g):
                     if g in UG:
@@ -220,18 +254,24 @@ class Anonymizer:
                         UG_BIG.remove(g)
                     if g in UG_SMALL:
                         UG_SMALL.remove(g)
-                    if self.freq[g] > 0:
-                        SG.append(g)
-                if isSafe(SelG) and isSafe(g):
-                    SelG = None
+                    SG.append(g)
                 else:
-                    if not isSafe(g):
+                    if SelG is None:
                         SelG = g
+                        UG.remove(g)
+                        if SelG in UG_SMALL:
+                            UG_SMALL.remove(SelG)
+                        elif SelG in UG_BIG:
+                            UG_BIG.remove(SelG)
+
+            print('Safe group: ', len(SG))
+            print('Unsafe group: ', len(UG))
+            print('UM: ', len(UM))
 
         # assert sum(self.freq.values()) == self.n
         if len(UM) > 0:
             for um in UM:
-                self.disperse(um)
+                disperse(um)
 
     def last_update(self):
         for group, indexes in self.index_map.items():
@@ -240,9 +280,11 @@ class Anonymizer:
                 self.ds.loc[i, self.quasiID] = values
 
     def anonymize(self):
+        print(f'Start anonymizing with {self.k}')
         self.groups, self.index_map, self.freq = self.prepare_input(self.ds)
-
+        print(f'We have {len(self.freq)} groups')
         self.rule = Rule(self.ds, self.quasiID, self.sup, self.conf)
+        print('Start mining rules\n')
         self.rule.generate_rules()
         self.rule.calculate_budgets()
         self.k_anoymize()
@@ -250,5 +292,4 @@ class Anonymizer:
         self.last_update()
 
     def output(self, path):
-        self.ds = self.ds.drop('budgets', axis=1)
         self.ds.to_csv(path, index=False)

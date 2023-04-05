@@ -1,5 +1,5 @@
 import pandas as pd
-from mlxtend.frequent_patterns import apriori, association_rules
+from mlxtend.frequent_patterns import apriori, association_rules, fpgrowth
 from mlxtend.preprocessing import TransactionEncoder
 
 
@@ -9,7 +9,6 @@ class Rule:
         self.quasi_identifiers = quasi_identifiers
         self.min_sup = min_support
         self.min_conf = min_confidence
-
         self.df = self.df.applymap(str)  # convert all values to strings
         self.df = self.df.apply(lambda x: x.apply(
             self.concat_with_column_name, column_name=x.name))
@@ -20,37 +19,27 @@ class Rule:
         self.df = pd.DataFrame(self.te_ary, columns=self.te.columns_)
 
     def concat_with_column_name(self, value, column_name):
-        return str(column_name) + ':' + str(value)
+        return str(column_name) + '::' + str(value)
 
-    def get_affected_rules(self, selg, g):
-        # Find the unique values in each column of migrated_tuples
-        unique_values = set(selg) | set(g)
+    def get_affected_rules(self, selg, qsi):
+        # Create a set of unique value strings for each column of migrated_tuples
+        unique_values = set()
+        for s, qsi_val in zip(selg, qsi):
+            unique_values.add(f"{qsi_val}::{s}")
+
         # Find the affected rules
         affected_rules = []
-        for index, r in self.rule_care.iterrows():
-            if any(value in unique_values for value in r['antecedents']) or any(value in unique_values for value in r['consequents']):
-                affected_rules.append(index)
-                break
+        for index, row in self.rule_care.iterrows():
+            rule = row['antecedents'].union(row['consequents'])
 
-        # for rule, budget in self.budgets.items():
-        #     antecedents, consequents = rule
-        #     for unique_value in unique_values:
-        #         if any(value in unique_value for value in antecedents) or any(value in unique_value for value in consequents):
-        #             affected_rules.append(rule)
-        #             break
+            for value in unique_values:
+                if str(value) in rule:
+                    affected_rules.append(index)
+                    break
 
         return affected_rules
 
     def calculate_budgets(self):
-        # self.budgets = {}
-        # for index, r in self.rule_care.iterrows():
-        #     # rule = (tuple([tuple(r['antecedents']), tuple(r['consequents'])]))
-        #     if r['qi_rhs']:
-        #         self.budgets[index] = min(
-        #             (float(r['support'])-self.min_sup), float(r['support'])*(float(r['confidence'])-self.min_conf)/float(r['confidence']))
-        #     else:
-        #         self.budgets[index] = min(
-        #             (float(r['support'])-self.min_sup), float(r['support'])*(float(r['confidence'])-self.min_conf)/(float(r['confidence'])*(1-self.min_conf)))
         self.rule_care['budget'] = self.rule_care.apply(lambda r: min((float(r['support'])-self.min_sup),
                                                                       float(
                                                                           r['support'])*(float(r['confidence'])-self.min_conf)/float(r['confidence'])
@@ -58,11 +47,12 @@ class Rule:
                                                                       (float(
                                                                           r['support'])-self.min_sup),
                                                                       float(r['support'])*(float(r['confidence'])-self.min_conf)/(float(r['confidence'])*(1-self.min_conf))), axis=1)
-
-        assert (self.rule_care['budget'] > 0).all()
+        self.rule_care = self.rule_care[self.rule_care['budget']
+                                        > 1e-03].reset_index(drop=True)
+        assert (self.rule_care['budget'] > 1e-03).all()
 
     def generate_rules(self):
-        self.frequent_itemsets = apriori(
+        self.frequent_itemsets = fpgrowth(
             self.df, min_support=self.min_sup, use_colnames=True)
         rules = association_rules(
             self.frequent_itemsets, metric="confidence", min_threshold=self.min_conf)
@@ -72,10 +62,6 @@ class Rule:
 
         qi_rules['qi_rhs'] = qi_rules['consequents'].apply(
             lambda x: any(qi in item for item in x for qi in self.quasi_identifiers))
-        qi_rules['antecedents'] = qi_rules['antecedents'].apply(
-            lambda x: frozenset([val.split(":")[1] for val in x]))
-        qi_rules['consequents'] = qi_rules['consequents'].apply(
-            lambda x: frozenset([val.split(":")[1] for val in x]))
 
         self.rule_care = qi_rules[[
             'antecedents', 'consequents', 'support', 'confidence', 'qi_rhs']]

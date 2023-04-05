@@ -1,10 +1,10 @@
-import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { stateLoading } from "redux/common";
+import { createSelector, createSlice } from "@reduxjs/toolkit";
 
 import { CommonState } from "redux/common/types";
 import { StatusEnum } from "redux/constant";
 import { RootState } from "redux/reducers";
 import { logInThunk, signUpThunk } from "./thunks";
+import { KEY_ACCESS_TOKEN } from "redux/common/fetch";
 
 export type AuthState = {
   accessToken?: string;
@@ -17,8 +17,6 @@ const initialState: AuthState = {
   error: undefined,
   statusSignUp: StatusEnum.IDLE,
 };
-
-const KEY_ACCESS_TOKEN = "accessToken";
 
 const slice = createSlice({
   name: "auth",

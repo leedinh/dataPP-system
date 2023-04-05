@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   AppstoreOutlined,
-  MailOutlined,
+  HomeOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
 import { Button, Typography, Menu, Input } from "antd";
@@ -19,7 +19,7 @@ const items: MenuProps["items"] = [
   {
     label: "Home",
     key: "home",
-    icon: <MailOutlined />,
+    icon: <HomeOutlined />,
   },
   {
     label: "Upload",
@@ -38,7 +38,7 @@ const NavBar: React.FC = () => {
     navigate(`/${e.key}`);
   };
 
-  const onSearch = (value: string) => console.log(value);
+  // const onSearch = (value: string) => console.log(value);
 
   useEffect(() => {}, [authStatus]);
 

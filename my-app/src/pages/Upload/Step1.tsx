@@ -1,38 +1,54 @@
-import type { UploadProps } from "antd";
-import { message, Upload } from "antd";
+import { useState } from "react";
+import { Button, message, Upload } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
+import type { UploadFile, UploadProps } from "antd/es/upload/interface";
+import { useAppDispatch } from "redux/store";
+import { uploadDatasetThunk } from "redux/features/uploadProcess/thunks";
 
 const { Dragger } = Upload;
 
-const access_token = localStorage.getItem("access_token")
-
-
-const props: UploadProps = {
-  name: "file",
-  multiple: false,
-  accept: ".csv",
-  action: '/api/upload',
-  headers: {
-    Authorization: 'Bearer ' + access_token,
-  },
-  maxCount: 1,
-  onChange(info) {
-    const { status } = info.file;
-    if (status !== "uploading") {
-      console.log(info.file, info.fileList);
-    }
-    if (status === "done") {
-      message.success(`${info.file.name} file uploaded successfully.`);
-    } else if (status === "error") {
-      message.error(`${info.file.name} file upload failed.`);
-    }
-  },
-  onDrop(e) {
-    console.log("Dropped files", e.dataTransfer.files);
-  },
-};
-
 const Step1: React.FC = () => {
+  const [fileList, setFileList] = useState<UploadFile>();
+  const [uploading, setUploading] = useState(false);
+  const dispatch = useAppDispatch();
+  const props: UploadProps = {
+    name: "file",
+    multiple: false,
+    accept: ".csv",
+    beforeUpload: () => {
+      return false;
+    },
+    maxCount: 1,
+    onChange(info) {
+      const { status } = info.file;
+      if (status !== "uploading") {
+        console.log(info.file, info.fileList);
+        setFileList(info.file);
+      }
+      if (status === "done") {
+        message.success(`${info.file.name} file uploaded successfully.`);
+      } else if (status === "error") {
+        message.error(`${info.file.name} file upload failed.`);
+      }
+    },
+    onDrop(e) {
+      console.log("Dropped files", e.dataTransfer.files);
+    },
+  };
+
+  const handleUpload = () => {
+    const formData = new FormData();
+    setUploading(true);
+    const response = dispatch(uploadDatasetThunk(formData));
+    response
+      .catch(() => {
+        message.error("upload failed.");
+      })
+      .finally(() => {
+        setUploading(false);
+      });
+  };
+
   return (
     <>
       <Dragger {...props}>
@@ -47,6 +63,15 @@ const Step1: React.FC = () => {
           uploading company data or other banned files.
         </p>
       </Dragger>
+      <Button
+        type="primary"
+        onClick={handleUpload}
+        disabled={!!!fileList}
+        loading={uploading}
+        className="mt-4"
+      >
+        {uploading ? "Uploading" : "Start Upload"}
+      </Button>
     </>
   );
 };

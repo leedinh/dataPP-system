@@ -30,6 +30,19 @@ def not_found(e):
     return app.send_static_file('index.html')
 
 
+# handler for /api/check_token
+@app.route('/api/check_token')
+@jwt_required(optional=True)
+def check_token():
+    jwt = get_jwt()
+    if jwt:
+        # user is authenticated, access token is valid
+        return jsonify(message='Access token is valid'), 200
+    else:
+        # user is not authenticated, access token is invalid
+        return jsonify(message='Access token is invalid'), 401
+
+
 @app.route('/api/anonymize/<string:did>', methods=['POST'])
 @jwt_required()
 def enqueue_anonymize(did):

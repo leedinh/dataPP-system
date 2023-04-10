@@ -11,3 +11,5 @@ mlxtend
 bcrypt
 redis
 rq
+Flask-SocketIO
+gevent-websocket

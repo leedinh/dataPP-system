@@ -15,7 +15,7 @@ CREATE TABLE "dataset" (
     path VARCHAR(255) NOT NULL,
     date DATE NOT NULL,
     title VARCHAR(255),
-    desc VARCHAR(255),
+    description VARCHAR(255),
     is_anonymized BOOLEAN,
     status dataset_status DEFAULT 'idle' NOT NULL
 ); 

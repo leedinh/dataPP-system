@@ -1,24 +1,19 @@
-import argparse
 from anonymize import Anonymizer
-
-parser = argparse.ArgumentParser('main.py')
-parser.add_argument('--k', type=int, default=5,
-                    help="K-Anonymity or L-Diversity")
-parser.add_argument('--dataset', type=str, default='/Users/dinh.le/School/dataPP-system/anonymizer/input.csv',
-                    help="Dataset to anonymize")
-parser.add_argument('--conf', type=float, default=0.5,
-                    help="Confidence value")
-parser.add_argument('--sup', type=float, default=0.5,
-                    help="Support value")
-parser.add_argument('--qsi', nargs="+", type=int, default=[1, 2, 3, 4],
-                    help="List of index of columns are quasi-Identifier")
-parser.add_argument('--rule', type=str, default='adult',
-                    help="Dataset to anonymize")
-
+import time
 
 if __name__ == '__main__':
-    input = r'./adult.csv'
-    output = r'results/output.csv'
-    anonymizer = Anonymizer(input, 5, 0.5, 0.5, [1, 2, 3, 4], output)
-    anonymizer.anonymize()
-    anonymizer.output(f'results/new_data.csv')
+    input = r'/Users/dinh.le/School/dataPP-system/api/anonymizer/adult.csv'
+
+    data = {'k': 0, 'conf': 0.9, 'sup': 0.7,
+            'qsi': [0, 1, 3, 5], 'input': input}
+
+    with open(r'output_adult.txt', 'w') as f:
+        for i in range(5, 30):
+            start_time = time.time()
+            data['k'] = i
+            anonymizer = Anonymizer(data)
+            anonymizer.anonymize()
+            anonymizer.output(f'results_adult/out_{i}.csv')
+            end_time = time.time()
+            time_elapsed = end_time - start_time
+            f.write(f"Time elapsed of {i}: {time_elapsed}\n")

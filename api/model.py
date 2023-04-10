@@ -10,7 +10,7 @@ class Dataset(db.Model):
 
     did = db.Column(db.String(50), primary_key=True)
     uid = db.Column(db.String(36), db.ForeignKey('user.id'), nullable=False)
-    name = db.Column(db.String(255), nullable=False)
+    filename = db.Column(db.String(255), nullable=False)
     path = db.Column(db.String(255), nullable=False)
     date = db.Column(db.Date, nullable=False)
     status = db.Column(db.Enum('pending', 'anonymizing',
@@ -19,7 +19,7 @@ class Dataset(db.Model):
     def __init__(self, did, uid, name, path, status='idle'):
         self.did = did
         self.uid = uid
-        self.name = name
+        self.filename = name
         self.path = path
         self.date = date.today()
         self.status = status

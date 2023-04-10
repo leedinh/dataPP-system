@@ -1,15 +1,21 @@
 export const KEY_ACCESS_TOKEN = "accessToken";
 
-export const postData = (path: string, body: any) => {
-  const requestOptions = {
+export const postData = (path: string, body: any, auth?: boolean) => {
+  const requestOptions = new Request(path, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(body),
-  };
+  });
 
-  return fetch(path, requestOptions);
+  let accessToken = localStorage.getItem(KEY_ACCESS_TOKEN);
+
+  if (auth && !!accessToken) {
+    requestOptions.headers.append("Authorization", `Bearer ${accessToken}`);
+  }
+
+  return fetch(requestOptions);
 };
 
 export const postDataAuthorization = (path: string, body: any) => {

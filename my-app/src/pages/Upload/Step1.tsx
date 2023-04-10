@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button, message, Upload } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
-import type { UploadFile, UploadProps } from "antd/es/upload/interface";
+import type { RcFile, UploadFile, UploadProps } from "antd/es/upload/interface";
 import { useAppDispatch } from "redux/store";
 import { uploadDatasetThunk } from "redux/features/uploadProcess/thunks";
 
@@ -38,6 +38,7 @@ const Step1: React.FC = () => {
 
   const handleUpload = () => {
     const formData = new FormData();
+    formData.append("file", fileList as RcFile);
     setUploading(true);
     const response = dispatch(uploadDatasetThunk(formData));
     response

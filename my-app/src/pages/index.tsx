@@ -6,4 +6,3 @@ export { default as UploadDataset } from "./Upload";
 export { default as Step1 } from "./Upload/Step1";
 export { default as Step2 } from "./Upload/Step2";
 export { default as Step3 } from "./Upload/Step3";
-export { default as Step4 } from "./Upload/Step4";

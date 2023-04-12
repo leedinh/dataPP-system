@@ -2,7 +2,6 @@ import { UserOutlined } from "@ant-design/icons";
 import { Avatar, Dropdown } from "antd";
 import type { MenuProps } from "antd";
 
-import { logout } from "redux/features/auth/slice";
 import { KEY_ACCESS_TOKEN } from "redux/common/fetch";
 
 const items: MenuProps["items"] = [

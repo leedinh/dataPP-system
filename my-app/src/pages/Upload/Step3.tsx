@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import { Form, Table, Slider } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { useAppSelector } from "redux/store";
-import { selectUploadState } from "redux/features/uploadProcess/slice";
-import { FieldsTableType } from "redux/features/uploadProcess/slice";
 import type { SliderMarks } from "antd/es/slider";
+
+import {
+  selectUploadState,
+  FieldsTableType,
+  next,
+} from "redux/features/uploadProcess/slice";
+import { useAppSelector, useAppDispatch } from "redux/store";
 import { SecurityLevel } from "redux/constant";
 
 const columns: ColumnsType<FieldsTableType> = [
@@ -37,6 +41,7 @@ const marks: SliderMarks = {
 };
 
 const Step3: React.FC = () => {
+  const dispatch = useAppDispatch();
   const { fields } = useAppSelector(selectUploadState);
   const [attributes, setAttributes] = useState<FieldsTableType[]>([]);
   const [securityLevel, setSecurityLevel] = useState<SecurityLevel>();
@@ -60,6 +65,8 @@ const Step3: React.FC = () => {
     console.log("Quasi-attribute: ", attributes);
     console.log("Security: ", securityLevel);
     // Send request
+
+    dispatch(next());
   };
 
   const onSliderChange = (value: any) => {

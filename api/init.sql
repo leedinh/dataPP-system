@@ -17,8 +17,6 @@ CREATE TABLE "dataset" (
     title VARCHAR(255),
     description VARCHAR(255),
     is_anonymized BOOLEAN,
-    status dataset_status DEFAULT 'idle' NOT NULL
+    status dataset_status DEFAULT 'idle' NOT NULL,
+    topic VARCHAR(100)
 ); 
-
-
-INSERT INTO "user" (email, hash_password) VALUES ('test@gmail.com', 'password');

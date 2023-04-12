@@ -11,6 +11,7 @@ import psycopg2
 import uuid
 import hashlib
 from datetime import timedelta
+from sqlalchemy import exc
 
 app = Flask(__name__, static_folder='../my-app/build', static_url_path='/')
 app.config["JWT_SECRET_KEY"] = "super-secret"  # Change this!
@@ -89,6 +90,25 @@ def signup():
         return jsonify({"msg": "Failed to create user"}), 500
 
     return jsonify({"msg": "User created successfully"}), 201
+
+
+@app.route('/api/datasets', methods=['GET'])
+def get_all_datasets():
+    try:
+        datasets = Dataset.find_all()
+        return jsonify([d.serialize() for d in datasets])
+    except exc.SQLAlchemyError as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/datasets/<string:topic>', methods=['GET'])
+def get_datasets_by_topic(topic):
+    try:
+
+        datasets = Dataset.query_datasets_by_topic(topic)
+        return jsonify([d.serialize() for d in datasets])
+    except exc.SQLAlchemyError as e:
+        return jsonify({'error': str(e)}), 500
 
 
 @app.route("/api/login", methods=["POST"])

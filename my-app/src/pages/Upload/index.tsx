@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { Button, Steps, Space, Form } from "antd";
+import { selectUploadState } from "redux/features/uploadProcess/slice";
+import { prev } from "redux/features/uploadProcess/slice";
+import { useAppDispatch, useAppSelector } from "redux/store";
 import Step1 from "./Step1";
 import Step2 from "./Step2";
-import { DatasetInfo } from "redux/features/uploadProcess/slice";
+import Step3 from "./Step3";
 
 const items = [
   {
@@ -17,20 +20,14 @@ const items = [
 ];
 
 const UploadDataset: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [formInfo] = Form.useForm<DatasetInfo>();
+  const { currentStep, loading } = useAppSelector(selectUploadState);
+  const dispatch = useAppDispatch();
 
   const MAX_STEP = items.length;
 
-  const nextStep = () => {
-    const next = currentStep + 1;
-    setCurrentStep(next);
-  };
-
-  const previousStep = () => {
-    const prev = currentStep - 1;
-    setCurrentStep(prev);
-  };
+  useEffect(() => {
+    console.log("Step ", currentStep);
+  }, [currentStep]);
 
   return (
     <div className="flex justify-center">
@@ -43,28 +40,30 @@ const UploadDataset: React.FC = () => {
             items={items}
           />
           <div className="mt-8">
-            {currentStep === 1 && <Step1 form={formInfo} next={nextStep} />}
-            {currentStep === 2 && (
-              <Step2 dataInfo={formInfo.getFieldsValue()} next={nextStep} />
-            )}
+            {currentStep === 3 && <Step1 />}
+            {currentStep === 2 && <Step2 />}
+            {currentStep === 1 && <Step3 />}
           </div>
         </div>
         <Space wrap className="flex justify-between">
           <Button
             ghost={currentStep === 1}
             disabled={currentStep === 1}
-            onClick={previousStep}
+            onClick={() => dispatch(prev())}
           >
             Back
           </Button>
           {currentStep === MAX_STEP ? (
-            <Button type="primary">Finish</Button>
+            <Button loading={loading} type="primary">
+              Finish
+            </Button>
           ) : (
             <Form.Item>
               <Button
                 form={`form${currentStep}`}
                 type="primary"
                 htmlType="submit"
+                loading={loading}
               >
                 Continue
               </Button>

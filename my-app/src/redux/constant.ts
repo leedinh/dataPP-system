@@ -14,6 +14,40 @@ export enum DatasetTopic {
   MEDICAL = 5,
 }
 
+export enum SecurityLevel {
+  UNSPECIFIED = 0,
+  LOW = 1,
+  MEDIUM = 2,
+  HIGH = 3,
+}
+
+export const optionTopic = [
+  {
+    value: DatasetTopic.EDUCATION,
+    label: "Education",
+  },
+  {
+    value: DatasetTopic.ENTERTAINMENT,
+    label: "Entertainment",
+  },
+  {
+    value: DatasetTopic.MEDICAL,
+    label: "Medical",
+  },
+  {
+    value: DatasetTopic.SCIENCE,
+    label: "Science",
+  },
+  {
+    value: DatasetTopic.SOCIAL,
+    label: "Social",
+  },
+  {
+    value: DatasetTopic.UNSPECIFIED,
+    label: "Other",
+  },
+];
+
 export const isLoading = (status: StatusEnum) => status === StatusEnum.LOADING;
 
 export const RECORD_LIMIT = 100;

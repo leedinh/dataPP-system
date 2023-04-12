@@ -90,7 +90,7 @@ const Step3: React.FC = () => {
 
   return (
     <Form id="form3" onFinish={onFinish}>
-      <div className="">
+      <Form.Item className="">
         <Table
           className="w-1/3 border-collapse rounded-full"
           rowSelection={{
@@ -102,15 +102,15 @@ const Step3: React.FC = () => {
           scroll={{ y: 240 }}
           pagination={false}
         />
-      </div>
-      <div className="">
+      </Form.Item>
+      <Form.Item className="">
         <Slider
           onChange={onSliderChange}
           marks={marks}
           step={50}
           defaultValue={50}
         />
-      </div>
+      </Form.Item>
     </Form>
   );
 };

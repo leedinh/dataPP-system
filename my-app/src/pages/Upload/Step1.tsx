@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Form, message, Upload } from "antd";
+import { Form, message, notification, Upload } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
 import type { RcFile, UploadFile, UploadProps } from "antd/es/upload/interface";
 import { next } from "redux/features/uploadProcess/slice";
@@ -45,7 +45,15 @@ const Step1: React.FC<Step1Props> = () => {
     setUploading(true);
     // Send request
 
-    dispatch(next());
+    if (!!file) {
+      dispatch(next());
+    } else {
+      notification.error({
+        placement: "topRight",
+        duration: 3,
+        message: "Please upload file",
+      });
+    }
   };
 
   return (

@@ -60,22 +60,16 @@ const UploadDataset: React.FC = () => {
               >
                 Back
               </Button>
-              {currentStep === MAX_STEP ? (
-                <Button loading={loading} type="primary">
-                  Finish
+              <Form.Item>
+                <Button
+                  form={`form${currentStep}`}
+                  type="primary"
+                  htmlType="submit"
+                  loading={loading}
+                >
+                  {currentStep === MAX_STEP ? "Finish" : "Continue"}
                 </Button>
-              ) : (
-                <Form.Item>
-                  <Button
-                    form={`form${currentStep}`}
-                    type="primary"
-                    htmlType="submit"
-                    loading={loading}
-                  >
-                    Continue
-                  </Button>
-                </Form.Item>
-              )}
+              </Form.Item>
             </>
           )}
         </Space>

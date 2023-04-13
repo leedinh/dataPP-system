@@ -3,6 +3,7 @@ import { Form, message, notification, Upload } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
 import type { RcFile, UploadFile, UploadProps } from "antd/es/upload/interface";
 import { next } from "redux/features/uploadProcess/slice";
+import { uploadDatasetThunk } from "redux/features/uploadProcess/thunks";
 import { useAppDispatch } from "redux/store";
 
 const { Dragger } = Upload;
@@ -46,7 +47,19 @@ const Step1: React.FC<Step1Props> = () => {
     // Send request
 
     if (!!file) {
-      dispatch(next(1));
+      
+      const response = dispatch(uploadDatasetThunk(formData));
+      response
+      .then((value) => {
+        console.log(value)
+        dispatch(next(1));
+      })
+      .catch(() => {
+        message.error("upload failed.");
+      })
+      .finally(() => {
+        setUploading(false);
+      });
     } else {
       notification.error({
         placement: "topRight",

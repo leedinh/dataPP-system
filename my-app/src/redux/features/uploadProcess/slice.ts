@@ -3,12 +3,13 @@ import { createSlice } from "@reduxjs/toolkit";
 import { CommonState } from "redux/common/types";
 import { StatusEnum } from "redux/constant";
 import { RootState } from "redux/reducers";
-import { uploadDatasetThunk } from "./thunks";
+import { uploadDatasetThunk, updateinfoThunk } from "./thunks";
 
 export type UploadState = {
   currentStep: number;
   loading: boolean;
   fields: FieldsTableType[];
+  fileid?: string;
 } & CommonState;
 
 const data: FieldsTableType[] = [
@@ -86,10 +87,14 @@ const slice = createSlice({
         state.status = StatusEnum.LOADING;
         state.loading = true;
       })
-      .addCase(uploadDatasetThunk.fulfilled, (state) => {
+      .addCase(uploadDatasetThunk.fulfilled, (state, action) => {
         state.status = StatusEnum.SUCCEEDED;
         state.loading = false;
+        state.fileid = action.payload['file_id'];
+        console.log( state.fileid );
       }),
+
+
 });
 
 const { reducer } = slice;

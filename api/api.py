@@ -44,6 +44,18 @@ def check_token():
         return jsonify(message='Access token is invalid'), 401
 
 
+@app.route('/api/update_info/<string:did>', methods=['PATCH'])
+@jwt_required()
+def update_info(did):
+    ds = Dataset.find_by_did(did)
+    if ds:
+        args = request.json
+        ds.update_info(args['title'], args['is_anonymized'], args['topic'])
+        return 'Updated info', 200
+    else:
+        return 'Dataset not found', 404
+
+
 @app.route('/api/anonymize/<string:did>', methods=['POST'])
 @jwt_required()
 def enqueue_anonymize(did):

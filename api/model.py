@@ -40,6 +40,15 @@ class Dataset(db.Model):
             'topic': self.topic
         }
 
+    def update_info(self, title=None, is_anonymized=None, topic=None):
+        # Update the attributes if they are not None
+        self.title = title
+        self.is_anonymized = is_anonymized
+        self.topic = topic
+
+        # Save the changes to the database
+        db.session.commit()
+
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()

@@ -1,8 +1,9 @@
 import React from "react";
-import { Form, Checkbox, Input, Select } from "antd";
+import { Form, Checkbox, Input, Select, message, notification } from "antd";
 import { optionTopic } from "redux/constant";
-import { next } from "redux/features/uploadProcess/slice";
-import { useAppDispatch } from "redux/store";
+import { next, selectUploadState } from "redux/features/uploadProcess/slice";
+import { useAppDispatch, useAppSelector } from "redux/store";
+import { updateinfoThunk } from "redux/features/uploadProcess/thunks";
 
 type Step2Props = {};
 
@@ -22,11 +23,22 @@ const handleChange = (value: string) => {
 
 const Step2: React.FC<Step2Props> = () => {
   const dispatch = useAppDispatch();
+  const {fileid} = useAppSelector(selectUploadState)
+  console.log(fileid)
   const onFinish = (values: any) => {
     console.log("Submit form 2");
     console.log(values);
     // Send request
-    dispatch(next(values["anonymize"] ? 1 : 2));
+    const response = dispatch(updateinfoThunk({...values, fileid: fileid}));
+    response
+      .then(() => {
+        dispatch(next(values["is_anonymized"] ? 1 : 2));
+      })
+      .catch(() => {
+        message.error("upload failed.");
+      })
+      .finally(() => {
+      });
   };
 
   return (
@@ -38,7 +50,7 @@ const Step2: React.FC<Step2Props> = () => {
       validateMessages={validateMessages}
       onFinish={onFinish}
     >
-      <Form.Item name="name" label="Name" rules={[{ required: true }]}>
+      <Form.Item name="title" label="Name" rules={[{ required: true }]}>
         <Input />
       </Form.Item>
       <Form.Item name="description" label="Description">
@@ -51,7 +63,7 @@ const Step2: React.FC<Step2Props> = () => {
           options={optionTopic}
         />
       </Form.Item>
-      <Form.Item className="mt-4" name="anonymize" valuePropName="checked">
+      <Form.Item className="mt-4" name="is_anonymized" valuePropName="checked">
         <Checkbox defaultChecked={false}>
           I want to anonymize this dataset
         </Checkbox>

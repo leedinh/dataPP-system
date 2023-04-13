@@ -39,6 +39,18 @@ export const uploadFile = (path: string, file: FormData) => {
     },
     body: file,
   });
+  return fetch(requestOptions);
+}
+
+  export const updateInfo = (path: string, body: any) => {
+    const requestOptions = new Request(path, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem(KEY_ACCESS_TOKEN)}`,
+      },
+      body: JSON.stringify(body),
+    });
 
   return fetch(requestOptions);
 };

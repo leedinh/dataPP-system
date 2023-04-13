@@ -26,7 +26,7 @@ const Step2: React.FC<Step2Props> = () => {
     console.log("Submit form 2");
     console.log(values);
     // Send request
-    dispatch(next());
+    dispatch(next(1));
   };
 
   return (

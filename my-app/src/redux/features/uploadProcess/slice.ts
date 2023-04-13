@@ -67,9 +67,9 @@ const slice = createSlice({
   name: "upload",
   initialState,
   reducers: {
-    next: (state) => {
+    next: (state, action) => {
       console.log("Increment");
-      state.currentStep += 1;
+      state.currentStep += action.payload;
     },
     prev: (state) => {
       console.log("Decrement");

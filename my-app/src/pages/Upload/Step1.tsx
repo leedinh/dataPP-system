@@ -46,7 +46,7 @@ const Step1: React.FC<Step1Props> = () => {
     // Send request
 
     if (!!file) {
-      dispatch(next());
+      dispatch(next(1));
     } else {
       notification.error({
         placement: "topRight",

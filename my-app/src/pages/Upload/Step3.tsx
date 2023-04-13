@@ -66,7 +66,7 @@ const Step3: React.FC = () => {
     console.log("Security: ", securityLevel);
     // Send request
 
-    dispatch(next());
+    dispatch(next(1));
   };
 
   const onSliderChange = (value: any) => {
@@ -107,7 +107,7 @@ const Step3: React.FC = () => {
         <Slider
           onChange={onSliderChange}
           marks={marks}
-          step={50}
+          step={1}
           defaultValue={50}
         />
       </Form.Item>

@@ -11,6 +11,7 @@ import psycopg2
 import uuid
 import hashlib
 from datetime import timedelta
+from sqlalchemy import exc
 
 app = Flask(__name__, static_folder='../my-app/build', static_url_path='/')
 app.config["JWT_SECRET_KEY"] = "super-secret"  # Change this!
@@ -28,6 +29,19 @@ db.init_app(app)
 @app.errorhandler(404)
 def not_found(e):
     return app.send_static_file('index.html')
+
+
+# handler for /api/check_token
+@app.route('/api/check_token')
+@jwt_required(optional=True)
+def check_token():
+    jwt = get_jwt()
+    if jwt:
+        # user is authenticated, access token is valid
+        return jsonify(message='Access token is valid'), 200
+    else:
+        # user is not authenticated, access token is invalid
+        return jsonify(message='Access token is invalid'), 401
 
 
 @app.route('/api/anonymize/<string:did>', methods=['POST'])
@@ -76,6 +90,25 @@ def signup():
         return jsonify({"msg": "Failed to create user"}), 500
 
     return jsonify({"msg": "User created successfully"}), 201
+
+
+@app.route('/api/datasets', methods=['GET'])
+def get_all_datasets():
+    try:
+        datasets = Dataset.find_all()
+        return jsonify([d.serialize() for d in datasets])
+    except exc.SQLAlchemyError as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/datasets/<string:topic>', methods=['GET'])
+def get_datasets_by_topic(topic):
+    try:
+
+        datasets = Dataset.query_datasets_by_topic(topic)
+        return jsonify([d.serialize() for d in datasets])
+    except exc.SQLAlchemyError as e:
+        return jsonify({'error': str(e)}), 500
 
 
 @app.route("/api/login", methods=["POST"])

@@ -13,8 +13,11 @@ class Dataset(db.Model):
     filename = db.Column(db.String(255), nullable=False)
     path = db.Column(db.String(255), nullable=False)
     date = db.Column(db.Date, nullable=False)
+    title = db.Column(db.String(255))
+    is_anonymized = db.Column(db.Boolean)
     status = db.Column(db.Enum('pending', 'anonymizing',
                        'completed', 'idle'), default='idle', nullable=False)
+    topic = db.Column(db.String(100))
 
     def __init__(self, did, uid, name, path, status='idle'):
         self.did = did
@@ -23,6 +26,19 @@ class Dataset(db.Model):
         self.path = path
         self.date = date.today()
         self.status = status
+
+    def serialize(self):
+        return {
+            'did': self.did,
+            'uid': self.uid,
+            'filename': self.filename,
+            'path': self.path,
+            'date': self.date.isoformat(),
+            'title': self.title,
+            'is_anonymized': self.is_anonymized,
+            'status': self.status,
+            'topic': self.topic
+        }
 
     def save_to_db(self):
         db.session.add(self)
@@ -35,6 +51,10 @@ class Dataset(db.Model):
     @classmethod
     def find_all(cls):
         return cls.query.all()
+
+    @classmethod
+    def query_datasets_by_topic(cls, topic):
+        return cls.query.filter_by(topic=topic).all()
 
     def update_status(self, new_status):
         self.status = new_status

@@ -3,10 +3,13 @@ import { createSlice } from "@reduxjs/toolkit";
 import { CommonState } from "redux/common/types";
 import { StatusEnum } from "redux/constant";
 import { RootState } from "redux/reducers";
-import { uploadDatasetThunk, updateinfoThunk } from "./thunks";
+import {
+  uploadDatasetThunk,
+  updateDatasetInfoThunk,
+  updateAnonymizedInfoThunk,
+} from "./thunks";
 
 export type UploadState = {
-  currentStep: number;
   loading: boolean;
   fields: FieldsTableType[];
   fileid?: string;
@@ -53,8 +56,6 @@ const data: FieldsTableType[] = [
 
 const initialState: UploadState = {
   status: StatusEnum.IDLE,
-  error: undefined,
-  currentStep: 1,
   loading: false,
   fields: data,
 };
@@ -68,13 +69,8 @@ const slice = createSlice({
   name: "upload",
   initialState,
   reducers: {
-    next: (state, action) => {
-      console.log("Increment");
-      state.currentStep += action.payload;
-    },
-    prev: (state) => {
-      console.log("Decrement");
-      state.currentStep -= 1;
+    clear: (state) => {
+      state = { ...initialState };
     },
   },
   extraReducers: (builder) =>
@@ -90,17 +86,41 @@ const slice = createSlice({
       .addCase(uploadDatasetThunk.fulfilled, (state, action) => {
         state.status = StatusEnum.SUCCEEDED;
         state.loading = false;
-        state.fileid = action.payload['file_id'];
-        console.log( state.fileid );
+        state.fileid = action.payload["file_id"];
+        console.log(state.fileid);
+      })
+      .addCase(updateDatasetInfoThunk.rejected, (state) => {
+        state.status = StatusEnum.FAILED;
+        state.loading = false;
+      })
+      .addCase(updateDatasetInfoThunk.pending, (state) => {
+        state.status = StatusEnum.LOADING;
+        state.loading = true;
+      })
+      .addCase(updateDatasetInfoThunk.fulfilled, (state, action) => {
+        state.status = StatusEnum.SUCCEEDED;
+        state.loading = false;
+      })
+      .addCase(updateAnonymizedInfoThunk.rejected, (state) => {
+        state.status = StatusEnum.FAILED;
+        state.loading = false;
+      })
+      .addCase(updateAnonymizedInfoThunk.pending, (state) => {
+        state.status = StatusEnum.LOADING;
+        state.loading = true;
+      })
+      .addCase(updateAnonymizedInfoThunk.fulfilled, (state, action) => {
+        console.log(action);
+        state.status = StatusEnum.SUCCEEDED;
+        state.loading = false;
+        console.log("After step 3: ", state);
       }),
-
-
 });
 
 const { reducer } = slice;
 
 export default reducer;
 
-export const { next, prev } = slice.actions;
+export const { clear } = slice.actions;
 
 export const selectUploadState = (state: RootState) => state.upload;

@@ -22,7 +22,6 @@ const LogInForm: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log(status);
     if (status === StatusEnum.SUCCEEDED) {
       navigate("/logIn");
     }

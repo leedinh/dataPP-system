@@ -1,22 +1,22 @@
-import { useState } from "react";
+import { useContext } from "react";
 import { Form, message, notification, Upload } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
-import type { RcFile, UploadFile, UploadProps } from "antd/es/upload/interface";
-import { next } from "redux/features/uploadProcess/slice";
+import type { RcFile, UploadProps } from "antd/es/upload/interface";
 import { uploadDatasetThunk } from "redux/features/uploadProcess/thunks";
 import { useAppDispatch } from "redux/store";
+import { UploadingContext } from "context/UploadingContext";
 
 const { Dragger } = Upload;
 
 type Step1Props = {};
 
 const Step1: React.FC<Step1Props> = () => {
-  const [file, setFile] = useState<UploadFile>();
-  const [uploading, setUploading] = useState(false);
+  const { file, setFile, next } = useContext(UploadingContext)!;
   const dispatch = useAppDispatch();
   const props: UploadProps = {
     name: "file",
     multiple: false,
+    fileList: file ? [file] : [],
     accept: ".csv",
     beforeUpload: () => {
       return false;
@@ -43,23 +43,18 @@ const Step1: React.FC<Step1Props> = () => {
     console.log("Submit form 1");
     let formData = new FormData();
     formData.append("file", file as RcFile);
-    setUploading(true);
     // Send request
-
     if (!!file) {
-      
       const response = dispatch(uploadDatasetThunk(formData));
       response
-      .then((value) => {
-        console.log(value)
-        dispatch(next(1));
-      })
-      .catch(() => {
-        message.error("upload failed.");
-      })
-      .finally(() => {
-        setUploading(false);
-      });
+        .then((value) => {
+          console.log(value);
+          next(1);
+        })
+        .catch(() => {
+          message.error("upload failed.");
+        })
+        .finally(() => {});
     } else {
       notification.error({
         placement: "topRight",

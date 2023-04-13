@@ -14,13 +14,6 @@ export enum DatasetTopic {
   MEDICAL = 5,
 }
 
-export enum SecurityLevel {
-  UNSPECIFIED = 0,
-  LOW = 1,
-  MEDIUM = 2,
-  HIGH = 3,
-}
-
 export const optionTopic = [
   {
     value: DatasetTopic.EDUCATION,

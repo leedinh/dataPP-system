@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import { Form, Table, Slider } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import type { SliderMarks } from "antd/es/slider";
@@ -6,10 +6,12 @@ import type { SliderMarks } from "antd/es/slider";
 import {
   selectUploadState,
   FieldsTableType,
-  next,
 } from "redux/features/uploadProcess/slice";
 import { useAppSelector, useAppDispatch } from "redux/store";
-import { SecurityLevel } from "redux/constant";
+import { updateAnonymizedInfoThunk } from "redux/features/uploadProcess/thunks";
+import { UploadingContext } from "context/UploadingContext";
+
+type Step3Props = {};
 
 const columns: ColumnsType<FieldsTableType> = [
   {
@@ -40,11 +42,10 @@ const marks: SliderMarks = {
   },
 };
 
-const Step3: React.FC = () => {
+const Step3: React.FC<Step3Props> = () => {
   const dispatch = useAppDispatch();
-  const { fields } = useAppSelector(selectUploadState);
-  const [attributes, setAttributes] = useState<FieldsTableType[]>([]);
-  const [securityLevel, setSecurityLevel] = useState<SecurityLevel>();
+  const { formStep3, next } = useContext(UploadingContext)!;
+  const { fields, fileid } = useAppSelector(selectUploadState);
   // rowSelection object indicates the need for row selection
   const rowSelection = {
     onChange: (
@@ -56,41 +57,30 @@ const Step3: React.FC = () => {
         "selectedRows: ",
         selectedRows
       );
-      setAttributes(selectedRows);
+      formStep3.setFieldValue("qsi", selectedRowKeys);
     },
   };
 
-  const onFinish = () => {
-    console.log("Send request step 3");
-    console.log("Quasi-attribute: ", attributes);
-    console.log("Security: ", securityLevel);
+  const onFinish = (values: any) => {
+    console.log("Send request step 3", values);
     // Send request
-
-    dispatch(next(1));
+    dispatch(
+      updateAnonymizedInfoThunk({
+        ...values,
+        fileid: fileid,
+      })
+    );
+    next(1);
   };
 
   const onSliderChange = (value: any) => {
     console.log(value);
-    let level = SecurityLevel.UNSPECIFIED;
-    switch (value) {
-      case 0:
-        level = SecurityLevel.LOW;
-        break;
-      case 50:
-        level = SecurityLevel.MEDIUM;
-        break;
-      case 100:
-        level = SecurityLevel.HIGH;
-        break;
-      default:
-        break;
-    }
-    setSecurityLevel(level);
+    formStep3.setFieldValue("secLvl", Number(value));
   };
 
   return (
-    <Form id="form3" onFinish={onFinish}>
-      <Form.Item className="">
+    <Form id="form3" form={formStep3} onFinish={onFinish}>
+      <Form.Item name="qsi">
         <Table
           className="w-1/3 border-collapse rounded-full"
           rowSelection={{
@@ -103,7 +93,7 @@ const Step3: React.FC = () => {
           pagination={false}
         />
       </Form.Item>
-      <Form.Item className="">
+      <Form.Item name="secLvl">
         <Slider
           onChange={onSliderChange}
           marks={marks}

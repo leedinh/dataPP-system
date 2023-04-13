@@ -1,19 +1,33 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { uploadFile, updateInfo } from "redux/common/fetch";
-
+import { uploadFile, sendRequest } from "redux/common/fetch";
 
 export const uploadDatasetThunk = createAsyncThunk(
   "uploadDataset",
   async (request: any) => {
-    
     return uploadFile("/api/upload", request).then((res: any) => res.json());
   }
 );
 
-export const updateinfoThunk = createAsyncThunk(
-  "updateDataset",
+export const updateDatasetInfoThunk = createAsyncThunk(
+  "updateDatasetInfo",
   async (request: any) => {
-    
-    return updateInfo(`/api/update_info/${request.fileid}`, request).then((res: any) => res.json());
+    return sendRequest(
+      "PATCH",
+      `/api/update_info/${request.fileid}`,
+      request,
+      true
+    ).then((res: any) => res.json());
+  }
+);
+
+export const updateAnonymizedInfoThunk = createAsyncThunk(
+  "updateAnonymizedInfo",
+  async (request: any) => {
+    return sendRequest(
+      "POST",
+      `/api/anonymize/${request.fileid || ""}`,
+      request,
+      true
+    ).then((res: any) => res.json());
   }
 );

@@ -1,9 +1,10 @@
-import React from "react";
-import { Form, Checkbox, Input, Select, message, notification } from "antd";
+import React, { useContext } from "react";
+import { Form, Checkbox, Input, Select, message } from "antd";
 import { optionTopic } from "redux/constant";
-import { next, selectUploadState } from "redux/features/uploadProcess/slice";
+import { selectUploadState } from "redux/features/uploadProcess/slice";
 import { useAppDispatch, useAppSelector } from "redux/store";
-import { updateinfoThunk } from "redux/features/uploadProcess/thunks";
+import { updateDatasetInfoThunk } from "redux/features/uploadProcess/thunks";
+import { UploadingContext } from "context/UploadingContext";
 
 type Step2Props = {};
 
@@ -23,28 +24,30 @@ const handleChange = (value: string) => {
 
 const Step2: React.FC<Step2Props> = () => {
   const dispatch = useAppDispatch();
-  const {fileid} = useAppSelector(selectUploadState)
-  console.log(fileid)
+  const { fileid } = useAppSelector(selectUploadState);
+  const { formStep2, next } = useContext(UploadingContext)!;
   const onFinish = (values: any) => {
     console.log("Submit form 2");
     console.log(values);
     // Send request
-    const response = dispatch(updateinfoThunk({...values, fileid: fileid}));
+    const response = dispatch(
+      updateDatasetInfoThunk({ ...values, fileid: fileid })
+    );
     response
       .then(() => {
-        dispatch(next(values["is_anonymized"] ? 1 : 2));
+        next(values["is_anonymized"] ? 1 : 2);
       })
       .catch(() => {
         message.error("upload failed.");
       })
-      .finally(() => {
-      });
+      .finally(() => {});
   };
 
   return (
     <Form
       {...layout}
       id="form2"
+      form={formStep2}
       name="datasetInfo"
       style={{ maxWidth: 600 }}
       validateMessages={validateMessages}
@@ -63,7 +66,12 @@ const Step2: React.FC<Step2Props> = () => {
           options={optionTopic}
         />
       </Form.Item>
-      <Form.Item className="mt-4" name="is_anonymized" valuePropName="checked">
+      <Form.Item
+        className="mt-4"
+        name="is_anonymized"
+        valuePropName="checked"
+        initialValue={false}
+      >
         <Checkbox defaultChecked={false}>
           I want to anonymize this dataset
         </Checkbox>

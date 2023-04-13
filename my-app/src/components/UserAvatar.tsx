@@ -2,20 +2,20 @@ import { UserOutlined } from "@ant-design/icons";
 import { Avatar, Dropdown } from "antd";
 import type { MenuProps } from "antd";
 
-import { KEY_ACCESS_TOKEN } from "redux/common/fetch";
-
-const items: MenuProps["items"] = [
-  {
-    label: "Log out",
-    key: "logOut",
-    onClick: () => {
-      localStorage.removeItem(KEY_ACCESS_TOKEN);
-      window.location.replace("/");
-    },
-  },
-];
+import { logout } from "redux/features/auth/slice";
+import { useAppDispatch } from "redux/store";
 
 const UserAvatar: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const items: MenuProps["items"] = [
+    {
+      label: "Log out",
+      key: "logOut",
+      onClick: () => {
+        dispatch(logout());
+      },
+    },
+  ];
   return (
     <Dropdown arrow menu={{ items }} trigger={["click"]}>
       <Avatar icon={<UserOutlined />} />

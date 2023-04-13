@@ -46,7 +46,6 @@ const slice = createSlice({
         console.log("Set success");
         state.statusSignUp = StatusEnum.SUCCEEDED;
         state.email = action.meta.arg.email;
-        console.log(action);
       })
       .addCase(logInThunk.fulfilled, (state, action) => {
         const response = action.payload;
@@ -78,7 +77,7 @@ export const selectAuthError = createSelector(
 
 export const selectAuthStatus = createSelector(
   selectAuthState,
-  (state) => !!state.email && !!localStorage.getItem(KEY_ACCESS_TOKEN)
+  () => !!localStorage.getItem(KEY_ACCESS_TOKEN)
 );
 
 export const selectAccessToken = createSelector(

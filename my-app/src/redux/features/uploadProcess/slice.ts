@@ -86,7 +86,7 @@ const slice = createSlice({
         state.status = StatusEnum.LOADING;
         state.loading = true;
       })
-      .addCase(uploadDatasetThunk.fulfilled, (state, action) => {
+      .addCase(uploadDatasetThunk.fulfilled, (state) => {
         state.status = StatusEnum.SUCCEEDED;
         state.loading = false;
       }),

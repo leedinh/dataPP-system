@@ -4,7 +4,6 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, ge
 from db import db
 from model import User, Dataset
 from rq_server import *
-from task import *
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
 import psycopg2
@@ -12,6 +11,7 @@ import uuid
 import hashlib
 from datetime import timedelta
 from sqlalchemy import exc
+from anonymizer.anonymize import Anonymizer
 
 app = Flask(__name__, static_folder='../my-app/build', static_url_path='/')
 app.config["JWT_SECRET_KEY"] = "super-secret"  # Change this!
@@ -24,6 +24,16 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://myuser:mypassword@localhos
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
+
+
+def anonymize(args, did):
+    with app.app_context():
+        ds = Dataset.find_by_did(did)
+        ds.update_status('anonymizing')
+        anonymizer = Anonymizer(args)
+        anonymizer.anonymize()
+        anonymizer.output(args['output'])
+        ds.update_status('completed')
 
 
 @app.errorhandler(404)
@@ -51,7 +61,11 @@ def update_info(did):
     if ds:
         args = request.json
         ds.update_info(args['title'], args['is_anonymized'], args['topic'])
-        return 'Updated info', 200
+
+        path = ds.path
+        import pandas as pd
+        ds = pd.read_csv(path)
+        return jsonify({"columns": list(ds.columns), "row": len(ds)}), 200
     else:
         return 'Dataset not found', 404
 
@@ -61,6 +75,8 @@ def update_info(did):
 def enqueue_anonymize(did):
     ds = Dataset.find_by_did(did)
     if ds:
+        if ds.status != 'idle':
+            return 'May be dataset has been anonymized', 404
         args = request.json  # assuming you're sending arguments in the request body
         claims = get_jwt()
         user_id = claims['user_id']
@@ -69,9 +85,31 @@ def enqueue_anonymize(did):
         file_path = os.path.join(app.config['RESULT_FOLDER'], user_id, did)
         if not os.path.exists(file_path):
             os.makedirs(file_path)
-        args['input'] = ds.path
-        args['output'] = os.path.join(file_path, ds.filename)
-        rq_queue.enqueue(anonymize, args)  # enqueue the function
+        sec_level = int(args['sec_level'])
+        # Parse security level
+        if sec_level in range(30):
+            k = 5
+            min_sup = 0.3
+            min_conf = 0.3
+        if sec_level in range(30, 70):
+            k = 15
+            min_sup = 0.5
+            min_conf = 0.5
+
+        if sec_level in range(70, 100):
+            k = 25
+            min_sup = 0.7
+            min_conf = 0.7
+
+        param = {}
+        param['qsi'] = args['qsi']
+        param['k'] = k
+        param['sup'] = min_sup
+        param['conf'] = min_conf
+        param['input'] = ds.path
+        param['output'] = os.path.join(file_path, ds.filename)
+        rq_queue.enqueue(anonymize, param, str(did))  # enqueue the function
+        ds.update_status('pending')
         return 'Task enqueued', 200
     else:
         return 'Dataset not found', 404
@@ -138,8 +176,6 @@ def login():
         identity=email, additional_claims=custom_claims)
     return jsonify(access_token=access_token), 200
 
-# Protected route
-
 
 def generate_uuid():
     uuid_string = str(uuid.uuid4())
@@ -191,12 +227,6 @@ def upload_file():
     dataset.save_to_db()
 
     return jsonify({'msg': 'File uploaded successfully', 'file_id': file_id}), 200
-
-
-@app.route("/api/protected", methods=["GET"])
-@jwt_required()
-def protected():
-    return jsonify(foo="bar")
 
 
 @app.route('/')

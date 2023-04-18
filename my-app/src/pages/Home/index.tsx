@@ -3,34 +3,23 @@ import { Outlet } from "react-router-dom";
 import NavBar from "components/NavBar";
 import styles from "pages/styles.module.scss";
 import { useEffect } from "react";
-import jwt_decode from "jwt-decode";
-import { KEY_ACCESS_TOKEN } from "redux/common/fetch";
-import { useAppDispatch } from "redux/store";
-import { logout } from "redux/features/auth/slice";
+// import { useAppDispatch, useAppSelector } from "redux/store";
+// import { verifyToken, selectAuthState } from "redux/features/auth/slice";
+import { AuthContext } from "context/AuthContext";
+import useAuth from "hook/useAuth";
 
 const HomePage: React.FunctionComponent = () => {
-  const dispatch = useAppDispatch();
-  const verifyToken = () => {
-    let token = localStorage.getItem(KEY_ACCESS_TOKEN);
-    if (!!token) {
-      const tokenInfo = jwt_decode(token);
-      console.log("Info: ", tokenInfo);
-      const expiredTime = (tokenInfo as any).exp;
-      const currentTime = Number(new Date().getTime() / 1000);
-      console.log(expiredTime, currentTime);
-      if (expiredTime < currentTime) {
-        dispatch(logout());
-        console.log("Alo");
-      }
-    }
-  };
+  const { authenticated, verifyToken } = useAuth();
   useEffect(() => {
     verifyToken();
+    console.log("Authenticated:", authenticated);
   }, []);
   return (
     <div className={styles.main}>
-      <NavBar />
-      <Outlet />
+      <AuthContext.Provider value={{ authenticated }}>
+        <NavBar />
+        <Outlet />
+      </AuthContext.Provider>
     </div>
   );
 };

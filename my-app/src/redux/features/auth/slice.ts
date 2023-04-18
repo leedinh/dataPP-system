@@ -1,4 +1,5 @@
 import { createSelector, createSlice } from "@reduxjs/toolkit";
+import jwt_decode from "jwt-decode";
 
 import { CommonState } from "redux/common/types";
 import { StatusEnum } from "redux/constant";
@@ -7,15 +8,16 @@ import { logInThunk, signUpThunk } from "./thunks";
 import { KEY_ACCESS_TOKEN } from "redux/common/fetch";
 
 export type AuthState = {
-  accessToken?: string;
   email?: string;
   statusSignUp: StatusEnum;
+  authenticated: boolean;
 } & CommonState;
 
 const initialState: AuthState = {
   status: StatusEnum.IDLE,
   error: undefined,
   statusSignUp: StatusEnum.IDLE,
+  authenticated: false,
 };
 
 const slice = createSlice({
@@ -24,8 +26,24 @@ const slice = createSlice({
   reducers: {
     logout: (state) => {
       localStorage.removeItem(KEY_ACCESS_TOKEN);
-      state.email = undefined;
-      return { ...initialState };
+      state = { ...initialState };
+      console.log("Log out", state);
+      window.location.replace("/");
+    },
+    verifyToken: (state) => {
+      let token = localStorage.getItem(KEY_ACCESS_TOKEN);
+      if (!!token) {
+        const tokenInfo = jwt_decode(token);
+        console.log("Info: ", tokenInfo);
+        const expiredTime = (tokenInfo as any).exp;
+        const currentTime = Number(new Date().getTime() / 1000);
+        console.log(expiredTime, currentTime);
+        if (expiredTime < currentTime) {
+          logout();
+        } else {
+          state.authenticated = true;
+        }
+      }
     },
   },
   extraReducers: (builder) =>
@@ -56,6 +74,7 @@ const slice = createSlice({
           localStorage.setItem(KEY_ACCESS_TOKEN, response.access_token);
           state.email = action.meta.arg.email;
           state.status = StatusEnum.SUCCEEDED;
+          state.authenticated = true;
         } else {
           state.status = StatusEnum.FAILED;
         }
@@ -64,7 +83,7 @@ const slice = createSlice({
 
 const { reducer } = slice;
 
-export const { logout } = slice.actions;
+export const { logout, verifyToken } = slice.actions;
 
 export default reducer;
 
@@ -73,16 +92,6 @@ export const selectAuthState = (state: RootState) => state.auth;
 export const selectAuthError = createSelector(
   selectAuthState,
   (state) => state.error
-);
-
-export const selectAuthStatus = createSelector(
-  selectAuthState,
-  () => !!localStorage.getItem(KEY_ACCESS_TOKEN)
-);
-
-export const selectAccessToken = createSelector(
-  selectAuthState,
-  (state) => state.accessToken
 );
 
 export const selectEmail = createSelector(

@@ -1,12 +1,14 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Button, Steps, Space, Form } from "antd";
+
 import { selectUploadState } from "redux/features/uploadProcess/slice";
-import { prev } from "redux/features/uploadProcess/slice";
-import { useAppDispatch, useAppSelector } from "redux/store";
+import { useAppSelector } from "redux/store";
 import Step1 from "./Step1";
 import Step2 from "./Step2";
 import Step3 from "./Step3";
 import Step4 from "./Step4";
+import useUploading from "hook/useUploading";
+import { UploadingContext } from "context/UploadingContext";
 
 const items = [
   {
@@ -24,14 +26,11 @@ const items = [
 ];
 
 const UploadDataset: React.FC = () => {
-  const { currentStep, loading } = useAppSelector(selectUploadState);
-  const dispatch = useAppDispatch();
+  const { loading } = useAppSelector(selectUploadState);
+  const contextInit = useUploading();
+  const { currentStep, prev } = contextInit;
 
   const MAX_STEP = items.length - 1;
-
-  useEffect(() => {
-    console.log("Step ", currentStep);
-  }, [currentStep]);
 
   return (
     <div className="flex justify-center">
@@ -44,10 +43,12 @@ const UploadDataset: React.FC = () => {
             items={items}
           />
           <div className="mt-8">
-            {currentStep === 1 && <Step1 />}
-            {currentStep === 2 && <Step2 />}
-            {currentStep === 3 && <Step3 />}
-            {currentStep === 4 && <Step4 />}
+            <UploadingContext.Provider value={contextInit}>
+              {currentStep === 1 && <Step1 />}
+              {currentStep === 2 && <Step2 />}
+              {currentStep === 3 && <Step3 />}
+              {currentStep === 4 && <Step4 />}
+            </UploadingContext.Provider>
           </div>
         </div>
         <Space wrap className="flex justify-between">
@@ -56,7 +57,7 @@ const UploadDataset: React.FC = () => {
               <Button
                 ghost={currentStep === 1}
                 disabled={currentStep === 1}
-                onClick={() => dispatch(prev())}
+                onClick={() => prev()}
               >
                 Back
               </Button>

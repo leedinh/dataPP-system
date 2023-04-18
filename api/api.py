@@ -51,7 +51,11 @@ def update_info(did):
     if ds:
         args = request.json
         ds.update_info(args['title'], args['is_anonymized'], args['topic'])
-        return 'Updated info', 200
+
+        path = ds.path
+        import pandas as pd
+        ds = pd.read_csv(path)
+        return jsonify({"columns": list(ds.columns), "row": len(ds)}), 200
     else:
         return 'Dataset not found', 404
 

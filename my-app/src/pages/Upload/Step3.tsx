@@ -93,13 +93,11 @@ const Step3: React.FC<Step3Props> = () => {
           pagination={false}
         />
       </Form.Item>
-      <Form.Item name="sec_level">
-        <Slider
-          onChange={onSliderChange}
-          marks={marks}
-          step={1}
-          defaultValue={50}
-        />
+      <Form.Item name="sec_level" initialValue={50}>
+        <Slider onChange={onSliderChange} marks={marks} step={1} />
+      </Form.Item>
+      <Form.Item name="rule_level" initialValue={50}>
+        <Slider onChange={onSliderChange} marks={marks} step={1} />
       </Form.Item>
     </Form>
   );

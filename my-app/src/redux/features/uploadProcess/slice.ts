@@ -15,53 +15,14 @@ export type UploadState = {
   fileid?: string;
 } & CommonState;
 
-const data: FieldsTableType[] = [
-  {
-    key: "11",
-    name: "John Brown",
-  },
-  {
-    key: "21",
-    name: "Jim Green",
-  },
-  {
-    key: "31",
-    name: "Joe Black",
-  },
-  {
-    key: "12",
-    name: "John Brown",
-  },
-  {
-    key: "22",
-    name: "Jim Green",
-  },
-  {
-    key: "32",
-    name: "Joe Black",
-  },
-  {
-    key: "13",
-    name: "John Brown",
-  },
-  {
-    key: "23",
-    name: "Jim Green",
-  },
-  {
-    key: "33",
-    name: "Joe Black",
-  },
-];
-
 const initialState: UploadState = {
   status: StatusEnum.IDLE,
   loading: false,
-  fields: data,
+  fields: [],
 };
 
 export type FieldsTableType = {
-  key: string;
+  key: number;
   name: string;
 };
 
@@ -100,6 +61,15 @@ const slice = createSlice({
       .addCase(updateDatasetInfoThunk.fulfilled, (state, action) => {
         state.status = StatusEnum.SUCCEEDED;
         state.loading = false;
+        console.log("After step 2: ", action.payload);
+        state.fields = (action.payload.columns as Array<string>).map(
+          (value, index) => {
+            return {
+              key: index,
+              name: value,
+            };
+          }
+        );
       })
       .addCase(updateAnonymizedInfoThunk.rejected, (state) => {
         state.status = StatusEnum.FAILED;

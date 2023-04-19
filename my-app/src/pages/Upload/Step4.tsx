@@ -6,7 +6,11 @@ const Step4: React.FC = () => (
   <Result
     icon={<SmileOutlined />}
     title="Great, we have done all the operations!"
-    extra={<Button type="primary">Next</Button>}
+    extra={
+      <Button href="/" type="primary">
+        Next
+      </Button>
+    }
   />
 );
 

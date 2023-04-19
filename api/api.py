@@ -4,6 +4,7 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, ge
 from db import db
 from model import User, Dataset
 from rq_server import *
+from task import *
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
 import psycopg2
@@ -11,13 +12,13 @@ import uuid
 import hashlib
 from datetime import timedelta
 from sqlalchemy import exc
-from anonymizer.anonymize import Anonymizer
+# from anonymizer.anonymize import Anonymizer
 
 app = Flask(__name__, static_folder='../my-app/build', static_url_path='/')
 app.config["JWT_SECRET_KEY"] = "super-secret"  # Change this!
 app.config['UPLOAD_FOLDER'] = "/Users/dinh.le/School/dataPP-system/upload"
 app.config['RESULT_FOLDER'] = "/Users/dinh.le/School/dataPP-system/results"
-app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1)
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=1)
 jwt = JWTManager(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://myuser:mypassword@localhost:5432/mydatabase'
@@ -26,7 +27,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 
 
-def anonymize(args, did):
+def task_anonymize(args, did):
     with app.app_context():
         ds = Dataset.find_by_did(did)
         ds.update_status('anonymizing')
@@ -54,6 +55,14 @@ def check_token():
         return jsonify(message='Access token is invalid'), 401
 
 
+@app.route('/api/clean_ds')
+@jwt_required()
+def clean_ds():
+    ok = Dataset.delete_all_datasets()
+    if ok:
+        return 'Delete all dataset', 200
+
+
 @app.route('/api/update_info/<string:did>', methods=['PATCH'])
 @jwt_required()
 def update_info(did):
@@ -75,8 +84,8 @@ def update_info(did):
 def enqueue_anonymize(did):
     ds = Dataset.find_by_did(did)
     if ds:
-        if ds.status != 'idle':
-            return 'May be dataset has been anonymized', 404
+        # if ds.status != 'idle':
+        #     return 'May be dataset has been anonymized', 404
         args = request.json  # assuming you're sending arguments in the request body
         claims = get_jwt()
         user_id = claims['user_id']
@@ -102,13 +111,15 @@ def enqueue_anonymize(did):
             min_conf = 0.7
 
         param = {}
-        param['qsi'] = args['qsi']
+        param['qsi'] = [int(value) for value in args['qsi']]
         param['k'] = k
         param['sup'] = min_sup
         param['conf'] = min_conf
         param['input'] = ds.path
         param['output'] = os.path.join(file_path, ds.filename)
-        rq_queue.enqueue(anonymize, param, str(did))  # enqueue the function
+        print('Goodbye')
+        rq_queue.enqueue(task_anonymize, param, str(did)
+                         )  # enqueue the function
         ds.update_status('pending')
         return 'Task enqueued', 200
     else:

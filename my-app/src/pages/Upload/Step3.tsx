@@ -75,7 +75,7 @@ const Step3: React.FC<Step3Props> = () => {
 
   const onSliderChange = (value: any) => {
     console.log(value);
-    formStep3.setFieldValue("secLvl", Number(value));
+    formStep3.setFieldValue("sec_level", Number(value));
   };
 
   return (
@@ -93,7 +93,7 @@ const Step3: React.FC<Step3Props> = () => {
           pagination={false}
         />
       </Form.Item>
-      <Form.Item name="secLvl">
+      <Form.Item name="sec_level">
         <Slider
           onChange={onSliderChange}
           marks={marks}

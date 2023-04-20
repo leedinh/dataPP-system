@@ -40,6 +40,15 @@ class Dataset(db.Model):
             'topic': self.topic
         }
 
+    def update_info(self, title=None, is_anonymized=None, topic=None):
+        # Update the attributes if they are not None
+        self.title = title
+        self.is_anonymized = is_anonymized
+        self.topic = topic
+
+        # Save the changes to the database
+        db.session.commit()
+
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
@@ -49,12 +58,34 @@ class Dataset(db.Model):
         return cls.query.filter_by(did=did).first()
 
     @classmethod
+    def delete_all_datasets(cls):
+        try:
+            # Begin a database transaction
+            db.session.begin()
+
+            # Delete all records from the Dataset table
+            cls.query.delete()
+
+            # Commit the transaction
+            db.session.commit()
+            return True
+
+        except Exception as e:
+            # Rollback the transaction in case of an error
+            db.session.rollback()
+            raise e
+
+    @classmethod
     def find_all(cls):
         return cls.query.all()
 
     @classmethod
     def query_datasets_by_topic(cls, topic):
         return cls.query.filter_by(topic=topic).all()
+
+    @classmethod
+    def query_datasets_by_uid(cls, uid):
+        return cls.query.filter_by(uid=uid).all()
 
     def update_status(self, new_status):
         self.status = new_status

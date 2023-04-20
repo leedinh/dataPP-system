@@ -1,39 +1,36 @@
-import React, { useState } from "react";
-import { Button, Steps, Space } from "antd";
-import { Outlet, useNavigate } from "react-router-dom";
+import React from "react";
+import { Button, Steps, Space, Form } from "antd";
+
+import { selectUploadState } from "redux/features/uploadProcess/slice";
+import { useAppSelector } from "redux/store";
+import Step1 from "./Step1";
+import Step2 from "./Step2";
+import Step3 from "./Step3";
+import Step4 from "./Step4";
+import useUploading from "hook/useUploading";
+import { UploadingContext } from "context/UploadingContext";
 
 const items = [
+  {
+    title: "Dataset",
+  },
   {
     title: "Raw Dataset",
   },
   {
-    title: "In Progress",
+    title: "Config",
   },
   {
-    title: "Waiting",
-  },
-  {
-    title: "Waiting",
+    title: "Completed",
   },
 ];
 
 const UploadDataset: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState(1);
-  const navigate = useNavigate();
+  const { loading } = useAppSelector(selectUploadState);
+  const contextInit = useUploading();
+  const { currentStep, prev } = contextInit;
 
-  const MAX_STEP = items.length;
-
-  const nextStep = () => {
-    const next = currentStep + 1;
-    setCurrentStep(next);
-    navigate(`step${next}`);
-  };
-
-  const previousStep = () => {
-    const prev = currentStep - 1;
-    setCurrentStep(prev);
-    navigate(`step${prev}`);
-  };
+  const MAX_STEP = items.length - 1;
 
   return (
     <div className="flex justify-center">
@@ -45,22 +42,36 @@ const UploadDataset: React.FC = () => {
             labelPlacement="vertical"
             items={items}
           />
-          <Outlet />
+          <div className="mt-8">
+            <UploadingContext.Provider value={contextInit}>
+              {currentStep === 1 && <Step1 />}
+              {currentStep === 2 && <Step2 />}
+              {currentStep === 3 && <Step3 />}
+              {currentStep === 4 && <Step4 />}
+            </UploadingContext.Provider>
+          </div>
         </div>
         <Space wrap className="flex justify-between">
-          <Button
-            ghost={currentStep === 1}
-            disabled={currentStep === 1}
-            onClick={previousStep}
-          >
-            Back
-          </Button>
-          {currentStep === MAX_STEP ? (
-            <Button type="primary">Finish</Button>
-          ) : (
-            <Button onClick={nextStep} type="primary">
-              Continue
-            </Button>
+          {currentStep < 4 && (
+            <>
+              <Button
+                ghost={currentStep === 1}
+                disabled={currentStep === 1}
+                onClick={() => prev()}
+              >
+                Back
+              </Button>
+              <Form.Item>
+                <Button
+                  form={`form${currentStep}`}
+                  type="primary"
+                  htmlType="submit"
+                  loading={loading}
+                >
+                  {currentStep === MAX_STEP ? "Finish" : "Continue"}
+                </Button>
+              </Form.Item>
+            </>
           )}
         </Space>
       </div>

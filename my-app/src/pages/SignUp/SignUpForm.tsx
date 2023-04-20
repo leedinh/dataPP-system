@@ -8,30 +8,6 @@ import { signUpThunk } from "redux/features/auth/thunks";
 import { selectSignUpStatus } from "redux/features/auth/slice";
 import { StatusEnum } from "redux/constant";
 
-const onFinish = async (values: any) => {
-  console.log(JSON.stringify(values));
-
-  const requestOptions = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(values),
-  };
-
-  const response = await fetch("/api/signup", requestOptions);
-  const data = await response.json();
-
-  if (data.access_token) {
-    localStorage.setItem("access_token", data.access_token);
-    console.log("Access token stored:", data.access_token);
-  } else {
-    console.log("Access token not found in response");
-  }
-
-  console.log(data);
-};
-
 const onFinishFailed = (errorInfo: any) => {
   console.log("Failed:", errorInfo);
 };
@@ -46,7 +22,6 @@ const LogInForm: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log(status);
     if (status === StatusEnum.SUCCEEDED) {
       navigate("/logIn");
     }

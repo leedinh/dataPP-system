@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, memo, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   AppstoreOutlined,
-  MailOutlined,
+  HomeOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
 import { Button, Typography, Menu, Input } from "antd";
@@ -11,15 +11,16 @@ import type { MenuProps } from "antd";
 import UserAvatar from "./UserAvatar";
 import styles from "./styles.module.scss";
 import { useAppSelector } from "redux/store";
-import { selectAuthStatus } from "redux/features/auth/slice";
+import { selectAuthState } from "redux/features/auth/slice";
+import { AuthContext } from "context/AuthContext";
 
 const { Title } = Typography;
 
 const items: MenuProps["items"] = [
   {
     label: "Home",
-    key: "home",
-    icon: <MailOutlined />,
+    key: "",
+    icon: <HomeOutlined />,
   },
   {
     label: "Upload",
@@ -31,16 +32,12 @@ const items: MenuProps["items"] = [
 const NavBar: React.FC = () => {
   const [current, setCurrent] = useState("home");
   const navigate = useNavigate();
-  const authStatus = useAppSelector(selectAuthStatus);
+  const { authenticated } = useContext(AuthContext)!;
 
   const onClick: MenuProps["onClick"] = (e) => {
     setCurrent(e.key);
     navigate(`/${e.key}`);
   };
-
-  const onSearch = (value: string) => console.log(value);
-
-  useEffect(() => {}, [authStatus]);
 
   return (
     <div className="flex items-stretch px-4">
@@ -64,8 +61,8 @@ const NavBar: React.FC = () => {
           />
         </div>
         <div className="self-center">
-          {authStatus && <UserAvatar />}
-          {!authStatus && (
+          {authenticated && <UserAvatar />}
+          {!authenticated && (
             <>
               <Button key="logIn" onClick={() => navigate("/logIn")}>
                 Log In
@@ -81,4 +78,4 @@ const NavBar: React.FC = () => {
   );
 };
 
-export default NavBar;
+export default memo(NavBar);

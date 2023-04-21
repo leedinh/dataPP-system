@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Button, Steps, Space, Form } from "antd";
 
 import { selectUploadState } from "redux/features/uploadProcess/slice";
@@ -31,10 +31,6 @@ const UploadDataset: React.FC = () => {
   const { currentStep, prev } = contextInit;
 
   const MAX_STEP = items.length - 1;
-
-  useEffect(() => {
-
-  }, [])
 
   return (
     <div className="flex justify-center">

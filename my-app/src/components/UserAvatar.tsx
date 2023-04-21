@@ -18,6 +18,13 @@ const UserAvatar: React.FC = () => {
         navigate("/");
       },
     },
+    {
+      label: "My datasets",
+      key: "myDatasets",
+      onClick: () => {
+        navigate("/datasets");
+      },
+    },
   ];
   return (
     <Dropdown arrow menu={{ items }} trigger={["click"]}>

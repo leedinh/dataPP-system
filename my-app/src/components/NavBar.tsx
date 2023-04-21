@@ -10,8 +10,6 @@ import type { MenuProps } from "antd";
 
 import UserAvatar from "./UserAvatar";
 import styles from "./styles.module.scss";
-import { useAppSelector } from "redux/store";
-import { selectAuthState } from "redux/features/auth/slice";
 import { AuthContext } from "context/AuthContext";
 
 const { Title } = Typography;
@@ -29,10 +27,14 @@ const items: MenuProps["items"] = [
   },
 ];
 
-const NavBar: React.FC = () => {
+type NavBarProps = {
+  auth?: boolean;
+};
+
+const NavBar: React.FC<NavBarProps> = ({ auth }) => {
   const [current, setCurrent] = useState("home");
   const navigate = useNavigate();
-  const { authenticated } = useContext(AuthContext)!;
+  console.log("NavBar");
 
   const onClick: MenuProps["onClick"] = (e) => {
     setCurrent(e.key);
@@ -61,8 +63,8 @@ const NavBar: React.FC = () => {
           />
         </div>
         <div className="self-center flex gap-4">
-          {authenticated && <UserAvatar />}
-          {!authenticated && (
+          {auth && <UserAvatar />}
+          {!auth && (
             <>
               <Button
                 type="text"

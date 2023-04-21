@@ -69,8 +69,11 @@ const Step3: React.FC<Step3Props> = () => {
         ...values,
         fileid: fileid,
       })
-    );
-    next(1);
+    ).then((res) => {
+      if (res.meta.requestStatus === "fulfilled") {
+        next(1);
+      }
+    });
   };
 
   const onSlider1Change = (value: any) => {

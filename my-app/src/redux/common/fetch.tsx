@@ -8,7 +8,7 @@ export const uploadFile = (path: string, file: FormData) => {
     },
     body: file,
   });
-  return fetch(requestOptions).then(fetchHandler);
+  return fetch(requestOptions).then((res) => fetchHandler(res));
 };
 
 export const sendRequest = (
@@ -24,9 +24,6 @@ export const sendRequest = (
     },
     body: JSON.stringify(body),
   });
-
-  if (method !== "GET") {
-  }
 
   let accessToken = localStorage.getItem(KEY_ACCESS_TOKEN);
 

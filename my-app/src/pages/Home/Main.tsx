@@ -5,61 +5,31 @@ import TopDataset from "components/TopDataset";
 import Banner from "components/Banner";
 
 import styles from "pages/styles.module.scss";
-
-const fakeDataset = [
-  {
-    name: "1",
-    type: "abc",
-  },
-  {
-    name: "2",
-    type: "abc",
-  },
-  {
-    name: "3",
-    type: "abc",
-  },
-];
-
-const datasetList = [
-  {
-    author: "A",
-    name: "Dataset 1",
-    publishAt: "00/00/00",
-  },
-  {
-    author: "A",
-    name: "Dataset 2",
-    publishAt: "00/00/00",
-  },
-  {
-    author: "A",
-    name: "Dataset 3",
-    publishAt: "00/00/00",
-  },
-  {
-    author: "A",
-    name: "Dataset 4",
-    publishAt: "00/00/00",
-  },
-];
+import { useAppDispatch, useAppSelector } from "redux/store";
+import { getAllDatasetsThunk } from "redux/features/datasets/thunks";
+import { selectDatasetState } from "redux/features/datasets/slice";
 
 const Main: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const { datasets } = useAppSelector(selectDatasetState);
+
   useEffect(() => {
     // TO DO: fetch dataset
-  }, []);
+    console.log("Main");
+    dispatch(getAllDatasetsThunk());
+  }, [dispatch]);
 
   return (
     <div className="grid grid-cols-4">
       <div className="p-4">
-        <TopDataset title={"Download"} data={fakeDataset} />
+        {/* <TopDataset title={"Download"} data={fakeDataset} /> */}
       </div>
       <div className="col-span-3 p-4 mx-16">
         <Banner />
         <div className={styles.header}>Dataset</div>
         <div className="grid grid-cols-4 gap-8 justify-items-center">
-          {datasetList.map((item) => {
-            return <DataSetWidget key={item.name} {...item} />;
+          {datasets.map((item) => {
+            return <DataSetWidget key={item.did} {...item} />;
           })}
         </div>
       </div>

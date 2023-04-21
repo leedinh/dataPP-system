@@ -18,7 +18,7 @@ const LogInForm: React.FC = () => {
   const navigate = useNavigate();
 
   const logIn = async (values: any) => {
-    const response = dispatch(
+    dispatch(
       logInThunk({
         email: values["email"]?.toString(),
         password: values["password"]?.toString(),
@@ -64,20 +64,10 @@ const LogInForm: React.FC = () => {
           >
             <Input.Password size="large" />
           </Form.Item>
-
-          <Form.Item>
-            <Row justify="space-between">
-              <Col xs={8}>
-                <Form.Item name="remember" valuePropName="checked" noStyle>
-                  <Checkbox>Remember me</Checkbox>
-                </Form.Item>
-              </Col>
-              <Col xs={8}>
-                <a href="" className="login-form-forgot">
-                  Forgot password
-                </a>
-              </Col>
-            </Row>
+          <Form.Item className="">
+            <Form.Item name="remember" valuePropName="checked" noStyle>
+              <Checkbox>Remember me</Checkbox>
+            </Form.Item>
           </Form.Item>
 
           <Form.Item>

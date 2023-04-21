@@ -6,28 +6,26 @@ import {
   DownloadOutlined,
 } from "@ant-design/icons";
 
+import { DatasetInfo } from "redux/features/datasets/slice";
 import styles from "./styles.module.scss";
 import Typography from "antd/es/typography/Typography";
 
 const { Meta } = Card;
 
-type DataSetWidgetProps = {
-  author: string;
-  name: string;
-  publishAt: string;
-};
+// type DataSetWidgetProps = {
+//   uid: string;
+//   title: string;
+//   date: string;
+//   path: string;
+// };
 
-const DataSetWidget: React.FC<DataSetWidgetProps> = ({
-  author,
-  name,
-  publishAt,
-}) => (
+const DataSetWidget: React.FC<DatasetInfo> = ({ uid, title, date, path }) => (
   <Card className={styles.datasetCard}>
     <div className={styles.img}></div>
     <div className="flex justify-between">
       <div className="">
-        <Typography>{name}</Typography>
-        <Typography className="text-left">By {author}</Typography>
+        <Typography>{title}</Typography>
+        <Typography className="text-left">By {uid}</Typography>
       </div>
       <div className="">
         <Avatar.Group
@@ -51,9 +49,9 @@ const DataSetWidget: React.FC<DataSetWidgetProps> = ({
     </div>
     <div className="flex justify-between mt-4">
       <div className="">
-        <Typography>Latest update: {publishAt}</Typography>
+        <Typography>Latest update: {date}</Typography>
       </div>
-      <Button shape="circle" icon={<DownloadOutlined />}></Button>
+      <Button href={path} shape="circle" icon={<DownloadOutlined />}></Button>
     </div>
   </Card>
 );

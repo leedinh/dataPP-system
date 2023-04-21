@@ -60,14 +60,22 @@ const NavBar: React.FC = () => {
             items={items}
           />
         </div>
-        <div className="self-center">
+        <div className="self-center flex gap-4">
           {authenticated && <UserAvatar />}
           {!authenticated && (
             <>
-              <Button key="logIn" onClick={() => navigate("/logIn")}>
+              <Button
+                type="text"
+                key="logIn"
+                onClick={() => navigate("/logIn")}
+              >
                 Log In
               </Button>
-              <Button key="signUp" onClick={() => navigate("/signUp")}>
+              <Button
+                type="primary"
+                key="signUp"
+                onClick={() => navigate("/signUp")}
+              >
                 Sign Up
               </Button>
             </>

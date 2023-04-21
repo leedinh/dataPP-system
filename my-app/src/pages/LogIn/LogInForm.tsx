@@ -18,7 +18,7 @@ const LogInForm: React.FC = () => {
   const navigate = useNavigate();
 
   const logIn = async (values: any) => {
-    dispatch(
+    const response = dispatch(
       logInThunk({
         email: values["email"]?.toString(),
         password: values["password"]?.toString(),
@@ -91,6 +91,9 @@ const LogInForm: React.FC = () => {
             </Button>
           </Form.Item>
         </Form>
+        <div className="">
+          Don't have an account? <a href="/signUp">Sign Up</a>
+        </div>
       </Col>
     </Row>
   );

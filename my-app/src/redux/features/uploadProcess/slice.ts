@@ -1,4 +1,10 @@
-import { createSlice } from "@reduxjs/toolkit";
+import {
+  createSlice,
+  isRejected,
+  isFulfilled,
+  isPending,
+} from "@reduxjs/toolkit";
+import { notification } from "antd";
 
 import { CommonState } from "redux/common/types";
 import { StatusEnum } from "redux/constant";
@@ -36,29 +42,38 @@ const slice = createSlice({
   },
   extraReducers: (builder) =>
     builder
-      .addCase(uploadDatasetThunk.rejected, (state) => {
-        state.status = StatusEnum.FAILED;
-        state.loading = false;
-      })
-      .addCase(uploadDatasetThunk.pending, (state) => {
-        state.status = StatusEnum.LOADING;
-        state.loading = true;
-      })
-      .addCase(uploadDatasetThunk.fulfilled, (state, action) => {
+      .addMatcher(
+        isRejected(
+          uploadDatasetThunk,
+          updateDatasetInfoThunk,
+          updateAnonymizedInfoThunk
+        ),
+        (state, action) => {
+          state.status = StatusEnum.FAILED;
+          console.log(action);
+          notification.error({
+            message: action.error.message || "",
+          });
+        }
+      )
+      .addMatcher(
+        isPending(
+          uploadDatasetThunk,
+          updateDatasetInfoThunk,
+          updateAnonymizedInfoThunk
+        ),
+        (state, action) => {
+          state.status = StatusEnum.LOADING;
+          console.log(action);
+        }
+      )
+      .addMatcher(isFulfilled(uploadDatasetThunk), (state, action) => {
         state.status = StatusEnum.SUCCEEDED;
         state.loading = false;
         state.fileid = action.payload["file_id"];
         console.log(state.fileid);
       })
-      .addCase(updateDatasetInfoThunk.rejected, (state) => {
-        state.status = StatusEnum.FAILED;
-        state.loading = false;
-      })
-      .addCase(updateDatasetInfoThunk.pending, (state) => {
-        state.status = StatusEnum.LOADING;
-        state.loading = true;
-      })
-      .addCase(updateDatasetInfoThunk.fulfilled, (state, action) => {
+      .addMatcher(isFulfilled(updateDatasetInfoThunk), (state, action) => {
         state.status = StatusEnum.SUCCEEDED;
         state.loading = false;
         console.log("After step 2: ", action.payload);
@@ -71,15 +86,7 @@ const slice = createSlice({
           }
         );
       })
-      .addCase(updateAnonymizedInfoThunk.rejected, (state) => {
-        state.status = StatusEnum.FAILED;
-        state.loading = false;
-      })
-      .addCase(updateAnonymizedInfoThunk.pending, (state) => {
-        state.status = StatusEnum.LOADING;
-        state.loading = true;
-      })
-      .addCase(updateAnonymizedInfoThunk.fulfilled, (state, action) => {
+      .addMatcher(isFulfilled(updateAnonymizedInfoThunk), (state, action) => {
         console.log(action);
         state.status = StatusEnum.SUCCEEDED;
         state.loading = false;

@@ -1,4 +1,10 @@
-import { createSelector, createSlice } from "@reduxjs/toolkit";
+import {
+  createSelector,
+  createSlice,
+  isRejected,
+  isPending,
+  isFulfilled,
+} from "@reduxjs/toolkit";
 import jwt_decode from "jwt-decode";
 
 import { CommonState } from "redux/common/types";
@@ -6,6 +12,7 @@ import { StatusEnum } from "redux/constant";
 import { RootState } from "redux/reducers";
 import { logInThunk, signUpThunk } from "./thunks";
 import { KEY_ACCESS_TOKEN } from "redux/common/fetch";
+import { notification } from "antd";
 
 export type AuthState = {
   email?: string;
@@ -48,24 +55,22 @@ const slice = createSlice({
   },
   extraReducers: (builder) =>
     builder
-      .addCase(signUpThunk.rejected, (state) => {
-        state.statusSignUp = StatusEnum.FAILED;
-      })
-      .addCase(signUpThunk.pending, (state) => {
-        state.statusSignUp = StatusEnum.LOADING;
-      })
-      .addCase(logInThunk.rejected, (state) => {
+      .addMatcher(isRejected(logInThunk, signUpThunk), (state, action) => {
         state.status = StatusEnum.FAILED;
+        console.log(action);
+        notification.error({
+          message: action.error.message || "",
+        });
       })
-      .addCase(logInThunk.pending, (state) => {
+      .addMatcher(isPending(logInThunk, signUpThunk), (state, action) => {
         state.status = StatusEnum.LOADING;
+        console.log(action);
       })
-      .addCase(signUpThunk.fulfilled, (state, action) => {
-        console.log("Set success");
+      .addMatcher(isFulfilled(signUpThunk), (state, action) => {
         state.statusSignUp = StatusEnum.SUCCEEDED;
         state.email = action.meta.arg.email;
       })
-      .addCase(logInThunk.fulfilled, (state, action) => {
+      .addMatcher(isFulfilled(logInThunk), (state, action) => {
         const response = action.payload;
 
         console.log(action);

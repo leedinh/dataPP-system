@@ -1,10 +1,10 @@
 import time
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, send_from_directory, request
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt
 from db import db
 from model import User, Dataset
 from rq_server import *
-from task import *
+# from task import *
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
 import psycopg2
@@ -12,12 +12,14 @@ import uuid
 import hashlib
 from datetime import timedelta
 from sqlalchemy import exc
-# from anonymizer.anonymize import Anonymizer
+from anonymizer.anonymize import Anonymizer
+from rq.registry import ScheduledJobRegistry
+from datetime import datetime, timedelta
+from pytz import timezone
 
 app = Flask(__name__, static_folder='../my-app/build', static_url_path='/')
 app.config["JWT_SECRET_KEY"] = "super-secret"  # Change this!
 app.config['UPLOAD_FOLDER'] = "/Users/dinh.le/School/dataPP-system/upload"
-app.config['RESULT_FOLDER'] = "/Users/dinh.le/School/dataPP-system/results"
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=1)
 jwt = JWTManager(app)
 
@@ -35,6 +37,14 @@ def task_anonymize(args, did):
         anonymizer.anonymize()
         anonymizer.output(args['output'])
         ds.update_status('completed')
+
+
+def task_delete_dataset(did):
+    print("I am task")
+    with app.app_context():
+        ds = Dataset.find_by_did(did)
+        if ds.status == 'idle':
+            ds.delete_from_db()
 
 
 @app.errorhandler(404)
@@ -71,7 +81,7 @@ def update_info(did):
         args = request.json
         ds.update_info(args['title'], args['is_anonymized'], args['topic'])
 
-        path = ds.path
+        path = os.path.join(ds.path, ds.filename)
         import pandas as pd
         ds = pd.read_csv(path)
         return jsonify({"columns": list(ds.columns), "row": len(ds)}), 200
@@ -91,9 +101,6 @@ def enqueue_anonymize(did):
         user_id = claims['user_id']
         if user_id != str(ds.uid):
             return 'You have no access to this file', 400
-        file_path = os.path.join(app.config['RESULT_FOLDER'], user_id, did)
-        if not os.path.exists(file_path):
-            os.makedirs(file_path)
         sec_level = int(args['sec_level'])
         # Parse security level
         if sec_level in range(30):
@@ -115,8 +122,8 @@ def enqueue_anonymize(did):
         param['k'] = k
         param['sup'] = min_sup
         param['conf'] = min_conf
-        param['input'] = ds.path
-        param['output'] = os.path.join(file_path, ds.filename)
+        param['input'] = os.path.join(ds.path, ds.filename)
+        param['output'] = os.path.join(ds.path, ds.filename)
         print('Goodbye')
         rq_queue.enqueue(task_anonymize, param, str(did)
                          )  # enqueue the function
@@ -155,6 +162,15 @@ def signup():
 
 @app.route('/api/datasets', methods=['GET'])
 def get_all_datasets():
+    try:
+        datasets = Dataset.find_all_completed()
+        return jsonify([d.serialize() for d in datasets])
+    except exc.SQLAlchemyError as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/cheat', methods=['GET'])
+def cheat():
     try:
         datasets = Dataset.find_all()
         return jsonify([d.serialize() for d in datasets])
@@ -205,12 +221,20 @@ def generate_uuid():
 def get_metadata(did):
     dataset = Dataset.find_by_did(did)
     if dataset:
-        path = dataset.path
+        path = os.path.join(dataset.path, dataset.filename)
         import pandas as pd
         ds = pd.read_csv(path)
         return jsonify({"columns": list(ds.columns), "row": len(ds)}), 200
     else:
         return 'Dataset not found', 400
+
+
+@app.route('/api/downloads/<string:did>', methods=['GET'])
+def download_file(did):
+    print(did)
+    ds = Dataset.find_by_did(did)
+    print(ds)
+    return send_from_directory(ds.path, ds.filename, as_attachment=True)
 
 
 @app.route('/api/upload', methods=['POST'])
@@ -234,18 +258,33 @@ def upload_file():
     file.save(os.path.join(file_path, file.filename))
 
     dataset = Dataset(file_id, user_id, file.filename,
-                      os.path.join(file_path, file.filename))
+                      file_path)
     dataset.save_to_db()
+
+    delay_seconds = 10
+
+# Create a timedelta object from the delay_seconds
+    delay = timedelta(seconds=delay_seconds)
+
+# Calculate the datetime for when the task should be executed
+    execute_at = datetime.utcnow() + delay
+
+# Enqueue the task with the calculated execution time
+    # job = rq_queue.enqueue_at(execute_at, task_delete_dataset, file_id)
+    # print(job)
+
+    # registry = ScheduledJobRegistry(queue=rq_queue)
+    # print(job in registry)
 
     return jsonify({'msg': 'File uploaded successfully', 'file_id': file_id}), 200
 
 
-@app.route('/')
+@ app.route('/')
 def index():
     return app.send_static_file('index.html')
 
 
-@app.route('/api/time')
+@ app.route('/api/time')
 def get_current_time():
     return {'time': time.time()}
 

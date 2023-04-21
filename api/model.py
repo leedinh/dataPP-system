@@ -76,6 +76,10 @@ class Dataset(db.Model):
             raise e
 
     @classmethod
+    def find_all_completed(cls):
+        return cls.query.filter_by(status='completed').all()
+
+    @classmethod
     def find_all(cls):
         return cls.query.all()
 

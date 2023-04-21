@@ -128,9 +128,9 @@ def enqueue_anonymize(did):
         rq_queue.enqueue(task_anonymize, param, str(did)
                          )  # enqueue the function
         ds.update_status('pending')
-        return 'Task enqueued', 200
+        return jsonify({"msg": "Task enqueued"}), 200
     else:
-        return 'Dataset not found', 404
+        return jsonify({"msg": 'Dataset not found'}), 404
 
 # Route to generate JWT token
 

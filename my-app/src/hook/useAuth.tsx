@@ -3,7 +3,6 @@ import jwt_decode from "jwt-decode";
 
 import { clear } from "redux/features/uploadProcess/slice";
 import { useAppDispatch } from "redux/store";
-import { AuthContextType } from "context/AuthContext";
 import { KEY_ACCESS_TOKEN } from "redux/common/fetch";
 
 export default function useAuth() {

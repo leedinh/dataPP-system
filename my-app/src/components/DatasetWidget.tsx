@@ -10,15 +10,6 @@ import { DatasetInfo } from "redux/features/datasets/slice";
 import styles from "./styles.module.scss";
 import Typography from "antd/es/typography/Typography";
 
-const { Meta } = Card;
-
-// type DataSetWidgetProps = {
-//   uid: string;
-//   title: string;
-//   date: string;
-//   path: string;
-// };
-
 const DataSetWidget: React.FC<DatasetInfo> = ({ uid, title, date, path }) => (
   <Card className={styles.datasetCard}>
     <div className={styles.img}></div>

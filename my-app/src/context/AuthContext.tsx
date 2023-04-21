@@ -4,4 +4,6 @@ export interface AuthContextType {
   authenticated: boolean;
 }
 
-export const AuthContext = createContext<AuthContextType | null>(null);
+export const AuthContext = createContext<AuthContextType>({
+  authenticated: false,
+});

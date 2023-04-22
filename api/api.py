@@ -163,8 +163,14 @@ def signup():
 @app.route('/api/datasets', methods=['GET'])
 def get_all_datasets():
     try:
+        # query = db.session.query(Dataset.did, Dataset.filename, User.email).join(
+        #     User, Dataset.uid == User.id).all()
+
+        # print(query)
         datasets = Dataset.find_all_completed()
+        print(datasets)
         return jsonify([d.serialize() for d in datasets])
+        # return jsonify([d.serialize() for d in datasets])
     except exc.SQLAlchemyError as e:
         return jsonify({'error': str(e)}), 500
 
@@ -249,6 +255,7 @@ def upload_file():
 
     claims = get_jwt()
     user_id = claims['user_id']
+    user = User.find_by_uid(user_id)
     file_id = generate_uuid()
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], user_id, file_id)
 
@@ -258,7 +265,7 @@ def upload_file():
     file.save(os.path.join(file_path, file.filename))
 
     dataset = Dataset(file_id, user_id, file.filename,
-                      file_path)
+                      file_path, user.username)
     dataset.save_to_db()
 
     delay_seconds = 10

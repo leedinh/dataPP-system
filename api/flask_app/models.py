@@ -1,4 +1,4 @@
-from db import db
+from .db import db
 import enum
 
 
@@ -108,6 +108,14 @@ class User(db.Model):
     email = db.Column(db.String(80), unique=True, nullable=False)
     username = db.Column(db.String(80), nullable=False, default='anonymize')
     hash_password = db.Column(db.String(120), nullable=False)
+
+    def save_to_db(self):
+        try:
+            db.session.add(self)
+            db.session.commit()
+        except Exception as err:
+            db.session.rollback()
+            raise err
 
     @classmethod
     def find_by_uid(cls, uid):

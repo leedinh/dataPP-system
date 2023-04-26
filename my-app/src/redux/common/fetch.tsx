@@ -8,7 +8,7 @@ export const uploadFile = (path: string, file: FormData) => {
     },
     body: file,
   });
-  return fetch(requestOptions);
+  return fetch(requestOptions).then((res) => fetchHandler(res));
 };
 
 export const sendRequest = (
@@ -31,5 +31,30 @@ export const sendRequest = (
     requestOptions.headers.append("Authorization", `Bearer ${accessToken}`);
   }
 
-  return fetch(requestOptions);
+  return fetch(requestOptions).then((res) => fetchHandler(res));
+};
+
+export const sendGetRequest = (path: string, auth?: boolean) => {
+  const requestOptions = new Request(path, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  let accessToken = localStorage.getItem(KEY_ACCESS_TOKEN);
+
+  if (auth && !!accessToken) {
+    requestOptions.headers.append("Authorization", `Bearer ${accessToken}`);
+  }
+
+  return fetch(requestOptions).then((res) => fetchHandler(res));
+};
+
+const fetchHandler = (res: Response) => {
+  if (!res.ok) {
+    console.log(res);
+    return Promise.reject(new Error(res.statusText));
+  }
+  return res;
 };

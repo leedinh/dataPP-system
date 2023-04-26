@@ -10,8 +10,6 @@ import type { MenuProps } from "antd";
 
 import UserAvatar from "./UserAvatar";
 import styles from "./styles.module.scss";
-import { useAppSelector } from "redux/store";
-import { selectAuthState } from "redux/features/auth/slice";
 import { AuthContext } from "context/AuthContext";
 
 const { Title } = Typography;
@@ -29,10 +27,14 @@ const items: MenuProps["items"] = [
   },
 ];
 
-const NavBar: React.FC = () => {
+type NavBarProps = {
+  auth?: boolean;
+};
+
+const NavBar: React.FC<NavBarProps> = ({ auth }) => {
   const [current, setCurrent] = useState("home");
   const navigate = useNavigate();
-  const { authenticated } = useContext(AuthContext)!;
+  console.log("NavBar");
 
   const onClick: MenuProps["onClick"] = (e) => {
     setCurrent(e.key);
@@ -60,14 +62,22 @@ const NavBar: React.FC = () => {
             items={items}
           />
         </div>
-        <div className="self-center">
-          {authenticated && <UserAvatar />}
-          {!authenticated && (
+        <div className="self-center flex gap-4">
+          {auth && <UserAvatar />}
+          {!auth && (
             <>
-              <Button key="logIn" onClick={() => navigate("/logIn")}>
+              <Button
+                type="text"
+                key="logIn"
+                onClick={() => navigate("/logIn")}
+              >
                 Log In
               </Button>
-              <Button key="signUp" onClick={() => navigate("/signUp")}>
+              <Button
+                type="primary"
+                key="signUp"
+                onClick={() => navigate("/signUp")}
+              >
                 Sign Up
               </Button>
             </>

@@ -69,11 +69,18 @@ const Step3: React.FC<Step3Props> = () => {
         ...values,
         fileid: fileid,
       })
-    );
-    next(1);
+    ).then((res) => {
+      if (res.meta.requestStatus === "fulfilled") {
+        next(1);
+      }
+    });
   };
 
-  const onSliderChange = (value: any) => {
+  const onSlider1Change = (value: any) => {
+    console.log(value);
+    formStep3.setFieldValue("sec_level", Number(value));
+  };
+  const onSlider2Change = (value: any) => {
     console.log(value);
     formStep3.setFieldValue("sec_level", Number(value));
   };
@@ -94,10 +101,10 @@ const Step3: React.FC<Step3Props> = () => {
         />
       </Form.Item>
       <Form.Item name="sec_level" initialValue={50}>
-        <Slider onChange={onSliderChange} marks={marks} step={1} />
+        <Slider onChange={onSlider1Change} marks={marks} step={1} />
       </Form.Item>
       <Form.Item name="rule_level" initialValue={50}>
-        <Slider onChange={onSliderChange} marks={marks} step={1} />
+        <Slider onChange={onSlider2Change} marks={marks} step={1} />
       </Form.Item>
     </Form>
   );

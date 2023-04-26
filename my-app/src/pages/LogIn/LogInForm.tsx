@@ -64,20 +64,10 @@ const LogInForm: React.FC = () => {
           >
             <Input.Password size="large" />
           </Form.Item>
-
-          <Form.Item>
-            <Row justify="space-between">
-              <Col xs={8}>
-                <Form.Item name="remember" valuePropName="checked" noStyle>
-                  <Checkbox>Remember me</Checkbox>
-                </Form.Item>
-              </Col>
-              <Col xs={8}>
-                <a href="" className="login-form-forgot">
-                  Forgot password
-                </a>
-              </Col>
-            </Row>
+          <Form.Item className="">
+            <Form.Item name="remember" valuePropName="checked" noStyle>
+              <Checkbox>Remember me</Checkbox>
+            </Form.Item>
           </Form.Item>
 
           <Form.Item>
@@ -91,6 +81,9 @@ const LogInForm: React.FC = () => {
             </Button>
           </Form.Item>
         </Form>
+        <div className="">
+          Don't have an account? <a href="/signUp">Sign Up</a>
+        </div>
       </Col>
     </Row>
   );

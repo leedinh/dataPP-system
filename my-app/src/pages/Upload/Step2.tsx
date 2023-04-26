@@ -34,8 +34,10 @@ const Step2: React.FC<Step2Props> = () => {
       updateDatasetInfoThunk({ ...values, fileid: fileid })
     );
     response
-      .then(() => {
-        next(values["is_anonymized"] ? 1 : 2);
+      .then((res) => {
+        if (res.meta.requestStatus === "fulfilled") {
+          next(values["is_anonymized"] ? 1 : 2);
+        }
       })
       .catch(() => {
         message.error("upload failed.");

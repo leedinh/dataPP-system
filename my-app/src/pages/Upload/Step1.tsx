@@ -47,9 +47,10 @@ const Step1: React.FC<Step1Props> = () => {
     if (!!file) {
       const response = dispatch(uploadDatasetThunk(formData));
       response
-        .then((value) => {
-          console.log(value);
-          next(1);
+        .then((res) => {
+          if (res.meta.requestStatus === "fulfilled") {
+            next(1);
+          }
         })
         .catch(() => {
           message.error("upload failed.");

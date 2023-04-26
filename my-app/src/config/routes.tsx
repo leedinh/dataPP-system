@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import { HomePage, SignUp, LogIn, UploadDataset } from "pages";
 import Main from "pages/Home/Main";
+import RequiredAuth from "components/RequiredAuth";
 
 const routes = createBrowserRouter([
   {
@@ -12,8 +13,13 @@ const routes = createBrowserRouter([
         element: <Main />,
       },
       {
-        path: "upload",
-        element: <UploadDataset />,
+        element: <RequiredAuth />,
+        children: [
+          {
+            path: "/upload",
+            element: <UploadDataset />,
+          },
+        ],
       },
     ],
   },

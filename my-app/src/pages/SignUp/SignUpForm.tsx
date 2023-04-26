@@ -90,6 +90,9 @@ const LogInForm: React.FC = () => {
             </Button>
           </Form.Item>
         </Form>
+        <div className="">
+          Don't have an account? <a href="/logIn">Log In</a>
+        </div>
       </Col>
     </Row>
   );

@@ -4,7 +4,7 @@ import { uploadFile, sendRequest } from "redux/common/fetch";
 export const uploadDatasetThunk = createAsyncThunk(
   "uploadDataset",
   async (request: any) => {
-    return uploadFile("/api/upload", request).then((res: any) => res.json());
+    return uploadFile("/api/dataset/upload", request).then((res: any) => res.json());
   }
 );
 
@@ -13,7 +13,7 @@ export const updateDatasetInfoThunk = createAsyncThunk(
   async (request: any) => {
     return sendRequest(
       "PATCH",
-      `/api/update_info/${request.fileid}`,
+      `/api/dataset/update_info/${request.fileid}`,
       request,
       true
     ).then((res: any) => res.json());

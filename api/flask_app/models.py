@@ -43,6 +43,10 @@ class Dataset(db.Model):
             'author': self.author
         }
 
+    def update_author(self, author):
+        self.author = author
+        db.session.commit()
+
     def update_info(self, title=None, is_anonymized=None, topic=None):
         # Update the attributes if they are not None
         self.title = title
@@ -83,6 +87,10 @@ class Dataset(db.Model):
         return cls.query.filter_by(status='completed').all()
 
     @classmethod
+    def find_user_datasets(cls, uid):
+        return cls.query.filter_by(uid=uid).all()
+
+    @classmethod
     def find_all(cls):
         return cls.query.all()
 
@@ -109,6 +117,13 @@ class User(db.Model):
     username = db.Column(db.String(80), nullable=False, default='anonymize')
     hash_password = db.Column(db.String(120), nullable=False)
 
+    def serialize(self):
+        return {
+            'id': self.id,
+            'email': self.email,
+            'username': self.username
+        }
+
     def save_to_db(self):
         try:
             db.session.add(self)
@@ -117,9 +132,21 @@ class User(db.Model):
             db.session.rollback()
             raise err
 
+    def delete_from_db(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    def update_username(self, new_username):
+        self.username = new_username
+        db.session.commit()
+
     @classmethod
     def find_by_uid(cls, uid):
         return cls.query.filter_by(id=uid).first()
+
+    @classmethod
+    def find_by_email(cls, email):
+        return cls.query.filter_by(email=email).first()
 
     @classmethod
     def delete_all_user(cls):

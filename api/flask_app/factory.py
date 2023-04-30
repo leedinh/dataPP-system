@@ -11,5 +11,5 @@ def create_app():
     config_name = os.getenv('FLASK_CONFIGURATION', 'development')
     app.config.from_object(CONFIG[config_name])
     db.init_app(app)
-    CORS(app, headers=['Content-Type'])
+    CORS(app)
     return app

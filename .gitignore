@@ -1,5 +1,5 @@
-test*
 venv
+_test*
 *.pyc
 __pycache__
 .DS*

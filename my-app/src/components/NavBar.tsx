@@ -1,5 +1,5 @@
-import React, { useState, memo, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { memo } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   AppstoreOutlined,
   HomeOutlined,
@@ -10,19 +10,18 @@ import type { MenuProps } from "antd";
 
 import UserAvatar from "./UserAvatar";
 import styles from "./styles.module.scss";
-import { AuthContext } from "context/AuthContext";
 
 const { Title } = Typography;
 
 const items: MenuProps["items"] = [
   {
     label: "Home",
-    key: "",
+    key: "/",
     icon: <HomeOutlined />,
   },
   {
     label: "Upload",
-    key: "upload",
+    key: "/upload",
     icon: <AppstoreOutlined />,
   },
 ];
@@ -32,13 +31,11 @@ type NavBarProps = {
 };
 
 const NavBar: React.FC<NavBarProps> = ({ auth }) => {
-  const [current, setCurrent] = useState("home");
+  const { pathname } = useLocation();
   const navigate = useNavigate();
-  console.log("NavBar");
 
   const onClick: MenuProps["onClick"] = (e) => {
-    setCurrent(e.key);
-    navigate(`/${e.key}`);
+    navigate(`${e.key}`);
   };
 
   return (
@@ -57,7 +54,7 @@ const NavBar: React.FC<NavBarProps> = ({ auth }) => {
         <div className="flex-2 self-center">
           <Menu
             onClick={onClick}
-            selectedKeys={[current]}
+            selectedKeys={[pathname]}
             mode="horizontal"
             items={items}
           />
@@ -77,7 +74,7 @@ const NavBar: React.FC<NavBarProps> = ({ auth }) => {
                 type="primary"
                 key="signUp"
                 onClick={() => navigate("/signUp")}
-              >
+              > 
                 Sign Up
               </Button>
             </>

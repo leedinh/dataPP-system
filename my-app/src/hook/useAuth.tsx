@@ -6,7 +6,7 @@ import { useAppDispatch } from "redux/store";
 import { KEY_ACCESS_TOKEN } from "redux/common/fetch";
 
 export default function useAuth() {
-  const [authenticated, setAuthenticated] = useState(false);
+  const [authenticated, setAuthenticated] = useState(true);
   const dispatch = useAppDispatch();
   dispatch(clear());
 

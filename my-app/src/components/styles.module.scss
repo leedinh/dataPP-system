@@ -1,5 +1,5 @@
 .topDataset {
-  border-radius: 11px;
+  border-radius: 20px;
   padding: 24px;
   display: flex;
   flex-direction: column;
@@ -17,18 +17,21 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 50px;
+  height: 60px;
 
   div {
     flex: 1;
   }
 }
 
+$banner-img: url("../assets/banner.png");
 .banner {
-  height: 200px;
+  height: 300px;
   width: 100%;
-  border: 1px solid black;
   border-radius: 20px;
+  background-image: $banner-img;
+  background-repeat: no-repeat;
+  background-size: 100%;
 }
 
 .datasetCard {

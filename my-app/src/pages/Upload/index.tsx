@@ -35,7 +35,7 @@ const UploadDataset: React.FC = () => {
   return (
     <div className="flex justify-center">
       <div className="w-1/2">
-        <div className="shadow-xl p-16 rounded-3xl mb-8">
+        <div className="shadow-xl shadow-outer p-16 rounded-3xl mb-8">
           <Steps
             current={currentStep - 1}
             percent={50}

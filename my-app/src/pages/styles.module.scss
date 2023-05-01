@@ -1,12 +1,11 @@
 .header {
-  margin-top: 16px;
   margin-bottom: 16px;
   font-size: 2rem;
   text-align: left;
 }
 
 .main {
-  background-color: #F4F7FE;
+  background-color: #F0F4FF;
   padding-left: 24px;
   padding-right: 24px;
   height: 100vh;
@@ -20,4 +19,20 @@ $bg-img: url("../assets/bg.png");
   height: 100vh;
   border-bottom-left-radius: 200px;
   background-position: center;
+}
+
+.tab {
+  color: #4318FF;
+  border-radius: 20px;
+  padding: 8px;
+  outline: none;
+}
+
+.tab:hover {
+  background-color: #ddd7fc;
+  cursor: pointer;
+}
+
+.tabActive {
+  background-color: white;
 }

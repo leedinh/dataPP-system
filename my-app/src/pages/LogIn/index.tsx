@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import LogInForm from "./LogInForm";
 import styles from "pages/styles.module.scss";
 

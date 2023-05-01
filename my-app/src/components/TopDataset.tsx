@@ -1,4 +1,3 @@
-import { Typography } from "antd";
 import RankDetail from "./RankDetail";
 import styles from "./styles.module.scss";
 

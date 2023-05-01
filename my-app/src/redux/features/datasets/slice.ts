@@ -31,6 +31,7 @@ export type DatasetInfo = {
   topic: string;
   uid: string;
   path: string;
+  status: string;
 };
 
 const slice = createSlice({

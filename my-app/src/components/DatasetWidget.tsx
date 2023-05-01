@@ -10,7 +10,7 @@ import { DatasetInfo } from "redux/features/datasets/slice";
 import styles from "./styles.module.scss";
 import Typography from "antd/es/typography/Typography";
 
-const DataSetWidget: React.FC<DatasetInfo> = ({ uid, title, date, path }) => (
+const DataSetWidget: React.FC<DatasetInfo> = ({ uid, title, date, did }) => (
   <Card className={styles.datasetCard}>
     <div className={styles.img}></div>
     <div className="flex justify-between">
@@ -42,7 +42,11 @@ const DataSetWidget: React.FC<DatasetInfo> = ({ uid, title, date, path }) => (
       <div className="">
         <Typography>Latest update: {date}</Typography>
       </div>
-      <Button href={path} shape="circle" icon={<DownloadOutlined />}></Button>
+      <Button
+        href={`http://localhost:5050/api/downloads/${did}`}
+        shape="circle"
+        icon={<DownloadOutlined />}
+      ></Button>
     </div>
   </Card>
 );

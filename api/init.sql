@@ -20,5 +20,5 @@ CREATE TABLE "dataset" (
     description VARCHAR(255),
     is_anonymized BOOLEAN,
     status dataset_status DEFAULT 'idle' NOT NULL,
-    topic VARCHAR(100)
+    topic SMALLINT
 ); 

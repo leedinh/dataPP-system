@@ -33,9 +33,7 @@ const slice = createSlice({
   reducers: {
     logout: (state) => {
       localStorage.removeItem(KEY_ACCESS_TOKEN);
-      state = { ...initialState };
-      console.log("Log out", state);
-      window.location.replace("/");
+      state.authenticated = false;
     },
     verifyToken: (state) => {
       let token = localStorage.getItem(KEY_ACCESS_TOKEN);
@@ -72,8 +70,6 @@ const slice = createSlice({
       })
       .addMatcher(isFulfilled(logInThunk), (state, action) => {
         const response = action.payload;
-
-        console.log(action);
 
         if (response["access_token"]) {
           localStorage.setItem(KEY_ACCESS_TOKEN, response.access_token);

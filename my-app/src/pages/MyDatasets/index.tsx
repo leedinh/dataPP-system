@@ -27,7 +27,7 @@ const columns: ColumnsType<DatasetInfo> = [
     title: "Status",
     key: "status",
     dataIndex: "status",
-    render: (_, { status }) => <Tag key={status}>{status.toUpperCase()}</Tag>,
+    render: (_, { status }) => <Tag key={status}>{status?.toUpperCase()}</Tag>,
   },
   {
     title: "Action",

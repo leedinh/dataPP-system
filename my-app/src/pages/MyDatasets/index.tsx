@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { Space, Table, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
 
 import { DatasetInfo } from "redux/features/datasets/slice";
+import { useAppDispatch, useAppSelector } from "redux/store";
+import { getUserDatasetsThunk } from "redux/features/mydatasets/thunks";
+import { selectUserDatasetState } from "redux/features/mydatasets/slice";
 
 const columns: ColumnsType<DatasetInfo> = [
   {
@@ -38,41 +41,41 @@ const columns: ColumnsType<DatasetInfo> = [
   },
 ];
 
-const data: DatasetInfo[] = [
-  {
-    date: "string",
-    did: "string",
-    filename: "string",
-    is_anonymized: true,
-    title: "string",
-    topic: "string",
-    uid: "string",
-    path: "string",
-    status: "string",
-  },
-  {
-    date: "string",
-    did: "string",
-    filename: "string",
-    is_anonymized: true,
-    title: "string",
-    topic: "string",
-    uid: "string",
-    path: "string",
-    status: "string",
-  },
-  {
-    date: "string",
-    did: "string",
-    filename: "string",
-    is_anonymized: true,
-    title: "string",
-    topic: "string",
-    uid: "string",
-    path: "string",
-    status: "string",
-  },
-];
+// const data: DatasetInfo[] = [
+//   {
+//     date: "string",
+//     did: "string",
+//     filename: "string",
+//     is_anonymized: true,
+//     title: "string",
+//     topic: "string",
+//     uid: "string",
+//     path: "string",
+//     status: "string",
+//   },
+//   {
+//     date: "string",
+//     did: "string",
+//     filename: "string",
+//     is_anonymized: true,
+//     title: "string",
+//     topic: "string",
+//     uid: "string",
+//     path: "string",
+//     status: "string",
+//   },
+//   {
+//     date: "string",
+//     did: "string",
+//     filename: "string",
+//     is_anonymized: true,
+//     title: "string",
+//     topic: "string",
+//     uid: "string",
+//     path: "string",
+//     status: "string",
+//   },
+// ];
 
 const rowSelection = {
   onChange: (selectedRowKeys: React.Key[], selectedRows: DatasetInfo[]) => {
@@ -85,6 +88,11 @@ const rowSelection = {
 };
 
 const MyDatasets: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const { datasets } = useAppSelector(selectUserDatasetState);
+  useEffect(() => {
+    dispatch(getUserDatasetsThunk());
+  }, []);
   return (
     <Table
       rowSelection={{
@@ -92,7 +100,7 @@ const MyDatasets: React.FC = () => {
         ...rowSelection,
       }}
       columns={columns}
-      dataSource={data}
+      dataSource={datasets}
     />
   );
 };

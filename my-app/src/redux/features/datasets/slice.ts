@@ -9,7 +9,7 @@ import { notification } from "antd";
 import { CommonState } from "redux/common/types";
 import { StatusEnum } from "redux/constant";
 import { RootState } from "redux/reducers";
-import { getAllDatasetsThunk } from "./thunks";
+import { getAllDatasetsThunk, getTopicDatasetsThunk } from "./thunks";
 
 export type DatasetState = {
   loading: boolean;
@@ -44,17 +44,29 @@ const slice = createSlice({
   },
   extraReducers: (builder) =>
     builder
-      .addMatcher(isRejected(getAllDatasetsThunk), (state, action) => {
-        state.status = StatusEnum.FAILED;
-        console.log(action);
-        notification.error({
-          message: action.error.message || "",
-        });
-      })
-      .addMatcher(isPending(getAllDatasetsThunk), (state) => {
-        state.status = StatusEnum.LOADING;
-      })
+      .addMatcher(
+        isRejected(getAllDatasetsThunk, getTopicDatasetsThunk),
+        (state, action) => {
+          state.status = StatusEnum.FAILED;
+          console.log(action);
+          notification.error({
+            message: action.error.message || "",
+          });
+        }
+      )
+      .addMatcher(
+        isPending(getAllDatasetsThunk, getTopicDatasetsThunk),
+        (state) => {
+          state.status = StatusEnum.LOADING;
+        }
+      )
       .addMatcher(isFulfilled(getAllDatasetsThunk), (state, action) => {
+        state.status = StatusEnum.SUCCEEDED;
+        state.loading = false;
+        state.datasets = action.payload;
+        console.log("Datasets:", action.payload);
+      })
+      .addMatcher(isFulfilled(getTopicDatasetsThunk), (state, action) => {
         state.status = StatusEnum.SUCCEEDED;
         state.loading = false;
         state.datasets = action.payload;

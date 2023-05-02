@@ -18,7 +18,7 @@ class Dataset(db.Model):
     is_anonymized = db.Column(db.Boolean)
     status = db.Column(db.Enum('pending', 'anonymizing',
                        'completed', 'idle'), default='idle', nullable=False)
-    topic = db.Column(db.String(100))
+    topic = db.Column(db.SmallInteger)
 
     def __init__(self, did, uid, name, path, author, status='idle'):
         self.did = did
@@ -34,11 +34,9 @@ class Dataset(db.Model):
             'did': self.did,
             'uid': self.uid,
             'filename': self.filename,
-            'path': self.path,
             'date': self.date.isoformat(),
             'title': self.title,
             'is_anonymized': self.is_anonymized,
-            'status': self.status,
             'topic': self.topic,
             'author': self.author
         }

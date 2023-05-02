@@ -20,7 +20,6 @@ const Datasets: React.FC = () => {
   };
 
   useEffect(() => {
-    // dispatch(getAllDatasetsThunk());
     dispatch(getTopicDatasetsThunk(topic || "1"));
   }, [dispatch, topic]);
 

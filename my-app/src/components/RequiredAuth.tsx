@@ -1,10 +1,10 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { AuthContext } from "context/AuthContext";
-import useAuth from "hook/useAuth";
+import { useAppSelector } from "redux/store";
+import { selectAuthState } from "redux/features/auth/slice";
 
 const RequiredAuth: React.FC = () => {
-  const { authenticated } = useAuth();
-  console.log(authenticated);
+  const { authenticated } = useAppSelector(selectAuthState);
   return authenticated ? (
     <AuthContext.Provider value={{ authenticated }}>
       <Outlet />

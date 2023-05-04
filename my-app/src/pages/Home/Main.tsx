@@ -1,31 +1,45 @@
+import { useEffect } from "react";
+
+import { useAppDispatch, useAppSelector } from "redux/store";
+import { selectDatasetState } from "redux/features/datasets/slice";
+import { getTopicDatasetsThunk } from "redux/features/datasets/thunks";
+import useFilter from "hook/useFilter";
 import TopDataset from "components/TopDataset";
 import Banner from "components/Banner";
 import Datasets from "./Datasets";
 
 const fakeData = [
   {
-    name: "A",
+    name: "A1",
     type: "ABC",
   },
   {
-    name: "A",
+    name: "A2",
     type: "ABC",
   },
   {
-    name: "A",
+    name: "A3",
     type: "ABC",
   },
   {
-    name: "A",
+    name: "A4",
     type: "ABC",
   },
   {
-    name: "A",
+    name: "A5",
     type: "ABC",
   },
 ];
 
 const Main: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const { datasets } = useAppSelector(selectDatasetState);
+  const { topic } = useFilter();
+
+  useEffect(() => {
+    dispatch(getTopicDatasetsThunk(topic || "1"));
+  }, []);
+
   return (
     <div className="grid grid-cols-4">
       <div className="p-4 flex flex-col gap-8">
@@ -34,7 +48,7 @@ const Main: React.FC = () => {
       </div>
       <div className="col-span-3 p-4 mx-16">
         <Banner />
-        <Datasets />
+        <Datasets data={datasets} />
       </div>
     </div>
   );

@@ -1,27 +1,25 @@
 import { useEffect } from "react";
 
 import { useAppDispatch, useAppSelector } from "redux/store";
-import { selectDatasetState } from "redux/features/datasets/slice";
+import { DatasetInfo, selectDatasetState } from "redux/features/datasets/slice";
 import { getTopicDatasetsThunk } from "redux/features/datasets/thunks";
 import DatasetWidget from "components/DatasetWidget";
 import useFilter from "hook/useFilter";
 import useTopic from "hook/useTopic";
 import styles from "pages/styles.module.scss";
 
-const Datasets: React.FC = () => {
-  const dispatch = useAppDispatch();
+type DatasetsProps = {
+  data: DatasetInfo[];
+};
+
+const Datasets: React.FC<DatasetsProps> = ({ data }) => {
   const { topicLabels } = useTopic();
-  const { datasets } = useAppSelector(selectDatasetState);
   const { pushQuery, topic } = useFilter();
 
   const onChange = (topic: string) => {
     console.log("Click button ", topic);
     pushQuery("topic", topic);
   };
-
-  useEffect(() => {
-    dispatch(getTopicDatasetsThunk(topic || "1"));
-  }, [dispatch, topic]);
 
   return (
     <>
@@ -42,7 +40,7 @@ const Datasets: React.FC = () => {
         </div>
       </div>
       <div className="grid grid-cols-4 gap-8 justify-items-center">
-        {datasets.map((item) => {
+        {data.map((item) => {
           return <DatasetWidget key={item.did} {...item} />;
         })}
       </div>

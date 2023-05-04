@@ -28,7 +28,6 @@ export default function useFilter(options?: UseFilterProps) {
     (key?: string) => {
       if (!key) return "";
       if (!query.has(key)) return "";
-      console.log("Test topic: ", query.get(key));
       return query.get(key);
     },
     [query]
@@ -86,8 +85,6 @@ export default function useFilter(options?: UseFilterProps) {
     navigate({ search });
   };
 
-  const topic = getQueryParam(options.topic);
-
   return {
     pushQueries,
     pushQuery,
@@ -95,7 +92,7 @@ export default function useFilter(options?: UseFilterProps) {
     pushGroupQuery,
     clearQuery,
     getQueryParam,
-    topic,
+    topic: getQueryParam(options.topic),
     pathname,
   };
 }

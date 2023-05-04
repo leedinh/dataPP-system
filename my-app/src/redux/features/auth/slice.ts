@@ -5,12 +5,11 @@ import {
   isPending,
   isFulfilled,
 } from "@reduxjs/toolkit";
-import jwt_decode from "jwt-decode";
 
 import { CommonState } from "redux/common/types";
 import { StatusEnum } from "redux/constant";
 import { RootState } from "redux/reducers";
-import { logInThunk, signUpThunk } from "./thunks";
+import { logInThunk, signUpThunk, checkTokenThunk } from "./thunks";
 import { KEY_ACCESS_TOKEN } from "redux/common/fetch";
 import { notification } from "antd";
 
@@ -35,38 +34,33 @@ const slice = createSlice({
       localStorage.removeItem(KEY_ACCESS_TOKEN);
       state.authenticated = false;
     },
-    verifyToken: (state) => {
-      let token = localStorage.getItem(KEY_ACCESS_TOKEN);
-      if (!!token) {
-        const tokenInfo = jwt_decode(token);
-        console.log("Info: ", tokenInfo);
-        const expiredTime = (tokenInfo as any).exp;
-        const currentTime = Number(new Date().getTime() / 1000);
-        console.log(expiredTime, currentTime);
-        if (expiredTime < currentTime) {
-          logout();
-        } else {
-          state.authenticated = true;
-        }
-      }
-    },
   },
   extraReducers: (builder) =>
     builder
-      .addMatcher(isRejected(logInThunk, signUpThunk), (state, action) => {
-        state.status = StatusEnum.FAILED;
-        console.log(action);
-        notification.error({
-          message: action.error.message || "",
-        });
-      })
-      .addMatcher(isPending(logInThunk, signUpThunk), (state, action) => {
-        state.status = StatusEnum.LOADING;
-        console.log(action);
-      })
+      .addMatcher(
+        isRejected(logInThunk, signUpThunk, checkTokenThunk),
+        (state, action) => {
+          state.status = StatusEnum.FAILED;
+          console.log(action);
+          notification.error({
+            message: action.error.message || "",
+          });
+        }
+      )
+      .addMatcher(
+        isPending(logInThunk, signUpThunk, checkTokenThunk),
+        (state, action) => {
+          state.status = StatusEnum.LOADING;
+          console.log(action);
+        }
+      )
       .addMatcher(isFulfilled(signUpThunk), (state, action) => {
         state.statusSignUp = StatusEnum.SUCCEEDED;
         state.email = action.meta.arg.email;
+      })
+      .addMatcher(isFulfilled(checkTokenThunk), (state, action) => {
+        state.statusSignUp = StatusEnum.SUCCEEDED;
+        state.authenticated = true;
       })
       .addMatcher(isFulfilled(logInThunk), (state, action) => {
         const response = action.payload;
@@ -84,7 +78,7 @@ const slice = createSlice({
 
 const { reducer } = slice;
 
-export const { logout, verifyToken } = slice.actions;
+export const { logout } = slice.actions;
 
 export default reducer;
 

@@ -1,8 +1,4 @@
-import { useEffect } from "react";
-
-import { useAppDispatch, useAppSelector } from "redux/store";
-import { DatasetInfo, selectDatasetState } from "redux/features/datasets/slice";
-import { getTopicDatasetsThunk } from "redux/features/datasets/thunks";
+import { DatasetInfo } from "redux/features/datasets/slice";
 import DatasetWidget from "components/DatasetWidget";
 import useFilter from "hook/useFilter";
 import useTopic from "hook/useTopic";
@@ -39,7 +35,7 @@ const Datasets: React.FC<DatasetsProps> = ({ data }) => {
           })}
         </div>
       </div>
-      <div className="grid grid-cols-4 gap-8 justify-items-center">
+      <div className="grid grid-cols-3 gap-8 justify-items-center mt-4">
         {data.map((item) => {
           return <DatasetWidget key={item.did} {...item} />;
         })}

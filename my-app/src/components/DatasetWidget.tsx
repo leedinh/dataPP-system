@@ -10,13 +10,13 @@ import { DatasetInfo } from "redux/features/datasets/slice";
 import styles from "./styles.module.scss";
 import Typography from "antd/es/typography/Typography";
 
-const DataSetWidget: React.FC<DatasetInfo> = ({ uid, title, date, did }) => (
+const DataSetWidget: React.FC<DatasetInfo> = ({ author, title, date, did }) => (
   <Card className={styles.datasetCard}>
     <div className={styles.img}></div>
     <div className="flex justify-between">
-      <div className="">
+      <div className="text-left">
         <Typography>{title}</Typography>
-        <Typography className="text-left">By {uid}</Typography>
+        <Typography className="text-left">By {author}</Typography>
       </div>
       <div className="">
         <Avatar.Group

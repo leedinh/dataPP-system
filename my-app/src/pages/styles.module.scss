@@ -36,3 +36,35 @@ $bg-img: url("../assets/bg.png");
 .tabActive {
   background-color: white;
 }
+
+$bg-user: url("../assets/bg_user.png");
+$width-avt: 80px;
+.bgUser {
+  padding: 8px;
+  height: 90px;
+  border-radius: 18px;
+  margin-bottom: 16px;
+  background-image: $bg-user;
+  position: relative;
+
+
+  .bgAvatar {
+    border-radius: calc(0.5 * $width-avt);
+    position: absolute;
+    height: $width-avt;
+    width: $width-avt;
+    background-color: white;
+    bottom: calc(-0.5 * $width-avt);
+    left: calc(50% - 0.5*$width-avt);
+
+    .img {
+      border-radius: 35px;
+      position: relative;
+      height: 70px;
+      width: 70px;
+      background-image: $bg-user;
+      left: 6%;
+      top: 6%;
+    }
+  }
+}

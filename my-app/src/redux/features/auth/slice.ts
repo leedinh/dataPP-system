@@ -23,7 +23,7 @@ const initialState: AuthState = {
   status: StatusEnum.IDLE,
   error: undefined,
   statusSignUp: StatusEnum.IDLE,
-  authenticated: false,
+  authenticated: true,
 };
 
 const slice = createSlice({
@@ -41,7 +41,6 @@ const slice = createSlice({
         isRejected(logInThunk, signUpThunk, checkTokenThunk),
         (state, action) => {
           state.status = StatusEnum.FAILED;
-          console.log(action);
           notification.error({
             message: action.error.message || "",
           });
@@ -49,16 +48,15 @@ const slice = createSlice({
       )
       .addMatcher(
         isPending(logInThunk, signUpThunk, checkTokenThunk),
-        (state, action) => {
+        (state) => {
           state.status = StatusEnum.LOADING;
-          console.log(action);
         }
       )
       .addMatcher(isFulfilled(signUpThunk), (state, action) => {
         state.statusSignUp = StatusEnum.SUCCEEDED;
         state.email = action.meta.arg.email;
       })
-      .addMatcher(isFulfilled(checkTokenThunk), (state, action) => {
+      .addMatcher(isFulfilled(checkTokenThunk), (state) => {
         state.statusSignUp = StatusEnum.SUCCEEDED;
         state.authenticated = true;
       })

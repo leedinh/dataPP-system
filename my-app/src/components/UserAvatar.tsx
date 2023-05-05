@@ -19,10 +19,10 @@ const UserAvatar: React.FC = () => {
       },
     },
     {
-      label: "My datasets",
-      key: "myDatasets",
+      label: "My profile",
+      key: "myProfile",
       onClick: () => {
-        navigate("/datasets");
+        navigate("/profile");
       },
     },
   ];

@@ -9,34 +9,28 @@ import { notification } from "antd";
 import { CommonState } from "redux/common/types";
 import { StatusEnum } from "redux/constant";
 import { RootState } from "redux/reducers";
-import { getAllDatasetsThunk, getTopicDatasetsThunk } from "./thunks";
+import {
+  getUserDatasetsThunk,
+  getUserProfileThunk,
+  deleteDatasetThunk,
+} from "./thunks";
+import { DatasetInfo } from "../datasets/slice";
 
-export type DatasetState = {
+export type UserProfileState = {
   loading: boolean;
   datasets: DatasetInfo[];
+  userInfo: any;
 } & CommonState;
 
-const initialState: DatasetState = {
+const initialState: UserProfileState = {
   status: StatusEnum.IDLE,
   loading: false,
   datasets: [],
-};
-
-export type DatasetInfo = {
-  date: string;
-  did: string;
-  filename: string;
-  is_anonymized: true;
-  title: string;
-  topic: string;
-  uid: string;
-  path: string;
-  status: string;
-  author: string;
+  userInfo: {},
 };
 
 const slice = createSlice({
-  name: "datasets",
+  name: "profile",
   initialState,
   reducers: {
     clear: (state) => {
@@ -46,7 +40,11 @@ const slice = createSlice({
   extraReducers: (builder) =>
     builder
       .addMatcher(
-        isRejected(getAllDatasetsThunk, getTopicDatasetsThunk),
+        isRejected(
+          getUserDatasetsThunk,
+          getUserProfileThunk,
+          deleteDatasetThunk
+        ),
         (state, action) => {
           state.status = StatusEnum.FAILED;
           console.log(action);
@@ -56,22 +54,32 @@ const slice = createSlice({
         }
       )
       .addMatcher(
-        isPending(getAllDatasetsThunk, getTopicDatasetsThunk),
+        isPending(
+          getUserDatasetsThunk,
+          getUserProfileThunk,
+          deleteDatasetThunk
+        ),
         (state) => {
           state.status = StatusEnum.LOADING;
         }
       )
-      .addMatcher(isFulfilled(getAllDatasetsThunk), (state, action) => {
+      .addMatcher(isFulfilled(getUserProfileThunk), (state, action) => {
         state.status = StatusEnum.SUCCEEDED;
         state.loading = false;
-        state.datasets = action.payload;
-        console.log("Datasets:", action.payload);
+        state.userInfo = action.payload;
+        console.log("UserInfo: ", state.userInfo);
       })
-      .addMatcher(isFulfilled(getTopicDatasetsThunk), (state, action) => {
+      .addMatcher(isFulfilled(deleteDatasetThunk), (state, action) => {
+        state.status = StatusEnum.SUCCEEDED;
+        state.loading = false;
+        state.datasets = state.datasets.filter(
+          (value) => value.did != action.payload.did
+        );
+      })
+      .addMatcher(isFulfilled(getUserDatasetsThunk), (state, action) => {
         state.status = StatusEnum.SUCCEEDED;
         state.loading = false;
         state.datasets = action.payload;
-        console.log("Datasets:", action.payload);
       }),
 });
 
@@ -81,4 +89,4 @@ export default reducer;
 
 export const { clear } = slice.actions;
 
-export const selectDatasetState = (state: RootState) => state.datasets;
+export const selectUserProfileState = (state: RootState) => state.profile;

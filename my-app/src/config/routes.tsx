@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import { HomePage, SignUp, LogIn, UploadDataset } from "pages";
 import Main from "pages/Home/Main";
 import RequiredAuth from "components/RequiredAuth";
-import MyDatasets from "pages/MyDatasets";
+import Profile from "pages/Profile";
 
 const routes = createBrowserRouter([
   {
@@ -21,8 +21,8 @@ const routes = createBrowserRouter([
             element: <UploadDataset />,
           },
           {
-            path: "/datasets",
-            element: <MyDatasets />,
+            path: "/profile",
+            element: <Profile />,
           },
         ],
       },

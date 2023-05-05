@@ -16,3 +16,10 @@ export const getTopicDatasetsThunk = createAsyncThunk(
     );
   }
 );
+
+export const getUserInfoThunk = createAsyncThunk(
+  "getUserName",
+  async (uid: string) => {
+    return sendGetRequest(`/api/user/${uid}`).then((res: any) => res.json());
+  }
+);

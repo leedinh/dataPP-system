@@ -2,7 +2,10 @@ import { useEffect } from "react";
 
 import { useAppDispatch, useAppSelector } from "redux/store";
 import { selectDatasetState } from "redux/features/datasets/slice";
-import { getTopicDatasetsThunk } from "redux/features/datasets/thunks";
+import {
+  getTopicDatasetsThunk,
+  getAllDatasetsThunk,
+} from "redux/features/datasets/thunks";
 import useFilter from "hook/useFilter";
 import TopDataset from "components/TopDataset";
 import Banner from "components/Banner";
@@ -37,8 +40,12 @@ const Main: React.FC = () => {
   const { topic } = useFilter();
 
   useEffect(() => {
-    dispatch(getTopicDatasetsThunk(topic || "1"));
-  }, []);
+    if (!!topic) {
+      dispatch(getTopicDatasetsThunk(topic));
+    } else {
+      dispatch(getAllDatasetsThunk());
+    }
+  }, [dispatch, topic]);
 
   return (
     <div className="grid grid-cols-4">

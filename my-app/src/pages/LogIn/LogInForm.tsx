@@ -1,11 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Checkbox, Col, Form, Input, Row } from "antd";
 
 import { useAppDispatch, useAppSelector } from "redux/store";
 import { logInThunk } from "redux/features/auth/thunks";
 import { selectEmail, selectLogInStatus } from "redux/features/auth/slice";
-import { StatusEnum } from "redux/constant";
+import useProvideAuth from "hook/useAuth";
 
 const onFinishFailed = (errorInfo: any) => {
   console.log("Failed:", errorInfo);
@@ -16,21 +16,22 @@ const LogInForm: React.FC = () => {
   const status = useAppSelector(selectLogInStatus);
   const email = useAppSelector(selectEmail);
   const navigate = useNavigate();
+  const { setAuthenticated } = useProvideAuth();
 
-  const logIn = async (values: any) => {
+  const logIn = useCallback((values: any) => {
     dispatch(
       logInThunk({
         email: values["email"]?.toString(),
         password: values["password"]?.toString(),
       })
-    );
-  };
-
-  useEffect(() => {
-    if (status === StatusEnum.SUCCEEDED) {
-      navigate("/");
-    }
-  }, [status, dispatch]);
+    ).then((res) => {
+      if (res.meta.requestStatus === "fulfilled") {
+        console.log(res);
+        setAuthenticated(true);
+        navigate("/");
+      }
+    });
+  }, []);
 
   return (
     <Row justify="center" align="middle" style={{ minHeight: "100vh" }}>

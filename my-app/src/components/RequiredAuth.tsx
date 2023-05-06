@@ -1,24 +1,13 @@
-import { Navigate, Outlet } from "react-router-dom";
 import { AuthContext } from "context/AuthContext";
-import { useAppDispatch, useAppSelector } from "redux/store";
-import { selectAuthState } from "redux/features/auth/slice";
-import { useEffect } from "react";
-import { checkTokenThunk } from "redux/features/auth/thunks";
+import useProvideAuth from "hook/useAuth";
 
-const RequiredAuth: React.FC = () => {
-  const { authenticated } = useAppSelector(selectAuthState);
-  const dispatch = useAppDispatch();
+const RequiredAuth: React.FC<any> = ({ children }) => {
+  const { authenticated, removeAuth } = useProvideAuth();
 
-  useEffect(() => {
-    dispatch(checkTokenThunk());
-  }, []);
-
-  return authenticated ? (
-    <AuthContext.Provider value={{ authenticated }}>
-      <Outlet />
+  return (
+    <AuthContext.Provider value={{ authenticated, logout: removeAuth }}>
+      {children}
     </AuthContext.Provider>
-  ) : (
-    <Navigate to={"/logIn"} />
   );
 };
 export default RequiredAuth;

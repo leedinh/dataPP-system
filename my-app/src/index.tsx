@@ -6,6 +6,7 @@ import store from "redux/store";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+import RequiredAuth from "components/RequiredAuth";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -13,7 +14,9 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <RequiredAuth>
+        <App />
+      </RequiredAuth>
     </Provider>
   </React.StrictMode>
 );

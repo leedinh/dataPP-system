@@ -23,7 +23,7 @@ const initialState: AuthState = {
   status: StatusEnum.IDLE,
   error: undefined,
   statusSignUp: StatusEnum.IDLE,
-  authenticated: true,
+  authenticated: false,
 };
 
 const slice = createSlice({
@@ -33,6 +33,9 @@ const slice = createSlice({
     logout: (state) => {
       localStorage.removeItem(KEY_ACCESS_TOKEN);
       state.authenticated = false;
+    },
+    setAuth: (state, action) => {
+      state.authenticated = action.payload;
     },
   },
   extraReducers: (builder) =>
@@ -76,7 +79,7 @@ const slice = createSlice({
 
 const { reducer } = slice;
 
-export const { logout } = slice.actions;
+export const { logout, setAuth } = slice.actions;
 
 export default reducer;
 

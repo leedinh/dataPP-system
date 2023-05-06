@@ -1,21 +1,19 @@
 import { UserOutlined } from "@ant-design/icons";
 import { Avatar, Dropdown } from "antd";
 import type { MenuProps } from "antd";
+import { useAuth } from "hook/useAuth";
 import { useNavigate } from "react-router-dom";
 
-import { logout } from "redux/features/auth/slice";
-import { useAppDispatch } from "redux/store";
-
 const UserAvatar: React.FC = () => {
-  const dispatch = useAppDispatch();
+  const { logout } = useAuth();
   const navigate = useNavigate();
   const items: MenuProps["items"] = [
     {
       label: "Log out",
       key: "logOut",
       onClick: () => {
-        dispatch(logout());
-        navigate("/");
+        logout();
+        navigate("/logIn");
       },
     },
     {

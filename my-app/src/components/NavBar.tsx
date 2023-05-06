@@ -8,6 +8,7 @@ import {
 import { Button, Typography, Menu, Input } from "antd";
 import type { MenuProps } from "antd";
 
+import { useAuth } from "hook/useAuth";
 import UserAvatar from "./UserAvatar";
 import styles from "./styles.module.scss";
 
@@ -26,12 +27,11 @@ const items: MenuProps["items"] = [
   },
 ];
 
-type NavBarProps = {
-  auth?: boolean;
-};
+type NavBarProps = {};
 
-const NavBar: React.FC<NavBarProps> = ({ auth }) => {
+const NavBar: React.FC<NavBarProps> = () => {
   const { pathname } = useLocation();
+  const { authenticated } = useAuth();
   const navigate = useNavigate();
 
   const onClick: MenuProps["onClick"] = (e) => {
@@ -60,8 +60,9 @@ const NavBar: React.FC<NavBarProps> = ({ auth }) => {
           />
         </div>
         <div className="self-center flex gap-4">
-          {auth && <UserAvatar />}
-          {!auth && (
+          {authenticated ? (
+            <UserAvatar />
+          ) : (
             <>
               <Button
                 type="text"
@@ -74,7 +75,7 @@ const NavBar: React.FC<NavBarProps> = ({ auth }) => {
                 type="primary"
                 key="signUp"
                 onClick={() => navigate("/signUp")}
-              > 
+              >
                 Sign Up
               </Button>
             </>

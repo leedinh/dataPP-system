@@ -1,11 +1,11 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Checkbox, Col, Form, Input, Row } from "antd";
 
 import { useAppDispatch, useAppSelector } from "redux/store";
 import { logInThunk } from "redux/features/auth/thunks";
-import { selectEmail, selectLogInStatus } from "redux/features/auth/slice";
-import useProvideAuth from "hook/useAuth";
+import { selectEmail } from "redux/features/auth/slice";
+import { useAuth } from "hook/useAuth";
 
 const onFinishFailed = (errorInfo: any) => {
   console.log("Failed:", errorInfo);
@@ -13,25 +13,27 @@ const onFinishFailed = (errorInfo: any) => {
 
 const LogInForm: React.FC = () => {
   const dispatch = useAppDispatch();
-  const status = useAppSelector(selectLogInStatus);
   const email = useAppSelector(selectEmail);
   const navigate = useNavigate();
-  const { setAuthenticated } = useProvideAuth();
+  const { setAuth } = useAuth();
 
-  const logIn = useCallback((values: any) => {
-    dispatch(
-      logInThunk({
-        email: values["email"]?.toString(),
-        password: values["password"]?.toString(),
-      })
-    ).then((res) => {
-      if (res.meta.requestStatus === "fulfilled") {
-        console.log(res);
-        setAuthenticated(true);
-        navigate("/");
-      }
-    });
-  }, []);
+  const logIn = useCallback(
+    (values: any) => {
+      dispatch(
+        logInThunk({
+          email: values["email"]?.toString(),
+          password: values["password"]?.toString(),
+        })
+      ).then((res) => {
+        if (res.meta.requestStatus === "fulfilled") {
+          console.log(res);
+          setAuth(true);
+          navigate("/");
+        }
+      });
+    },
+    [dispatch, navigate, setAuth]
+  );
 
   return (
     <Row justify="center" align="middle" style={{ minHeight: "100vh" }}>

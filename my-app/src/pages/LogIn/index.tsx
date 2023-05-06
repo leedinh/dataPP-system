@@ -1,12 +1,11 @@
 import { useEffect } from "react";
 import LogInForm from "./LogInForm";
 import styles from "pages/styles.module.scss";
-import useProvideAuth from "hook/useAuth";
+import { KEY_ACCESS_TOKEN } from "redux/common/fetch";
 
 const LogIn: React.FC = () => {
-  const { authenticated, removeAuth } = useProvideAuth();
   useEffect(() => {
-    authenticated && removeAuth();
+    localStorage.removeItem(KEY_ACCESS_TOKEN);
   }, []);
   return (
     <div className="w-screen h-screen grid grid-cols-2">

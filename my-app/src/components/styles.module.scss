@@ -39,7 +39,6 @@ $bg-img: url("../assets/default_dataset.png");
 .datasetCard {
   width: 100%;
   border-radius: 20px;
-  max-width: 250px;
 
   .img {
     padding: 8px;
@@ -47,7 +46,7 @@ $bg-img: url("../assets/default_dataset.png");
     border-radius: 18px;
     margin-bottom: 16px;
     background-image: $bg-img;
-    background-repeat: no-repeat;
+    background-size: cover;
   }
 }
 

@@ -1,16 +1,12 @@
 import React, { useEffect } from "react";
-import { Button, Space, Table, Tag } from "antd";
-import type { ColumnsType } from "antd/es/table";
-import { DeleteFilled, EditFilled } from "@ant-design/icons";
+import { Table } from "antd";
 
 import { DatasetInfo } from "redux/features/datasets/slice";
 import { useAppDispatch, useAppSelector } from "redux/store";
-import {
-  deleteDatasetThunk,
-  getUserDatasetsThunk,
-} from "redux/features/profile/thunks";
+import { getUserDatasetsThunk } from "redux/features/profile/thunks";
 import { selectUserProfileState } from "redux/features/profile/slice";
 import useColumn from "./columns";
+import styles from "pages/styles.module.scss";
 
 const rowSelection = {
   onChange: (selectedRowKeys: React.Key[], selectedRows: DatasetInfo[]) => {
@@ -29,9 +25,10 @@ const MyDatasets: React.FC = () => {
 
   useEffect(() => {
     dispatch(getUserDatasetsThunk());
-  }, []);
+  }, [dispatch]);
   return (
     <Table
+      className={styles.datasetsTable}
       rowSelection={{
         type: "checkbox",
         ...rowSelection,

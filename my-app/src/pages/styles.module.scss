@@ -63,8 +63,25 @@ $width-avt: 80px;
       height: 70px;
       width: 70px;
       background-image: $bg-user;
+      background-size: cover;
       left: 6%;
       top: 6%;
     }
   }
+}
+
+.userProfile {
+  border-radius: 20px;
+}
+
+.datasetsTable {
+
+  display: block;
+
+  th:first-child {
+    border-top-left-radius: 20px;
+  }
+  // th {
+  //   background-color: rgb(233, 233, 233) !important;
+  // }
 }

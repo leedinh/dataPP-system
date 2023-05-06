@@ -39,7 +39,7 @@ class BaseConfig(object):
     # Change it based on your admin user, should ideally read from DB.
     ADMIN_USER = 'admin'
     ADMIN_PASSWORD = 'admin'
-    JWT_EXPIRES = timedelta(minutes=10)
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=1)
 
 
 class DevelopmentConfig(BaseConfig):

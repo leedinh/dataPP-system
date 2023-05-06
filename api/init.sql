@@ -4,10 +4,23 @@ CREATE TABLE "user" (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     email VARCHAR(80) UNIQUE NOT NULL,
     username VARCHAR(255) DEFAULT 'anonymous' NOT NULL,
-    hash_password VARCHAR(120) NOT NULL
+    hash_password VARCHAR(120) NOT NULL,
+    upload_count INTEGER DEFAULT 0
 );
 
-CREATE TYPE dataset_status AS ENUM ('pending', 'anonymizing', 'completed', 'idle');
+CREATE TYPE dataset_status AS ENUM ('created', 'pending', 'anonymizing', 'completed', 'idle', 'deleted');
+
+CREATE TABLE "topic" (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE
+);
+
+INSERT INTO topic (name) VALUES ('Education');
+INSERT INTO topic (name) VALUES ('Entertainment');
+INSERT INTO topic (name) VALUES ('Medical');
+INSERT INTO topic (name) VALUES ('Science');
+INSERT INTO topic (name) VALUES ('Social');
+
 
 CREATE TABLE "dataset" (
     did VARCHAR(50) PRIMARY KEY,
@@ -20,5 +33,22 @@ CREATE TABLE "dataset" (
     description VARCHAR(255),
     is_anonymized BOOLEAN,
     status dataset_status DEFAULT 'idle' NOT NULL,
-    topic SMALLINT
+    topic INTEGER REFERENCES "topic" (id),
+    download_count INTEGER DEFAULT 0
 ); 
+
+
+CREATE TABLE "dataset_status_history" (
+    id SERIAL PRIMARY KEY,
+    did VARCHAR(50) NOT NULL,
+    status dataset_status NOT NULL,
+    timestamp TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
+
+CREATE TABLE dataset_topic (
+    did VARCHAR(50) REFERENCES "dataset" (did),
+    tid SMALLINT REFERENCES "topic" (id),
+    PRIMARY KEY (did, tid)
+);
+
+

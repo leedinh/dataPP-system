@@ -16,9 +16,10 @@ from datetime import datetime, timedelta
 from pytz import timezone
 from gevent.pywsgi import WSGIServer
 import logging
+import os
 
 from .rq_server import *
-from .models import User, Dataset
+from .models import User, Dataset, Topic, DatasetStatusHistory
 from .http_codes import Status
 from .factory import create_app
 
@@ -40,7 +41,12 @@ def task_anonymize(args, did):
 def task_delete_dataset(did):
     with app.app_context():
         ds = Dataset.find_by_did(did)
-        if ds.status == 'idle':
+        if ds and ds.status == 'idle':
+            try:
+                os.rmdir(ds.path)
+                logger.info("directory is deleted")
+            except OSError as x:
+                logger.info("Error occured: %s : %s" % (ds.path, x.strerror))
             ds.delete_from_db()
 
 
@@ -129,6 +135,27 @@ def get_user(uid):
         return jsonify(msg="User not found"), Status.HTTP_BAD_NOTFOUND
 
 
+@app.route('/api/user/top_upload')
+def get_top_upload_user():
+    try:
+        users = User.get_users_with_most_uploads()
+        return jsonify([u.serialize() for u in users]), Status.HTTP_OK_BASIC
+    except:
+        return jsonify(msg="User not found"), Status.HTTP_BAD_NOTFOUND
+
+
+@app.route('/api/user')
+@jwt_required()
+def get_user_info():
+    claims = get_jwt()
+    user_id = claims['user_id']
+    user = User.find_by_uid(user_id)
+    if user:
+        return jsonify(user.serialize()), Status.HTTP_OK_BASIC
+    else:
+        return jsonify(msg="User not found"), Status.HTTP_BAD_NOTFOUND
+
+
 @app.route('/api/user/update_info', methods=['PATCH'])
 @jwt_required()
 def update_user_info():
@@ -137,7 +164,7 @@ def update_user_info():
     user = User.find_by_uid(user_id)
     if user:
         args = request.json
-        user.update_username(args['new_username'])
+        user.update_username(args['username'])
         dss = Dataset.find_user_datasets(user_id)
         for ds in dss:
             ds.update_author(user.username)
@@ -179,6 +206,8 @@ def upload_file():
     claims = get_jwt()
     user_id = claims['user_id']
     user = User.find_by_uid(user_id)
+    if not user:
+        return jsonify(msg='Not found user'), Status.HTTP_BAD_NOTFOUND
     file_id = generate_uuid()
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], user_id, file_id)
 
@@ -191,6 +220,7 @@ def upload_file():
         dataset = Dataset(file_id, user_id, file.filename,
                           file_path, user.username)
         dataset.save_to_db()
+        user.update_upload(len(Dataset.find_user_datasets(user_id)))
     # Create a timedelta object from the delay_seconds
         delay = timedelta(minutes=10)
     # Calculate the datetime for when the task should be executed
@@ -198,7 +228,8 @@ def upload_file():
     # Enqueue the task with the calculated execution time
         rq_queue.enqueue_in(delay, task_delete_dataset, file_id)
         return jsonify(msg='File uploaded successfully', file_id=file_id), Status.HTTP_OK_CREATED
-    except:
+    except Exception as e:
+        logger.info(e)
         return jsonify(msg='Fail to upload'), Status.HTTP_BAD_CONFLICT
 
 
@@ -215,8 +246,6 @@ def update_info(did):
         ds.update_info(args['title'], args['is_anonymized'], args['topic'])
         if not args['is_anonymized']:
             ds.update_status('completed')
-        else:
-            ds.update_status('idle')
 
         path = os.path.join(ds.path, ds.filename)
         import pandas as pd
@@ -294,6 +323,15 @@ def get_all_datasets():
         return jsonify(error=str(e)), Status.HTTP_SERVICE_UNAVAILABLE
 
 
+@app.route('/api/dataset/top_download')
+def get_top_download_dataset():
+    try:
+        datasets = Dataset.get_datasets_with_most_download()
+        return jsonify([d.serialize() for d in datasets]), Status.HTTP_OK_BASIC
+    except:
+        return jsonify(msg="Dataset not found"), Status.HTTP_BAD_NOTFOUND
+
+
 @ app.route('/api/datasets/<string:topic>', methods=['GET'])
 def get_datasets_by_topic(topic):
     try:
@@ -319,8 +357,12 @@ def get_metadata(did):
 
 @ app.route('/api/downloads/<string:did>', methods=['GET'])
 def download_file(did):
-    ds = Dataset.find_by_did(did)
-    return send_from_directory(ds.path, ds.filename, as_attachment=True)
+    try:
+        ds = Dataset.find_by_did(did)
+        ds.inc_download()
+        return send_from_directory(ds.path, ds.filename, as_attachment=True)
+    except Exception as e:
+        logger.info(e)
 
 
 @app.route('/api/dataset/delete/<string:did>', methods=['DELETE'])
@@ -332,6 +374,7 @@ def delete_dataset(did):
         user_id = claims['user_id']
         if user_id != str(ds.uid):
             return jsonify(msg='You have no access to this file'), Status.HTTP_BAD_FORBIDDEN
+
         ds.delete_from_db()
         return jsonify(msg='Dataset deleted'), Status.HTTP_OK_ACCEPTED
     else:
@@ -362,6 +405,26 @@ def clean_ds():
 @ app.route('/api/time')
 def get_current_time():
     return {'time': time.time()}
+
+
+@ app.route('/api/topics', methods=['GET'])
+def get_topic():
+    try:
+        topics = Topic.find_all()
+        topics = [topic.name for topic in topics]
+        return jsonify(topic=topics), 200
+    except:
+        return jsonify(msg="Can not get topics"), 500
+
+
+@ app.route('/api/dataset/history/<string:did>', methods=['GET'])
+def get_dataset_history(did):
+    try:
+        histories = DatasetStatusHistory.find_by_did(did)
+
+        return jsonify(histories=[history.serialize() for history in histories]), 200
+    except:
+        return jsonify(msg="Can not get histories"), 500
 
 
 def main():

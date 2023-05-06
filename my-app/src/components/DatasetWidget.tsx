@@ -1,10 +1,6 @@
 import React from "react";
-import { Avatar, Button, Card, Tooltip } from "antd";
-import {
-  AntDesignOutlined,
-  UserOutlined,
-  DownloadOutlined,
-} from "@ant-design/icons";
+import { Avatar, Button, Card } from "antd";
+import { AntDesignOutlined, DownloadOutlined } from "@ant-design/icons";
 
 import { DatasetInfo } from "redux/features/datasets/slice";
 import styles from "./styles.module.scss";
@@ -19,23 +15,10 @@ const DataSetWidget: React.FC<DatasetInfo> = ({ author, title, date, did }) => (
         <Typography className="text-left">By {author}</Typography>
       </div>
       <div className="">
-        <Avatar.Group
-          maxCount={2}
-          maxStyle={{ color: "#f56a00", backgroundColor: "#fde3cf" }}
-        >
-          <Avatar src="https://joesch.moe/api/v1/random?key=2" />
-          <Avatar style={{ backgroundColor: "#f56a00" }}>K</Avatar>
-          <Tooltip title="Ant User" placement="top">
-            <Avatar
-              style={{ backgroundColor: "#87d068" }}
-              icon={<UserOutlined />}
-            />
-          </Tooltip>
-          <Avatar
-            style={{ backgroundColor: "#1890ff" }}
-            icon={<AntDesignOutlined />}
-          />
-        </Avatar.Group>
+        <Avatar
+          style={{ backgroundColor: "#1890ff" }}
+          icon={<AntDesignOutlined />}
+        />
       </div>
     </div>
     <div className="flex justify-between mt-4">

@@ -1,5 +1,5 @@
 import { AuthContext } from "context/AuthContext";
-import { useState, useContext, useMemo } from "react";
+import { useState, useContext, useMemo, useCallback } from "react";
 import { checkTokenThunk } from "redux/features/auth/thunks";
 import { useAppDispatch, useAppSelector } from "redux/store";
 import { KEY_ACCESS_TOKEN } from "redux/common/fetch";
@@ -15,22 +15,20 @@ export default function useProvideAuth() {
   const [authenticated, setAuthenticated] = useState(authRedux);
   const dispatch = useAppDispatch();
 
-  const removeAuth = () => {
+  const removeAuth = useCallback(() => {
     dispatch(logout());
     setAuthenticated(false);
-  };
+  }, [dispatch]);
 
-  const activeAuth = () => {
+  const activeAuth = useCallback(() => {
     dispatch(setAuth(true));
     setAuthenticated(true);
-  };
+  }, [dispatch]);
 
   const checkToken = useMemo(() => {
-    console.log("Checktoken");
     if (!!localStorage.getItem(KEY_ACCESS_TOKEN)) {
       dispatch(checkTokenThunk()).then((res) => {
         if (res.meta.requestStatus === "fulfilled") {
-          console.log("active");
           activeAuth();
         } else {
           removeAuth();
@@ -39,7 +37,7 @@ export default function useProvideAuth() {
     } else {
       removeAuth();
     }
-  }, []);
+  }, [dispatch, activeAuth, removeAuth]);
 
   return {
     checkToken,

@@ -14,7 +14,7 @@ const UserProfile: React.FC = () => {
     dispatch(getUserProfileThunk(""));
   }, [dispatch]);
   return (
-    <Card className="w-1/3">
+    <Card className={styles.userProfile}>
       <div className={styles.bgUser}>
         <div className={styles.bgAvatar}>
           <div className={styles.img}></div>

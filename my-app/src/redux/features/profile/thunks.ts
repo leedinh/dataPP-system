@@ -12,10 +12,8 @@ export const getUserDatasetsThunk = createAsyncThunk(
 
 export const getUserProfileThunk = createAsyncThunk(
   "getUserProfile",
-  async (uid: string) => {
-    return sendGetRequest(`/api/user/${uid}`, true).then((res: any) =>
-      res.json()
-    );
+  async () => {
+    return sendGetRequest(`/api/user`, true).then((res: any) => res.json());
   }
 );
 

@@ -8,10 +8,10 @@ import { getUserProfileThunk } from "redux/features/profile/thunks";
 
 const UserProfile: React.FC = () => {
   const { userInfo } = useAppSelector(selectUserProfileState);
-  const { username, mail } = userInfo;
+  const { username, email } = userInfo;
   const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(getUserProfileThunk(""));
+    dispatch(getUserProfileThunk());
   }, [dispatch]);
   return (
     <Card className={styles.userProfile}>
@@ -22,7 +22,7 @@ const UserProfile: React.FC = () => {
       </div>
       <div className="mt-16">
         <Typography>{username || "---"}</Typography>
-        <Typography>{mail || "---"}</Typography>
+        <Typography>{email || "---"}</Typography>
       </div>
     </Card>
   );

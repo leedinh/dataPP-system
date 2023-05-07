@@ -3,12 +3,13 @@ import styles from "./styles.module.scss";
 
 type TopDatasetProps = {
   title: string;
-  data: RankInfo[];
+  data: any[];
 };
 
 export type RankInfo = {
   name: string;
   type: string;
+  author: string;
 };
 
 const TopDataset: React.FC<TopDatasetProps> = ({ title, data }) => {
@@ -16,7 +17,7 @@ const TopDataset: React.FC<TopDatasetProps> = ({ title, data }) => {
     <div className={`mx-8 ${styles.topDataset}`}>
       <div className={styles.header}>{title}</div>
       {data.map((item) => {
-        return <RankDetail key={item.name} {...item} />;
+        return <RankDetail key={item.title} {...item} />;
       })}
     </div>
   );

@@ -17,9 +17,20 @@ export const getTopicDatasetsThunk = createAsyncThunk(
   }
 );
 
-export const getUserInfoThunk = createAsyncThunk(
-  "getUserName",
-  async (uid: string) => {
-    return sendGetRequest(`/api/user/${uid}`).then((res: any) => res.json());
+export const getTopDownloadThunk = createAsyncThunk(
+  "getTopDownload",
+  async () => {
+    return sendGetRequest(`/api/dataset/top_download`).then((res: any) =>
+      res.json()
+    );
+  }
+);
+
+export const getTopUploadThunk = createAsyncThunk(
+  "getTopDownload",
+  async () => {
+    return sendGetRequest(`/api/user/top_upload`).then((res: any) =>
+      res.json()
+    );
   }
 );

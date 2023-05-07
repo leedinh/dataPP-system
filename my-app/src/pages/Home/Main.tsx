@@ -5,38 +5,17 @@ import { selectDatasetState } from "redux/features/datasets/slice";
 import {
   getTopicDatasetsThunk,
   getAllDatasetsThunk,
+  getTopDownloadThunk,
+  getTopUploadThunk,
 } from "redux/features/datasets/thunks";
 import useFilter from "hook/useFilter";
 import TopDataset from "components/TopDataset";
 import Banner from "components/Banner";
 import Datasets from "./Datasets";
 
-const fakeData = [
-  {
-    name: "A1",
-    type: "ABC",
-  },
-  {
-    name: "A2",
-    type: "ABC",
-  },
-  {
-    name: "A3",
-    type: "ABC",
-  },
-  {
-    name: "A4",
-    type: "ABC",
-  },
-  {
-    name: "A5",
-    type: "ABC",
-  },
-];
-
 const Main: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { datasets } = useAppSelector(selectDatasetState);
+  const { datasets, topDownload, topUpload } = useAppSelector(selectDatasetState);
   const { topic } = useFilter();
 
   useEffect(() => {
@@ -45,13 +24,15 @@ const Main: React.FC = () => {
     } else {
       dispatch(getAllDatasetsThunk());
     }
+    dispatch(getTopDownloadThunk());
+    dispatch(getTopUploadThunk());
   }, [dispatch, topic]);
 
   return (
     <div className="grid grid-cols-4">
       <div className="p-4 flex flex-col gap-8">
-        <TopDataset title={"Download"} data={fakeData} />
-        <TopDataset title={"Download"} data={fakeData} />
+        <TopDataset title={"Download"} data={topDownload} />
+        <TopDataset title={"Download"} data={topUpload} />
       </div>
       <div className="col-span-3 p-4 mx-16">
         <Banner />

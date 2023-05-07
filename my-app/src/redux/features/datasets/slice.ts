@@ -9,17 +9,26 @@ import { notification } from "antd";
 import { CommonState } from "redux/common/types";
 import { StatusEnum } from "redux/constant";
 import { RootState } from "redux/reducers";
-import { getAllDatasetsThunk, getTopicDatasetsThunk } from "./thunks";
+import {
+  getAllDatasetsThunk,
+  getTopicDatasetsThunk,
+  getTopDownloadThunk,
+  getTopUploadThunk,
+} from "./thunks";
 
 export type DatasetState = {
   loading: boolean;
   datasets: DatasetInfo[];
+  topDownload: DatasetInfo[];
+  topUpload: any[];
 } & CommonState;
 
 const initialState: DatasetState = {
   status: StatusEnum.IDLE,
   loading: false,
+  topDownload: [],
   datasets: [],
+  topUpload: [],
 };
 
 export type DatasetInfo = {
@@ -46,7 +55,12 @@ const slice = createSlice({
   extraReducers: (builder) =>
     builder
       .addMatcher(
-        isRejected(getAllDatasetsThunk, getTopicDatasetsThunk),
+        isRejected(
+          getAllDatasetsThunk,
+          getTopicDatasetsThunk,
+          getTopDownloadThunk,
+          getTopUploadThunk
+        ),
         (state, action) => {
           state.status = StatusEnum.FAILED;
           console.log(action);
@@ -56,7 +70,12 @@ const slice = createSlice({
         }
       )
       .addMatcher(
-        isPending(getAllDatasetsThunk, getTopicDatasetsThunk),
+        isPending(
+          getAllDatasetsThunk,
+          getTopicDatasetsThunk,
+          getTopDownloadThunk,
+          getTopUploadThunk
+        ),
         (state) => {
           state.status = StatusEnum.LOADING;
         }
@@ -65,13 +84,25 @@ const slice = createSlice({
         state.status = StatusEnum.SUCCEEDED;
         state.loading = false;
         state.datasets = action.payload;
-        console.log("Datasets:", action.payload);
+        // console.log("Datasets:", action.payload);
+      })
+      .addMatcher(isFulfilled(getTopDownloadThunk), (state, action) => {
+        state.status = StatusEnum.SUCCEEDED;
+        state.loading = false;
+        state.topDownload = action.payload;
+        console.log("Top download:", action.payload);
+      })
+      .addMatcher(isFulfilled(getTopUploadThunk), (state, action) => {
+        state.status = StatusEnum.SUCCEEDED;
+        state.loading = false;
+        state.topUpload = action.payload;
+        // console.log("Top upload:", action.payload);
       })
       .addMatcher(isFulfilled(getTopicDatasetsThunk), (state, action) => {
         state.status = StatusEnum.SUCCEEDED;
         state.loading = false;
         state.datasets = action.payload;
-        console.log("Datasets:", action.payload);
+        // console.log("Datasets:", action.payload);
       }),
 });
 

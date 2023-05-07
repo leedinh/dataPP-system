@@ -3,15 +3,16 @@ import { RankInfo } from "./TopDataset";
 
 import styles from "./styles.module.scss";
 
-const RankDetail: React.FC<RankInfo> = ({ name, type }) => {
+const RankDetail: React.FC<any> = ({ title, is_anonymized, author }) => {
   return (
     <div className={styles.rankDetail}>
-      <div>cover</div>
+      <div className={styles.imgDataset}></div>
       <div>
-        <Typography>{name}</Typography>
+        <Typography>{title}</Typography>
+        <Typography>By {author}</Typography>
       </div>
       <div>
-        <Typography>{type}</Typography>
+        <Typography>{is_anonymized ? "Anonymized" : "Raw"}</Typography>
       </div>
     </div>
   );

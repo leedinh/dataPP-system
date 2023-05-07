@@ -28,7 +28,7 @@ export default function useProvideAuth() {
     } else {
       removeAuth();
     }
-  }, [dispatch]);
+  }, [dispatch, removeAuth, token]);
 
   return {
     authenticated,

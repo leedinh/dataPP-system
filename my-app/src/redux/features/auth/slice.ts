@@ -49,6 +49,10 @@ const slice = createSlice({
           });
         }
       )
+      .addMatcher(isRejected(checkTokenThunk), (state, action) => {
+        state.authenticated = false;
+        localStorage.removeItem(KEY_ACCESS_TOKEN);
+      })
       .addMatcher(
         isPending(logInThunk, signUpThunk, checkTokenThunk),
         (state) => {
@@ -60,7 +64,7 @@ const slice = createSlice({
         state.email = action.meta.arg.email;
       })
       .addMatcher(isFulfilled(checkTokenThunk), (state) => {
-        state.statusSignUp = StatusEnum.SUCCEEDED;
+        state.status = StatusEnum.SUCCEEDED;
         state.authenticated = true;
       })
       .addMatcher(isFulfilled(logInThunk), (state, action) => {
@@ -84,6 +88,11 @@ export const { logout, setAuth } = slice.actions;
 export default reducer;
 
 export const selectAuthState = (state: RootState) => state.auth;
+
+export const selectAuthLoading = createSelector(
+  selectAuthState,
+  (state) => state.status === StatusEnum.LOADING
+);
 
 export const selectAuthError = createSelector(
   selectAuthState,

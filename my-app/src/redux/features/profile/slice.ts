@@ -73,7 +73,7 @@ const slice = createSlice({
         state.status = StatusEnum.SUCCEEDED;
         state.loading = false;
         state.datasets = state.datasets.filter(
-          (value) => value.did != action.payload.did
+          (value) => value.did !== action.meta.arg
         );
       })
       .addMatcher(isFulfilled(getUserDatasetsThunk), (state, action) => {

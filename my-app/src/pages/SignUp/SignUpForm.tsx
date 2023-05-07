@@ -25,7 +25,7 @@ const LogInForm: React.FC = () => {
     if (status === StatusEnum.SUCCEEDED) {
       navigate("/logIn");
     }
-  }, [status, dispatch]);
+  }, [status, dispatch, navigate]);
 
   return (
     <Row justify="center" align="middle" style={{ minHeight: "100vh" }}>

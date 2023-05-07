@@ -11,6 +11,7 @@ import type { MenuProps } from "antd";
 import { useAuth } from "hook/useAuth";
 import UserAvatar from "./UserAvatar";
 import styles from "./styles.module.scss";
+import { KEY_ACCESS_TOKEN } from "redux/common/fetch";
 
 const { Title } = Typography;
 
@@ -60,7 +61,7 @@ const NavBar: React.FC<NavBarProps> = () => {
           />
         </div>
         <div className="self-center flex gap-4">
-          {authenticated ? (
+          {authenticated || !!localStorage.getItem(KEY_ACCESS_TOKEN) ? (
             <UserAvatar />
           ) : (
             <>

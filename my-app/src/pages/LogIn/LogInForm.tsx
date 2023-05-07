@@ -26,8 +26,6 @@ const LogInForm: React.FC = () => {
         })
       ).then((res) => {
         if (res.meta.requestStatus === "fulfilled") {
-          console.log(res);
-          setAuth(true);
           navigate("/");
         }
       });

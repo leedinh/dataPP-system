@@ -9,10 +9,10 @@ import {
   getTopUploadThunk,
 } from "redux/features/datasets/thunks";
 import useFilter from "hook/useFilter";
-import TopDataset from "./TopDataset";
+import TopDataset from "./TopDatasets";
 import Banner from "components/Banner";
 import Datasets from "./Datasets";
-import TopUser from "./TopUser";
+import TopUser from "./TopUsers";
 
 const Main: React.FC = () => {
   const dispatch = useAppDispatch();

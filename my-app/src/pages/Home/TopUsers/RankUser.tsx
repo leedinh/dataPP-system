@@ -1,6 +1,6 @@
 import { Typography } from "antd";
 
-import styles from "./styles.module.scss";
+import styles from "pages/styles.module.scss";
 
 const RankUser: React.FC<any> = ({ username, upload_count }) => {
   return (

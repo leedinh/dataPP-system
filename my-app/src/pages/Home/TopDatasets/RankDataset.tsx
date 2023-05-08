@@ -1,6 +1,6 @@
 import { Typography } from "antd";
 
-import styles from "./styles.module.scss";
+import styles from "pages/styles.module.scss";
 
 const RankDataset: React.FC<any> = ({ title, is_anonymized, author }) => {
   return (

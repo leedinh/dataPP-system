@@ -13,23 +13,6 @@
   }
 }
 
-.rankDetail {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 60px;
-  margin-bottom: 8px;
-
-  div {
-    flex: 1;
-  }
-
-  .imgDataset {
-    height: 100%;
-    background-color: black;
-  }
-}
-
 $banner-img: url("../assets/banner.png");
 .banner {
   height: 300px;

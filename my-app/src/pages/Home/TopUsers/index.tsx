@@ -1,5 +1,5 @@
-import RankUser from "components/RankUser";
-import styles from "components/styles.module.scss";
+import RankUser from "./RankUser";
+import styles from "pages/styles.module.scss";
 
 type TopUserProps = {
   title: string;

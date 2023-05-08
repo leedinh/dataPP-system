@@ -26,11 +26,6 @@ export const getTopDownloadThunk = createAsyncThunk(
   }
 );
 
-export const getTopUploadThunk = createAsyncThunk(
-  "getTopDownload",
-  async () => {
-    return sendGetRequest(`/api/user/top_upload`).then((res: any) =>
-      res.json()
-    );
-  }
-);
+export const getTopUploadThunk = createAsyncThunk("getTopUpload", async () => {
+  return sendGetRequest(`/api/user/top_upload`).then((res: any) => res.json());
+});

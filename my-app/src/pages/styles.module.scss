@@ -85,3 +85,35 @@ $width-avt: 80px;
   //   background-color: rgb(233, 233, 233) !important;
   // }
 }
+
+.topDataset {
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  background-color: white;
+
+  .header {
+    height: 40px;
+    font-size: 1.5rem;
+    text-align: left;
+  }
+}
+
+.rankDetail {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60px;
+  margin-bottom: 8px;
+
+  div {
+    flex: 1;
+  }
+
+  .imgDataset {
+    height: 100%;
+    background-color: black;
+  }
+}

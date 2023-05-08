@@ -1,19 +1,16 @@
 import { Button, Space, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { DeleteFilled, EditFilled } from "@ant-design/icons";
+import { DeleteFilled } from "@ant-design/icons";
 
 import { DatasetInfo } from "redux/features/datasets/slice";
 import { deleteDatasetThunk } from "redux/features/profile/thunks";
 import { useAppDispatch } from "redux/store";
+import EditModal from "./EditModal";
 
 export default function useColumn() {
   const dispatch = useAppDispatch();
   const handleDelete = (did: string) => {
     dispatch(deleteDatasetThunk(did));
-  };
-
-  const handleEdit = () => {
-    console.log("Edit dataset");
   };
 
   const columns: ColumnsType<DatasetInfo> = [
@@ -43,18 +40,14 @@ export default function useColumn() {
     {
       title: "Action",
       key: "action",
-      render: (_, { did }) => (
+      render: (_, value) => (
         <Space size="middle">
           <Button
             danger
             icon={<DeleteFilled />}
-            onClick={() => handleDelete(did)}
+            onClick={() => handleDelete(value.did)}
           ></Button>
-          <Button
-            type="primary"
-            icon={<EditFilled />}
-            onClick={() => handleEdit()}
-          ></Button>
+          <EditModal {...value} />
         </Space>
       ),
     },

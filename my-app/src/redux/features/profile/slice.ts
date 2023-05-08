@@ -13,20 +13,32 @@ import {
   getUserDatasetsThunk,
   getUserProfileThunk,
   deleteDatasetThunk,
+  updateUsernameThunk,
+  updateDatasetThunk,
 } from "./thunks";
 import { DatasetInfo } from "../datasets/slice";
 
 export type UserProfileState = {
   loading: boolean;
   datasets: DatasetInfo[];
-  userInfo: any;
+  userInfo: UserInfo;
 } & CommonState;
 
 const initialState: UserProfileState = {
   status: StatusEnum.IDLE,
   loading: false,
   datasets: [],
-  userInfo: {},
+  userInfo: {
+    username: "",
+    email: "",
+    upload_count: 0,
+  },
+};
+
+type UserInfo = {
+  username: string;
+  email: string;
+  upload_count: number;
 };
 
 const slice = createSlice({
@@ -43,7 +55,9 @@ const slice = createSlice({
         isRejected(
           getUserDatasetsThunk,
           getUserProfileThunk,
-          deleteDatasetThunk
+          deleteDatasetThunk,
+          updateUsernameThunk,
+          updateDatasetThunk
         ),
         (state, action) => {
           state.status = StatusEnum.FAILED;
@@ -57,7 +71,9 @@ const slice = createSlice({
         isPending(
           getUserDatasetsThunk,
           getUserProfileThunk,
-          deleteDatasetThunk
+          deleteDatasetThunk,
+          updateUsernameThunk,
+          updateDatasetThunk
         ),
         (state) => {
           state.status = StatusEnum.LOADING;
@@ -67,7 +83,6 @@ const slice = createSlice({
         state.status = StatusEnum.SUCCEEDED;
         state.loading = false;
         state.userInfo = action.payload;
-        console.log("UserInfo: ", state.userInfo);
       })
       .addMatcher(isFulfilled(deleteDatasetThunk), (state, action) => {
         state.status = StatusEnum.SUCCEEDED;
@@ -75,6 +90,19 @@ const slice = createSlice({
         state.datasets = state.datasets.filter(
           (value) => value.did !== action.meta.arg
         );
+      })
+      .addMatcher(isFulfilled(updateUsernameThunk), (state, action) => {
+        state.status = StatusEnum.SUCCEEDED;
+        state.loading = false;
+        state.userInfo.username = action.meta.arg;
+      })
+      .addMatcher(isFulfilled(updateDatasetThunk), (state, action) => {
+        state.status = StatusEnum.SUCCEEDED;
+        state.loading = false;
+        const { did, topic, title } = action.meta.arg;
+        const idx = state.datasets.findIndex((value) => value.did === did);
+        state.datasets[idx].title = title;
+        state.datasets[idx].topic = topic;
       })
       .addMatcher(isFulfilled(getUserDatasetsThunk), (state, action) => {
         state.status = StatusEnum.SUCCEEDED;

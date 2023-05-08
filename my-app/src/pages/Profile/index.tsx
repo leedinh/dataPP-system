@@ -1,5 +1,5 @@
 import MyDatasets from "./MyDatasets";
-import UserProfile from "./UserProfile";
+import UserProfile from "./UserProfile/index";
 
 const Profile: React.FC = () => {
   return (

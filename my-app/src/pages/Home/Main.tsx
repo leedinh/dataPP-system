@@ -9,13 +9,15 @@ import {
   getTopUploadThunk,
 } from "redux/features/datasets/thunks";
 import useFilter from "hook/useFilter";
-import TopDataset from "components/TopDataset";
+import TopDataset from "./TopDataset";
 import Banner from "components/Banner";
 import Datasets from "./Datasets";
+import TopUser from "./TopUser";
 
 const Main: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { datasets, topDownload, topUpload } = useAppSelector(selectDatasetState);
+  const { datasets, topDownload, topUpload } =
+    useAppSelector(selectDatasetState);
   const { topic } = useFilter();
 
   useEffect(() => {
@@ -24,15 +26,18 @@ const Main: React.FC = () => {
     } else {
       dispatch(getAllDatasetsThunk());
     }
-    dispatch(getTopDownloadThunk());
-    dispatch(getTopUploadThunk());
   }, [dispatch, topic]);
+
+  useEffect(() => {
+    dispatch(getTopDownloadThunk());
+    dispatch(getTopUploadThunk());  
+  }, [dispatch]);
 
   return (
     <div className="grid grid-cols-4">
       <div className="p-4 flex flex-col gap-8">
-        <TopDataset title={"Download"} data={topDownload} />
-        <TopDataset title={"Download"} data={topUpload} />
+        <TopDataset title="Top Download" data={topDownload} />
+        <TopUser title="Top Contribution" data={topUpload} />
       </div>
       <div className="col-span-3 p-4 mx-16">
         <Banner />

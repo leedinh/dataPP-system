@@ -25,3 +25,27 @@ export const deleteDatasetThunk = createAsyncThunk(
     );
   }
 );
+
+export const updateUsernameThunk = createAsyncThunk(
+  "getUserProfile",
+  async (newUsername: string) => {
+    return sendRequest(
+      "PATCH",
+      `/api/user/update_info`,
+      { username: newUsername },
+      true
+    ).then((res: any) => res.json());
+  }
+);
+
+export const updateDatasetThunk = createAsyncThunk(
+  "updateDataset",
+  async (request: any) => {
+    return sendRequest(
+      "PATCH",
+      `/api/dataset/update_info/${request.did}`,
+      request,
+      true
+    ).then((res: any) => res.json());
+  }
+);

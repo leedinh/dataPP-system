@@ -27,7 +27,7 @@ export const deleteDatasetThunk = createAsyncThunk(
 );
 
 export const updateUsernameThunk = createAsyncThunk(
-  "getUserProfile",
+  "updateUsername",
   async (newUsername: string) => {
     return sendRequest(
       "PATCH",

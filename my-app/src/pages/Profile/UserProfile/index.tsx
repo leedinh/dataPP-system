@@ -20,7 +20,6 @@ const UserProfile: React.FC = () => {
   const handleChangeUsername = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    console.log("New name:", e.target.value);
     setNewUsername(e.target.value);
   };
 
@@ -32,6 +31,7 @@ const UserProfile: React.FC = () => {
   useEffect(() => {
     dispatch(getUserProfileThunk());
   }, [dispatch]);
+
   return (
     <Card className={styles.userProfile}>
       <div className={styles.bgUser}>

@@ -21,24 +21,14 @@ import { DatasetInfo } from "../datasets/slice";
 export type UserProfileState = {
   loading: boolean;
   datasets: DatasetInfo[];
-  userInfo: UserInfo;
+  userInfo: any;
 } & CommonState;
 
 const initialState: UserProfileState = {
   status: StatusEnum.IDLE,
   loading: false,
   datasets: [],
-  userInfo: {
-    username: "",
-    email: "",
-    upload_count: 0,
-  },
-};
-
-type UserInfo = {
-  username: string;
-  email: string;
-  upload_count: number;
+  userInfo: {},
 };
 
 const slice = createSlice({
@@ -83,6 +73,7 @@ const slice = createSlice({
         state.status = StatusEnum.SUCCEEDED;
         state.loading = false;
         state.userInfo = action.payload;
+        // console.log("User infor: ", state.userInfo);
       })
       .addMatcher(isFulfilled(deleteDatasetThunk), (state, action) => {
         state.status = StatusEnum.SUCCEEDED;

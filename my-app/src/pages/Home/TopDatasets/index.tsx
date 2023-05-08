@@ -1,5 +1,5 @@
-import RankDataset from "components/RankDataset";
-import styles from "components/styles.module.scss";
+import RankDataset from "./RankDataset";
+import styles from "pages/styles.module.scss";
 
 type TopDatasetProps = {
   title: string;

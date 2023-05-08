@@ -1,9 +1,8 @@
 import { Typography } from "antd";
-import { RankInfo } from "./TopDataset";
 
 import styles from "./styles.module.scss";
 
-const RankDetail: React.FC<any> = ({ title, is_anonymized, author }) => {
+const RankDataset: React.FC<any> = ({ title, is_anonymized, author }) => {
   return (
     <div className={styles.rankDetail}>
       <div className={styles.imgDataset}></div>
@@ -18,4 +17,4 @@ const RankDetail: React.FC<any> = ({ title, is_anonymized, author }) => {
   );
 };
 
-export default RankDetail;
+export default RankDataset;

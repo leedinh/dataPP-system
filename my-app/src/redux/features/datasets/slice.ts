@@ -90,7 +90,7 @@ const slice = createSlice({
         state.status = StatusEnum.SUCCEEDED;
         state.loading = false;
         state.topDownload = action.payload;
-        console.log("Top download:", action.payload);
+        // console.log("Top download:", action.payload);
       })
       .addMatcher(isFulfilled(getTopUploadThunk), (state, action) => {
         state.status = StatusEnum.SUCCEEDED;

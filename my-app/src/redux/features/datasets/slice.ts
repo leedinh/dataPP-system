@@ -35,7 +35,8 @@ export type DatasetInfo = {
   date: string;
   did: string;
   filename: string;
-  is_anonymized: true;
+  is_anonymized: boolean;
+  description: string;
   title: string;
   topic: string;
   uid: string;

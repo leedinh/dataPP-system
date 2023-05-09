@@ -1,25 +1,13 @@
 import React, { useContext } from "react";
-import { Form, Table, Slider, Select } from "antd";
-import type { ColumnsType } from "antd/es/table";
+import { Form, Slider, Select } from "antd";
 import type { SliderMarks } from "antd/es/slider";
 
-import {
-  selectUploadState,
-  FieldsTableType,
-} from "redux/features/uploadProcess/slice";
+import { selectUploadState } from "redux/features/uploadProcess/slice";
 import { useAppSelector, useAppDispatch } from "redux/store";
 import { updateAnonymizedInfoThunk } from "redux/features/uploadProcess/thunks";
 import { UploadingContext } from "context/UploadingContext";
 
 type Step3Props = {};
-
-const columns: ColumnsType<FieldsTableType> = [
-  {
-    title: "Field",
-    dataIndex: "name",
-    render: (text: string) => <span>{text}</span>,
-  },
-];
 
 const marks: SliderMarks = {
   0: {

@@ -41,7 +41,7 @@ const NavBar: React.FC<NavBarProps> = () => {
       <div className="flex-auto text-left">
         <div className="w-fit	flex items-stretch">
           <div className="self-center mr-2">
-            <img src={logo} width={40} />
+            <img src={logo} width={40} alt="#" />
           </div>
           <Title className="inline-block align-top">BRAND</Title>
         </div>

@@ -1,4 +1,3 @@
-import { UserOutlined } from "@ant-design/icons";
 import { Avatar, Dropdown } from "antd";
 import type { MenuProps } from "antd";
 import { useAuth } from "hook/useAuth";

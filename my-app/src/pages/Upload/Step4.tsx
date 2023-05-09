@@ -7,7 +7,7 @@ const Step4: React.FC = () => (
     icon={<SmileOutlined />}
     title="Great, we have done all the operations!"
     extra={
-      <Button href="/" type="primary">
+      <Button href="/profile" type="primary">
         Next
       </Button>
     }

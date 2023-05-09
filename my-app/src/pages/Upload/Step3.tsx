@@ -95,7 +95,7 @@ const Step3: React.FC<Step3Props> = () => {
     >
       <Form.Item name="qsi">
         <Table
-          className="border-collapse rounded-full"
+          className="border-collapse rounded-full w-[300px]"
           rowSelection={{
             type: "checkbox",
             ...rowSelection,

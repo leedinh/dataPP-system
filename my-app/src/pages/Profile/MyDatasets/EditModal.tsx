@@ -67,7 +67,6 @@ const EditModal: React.FC<DatasetInfo> = ({
           >
             <Input />
           </Form.Item>
-
           <Form.Item name="topic" label="Topic" rules={[{ required: true }]}>
             <Select style={{ width: 120 }} options={optionTopic} />
           </Form.Item>

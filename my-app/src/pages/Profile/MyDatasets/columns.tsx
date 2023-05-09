@@ -1,11 +1,19 @@
 import { Button, Space, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { DeleteFilled } from "@ant-design/icons";
+import { DeleteFilled, CheckOutlined, CloseOutlined } from "@ant-design/icons";
 
 import { DatasetInfo } from "redux/features/datasets/slice";
 import { deleteDatasetThunk } from "redux/features/profile/thunks";
 import { useAppDispatch } from "redux/store";
 import EditModal from "./EditModal";
+
+const mappingColorStatus: any = {
+  completed: "success",
+  idle: "cyan",
+  anonymizing: "processing",
+  pending: "orange",
+  created: "success",
+};
 
 export default function useColumn() {
   const dispatch = useAppDispatch();
@@ -14,6 +22,13 @@ export default function useColumn() {
   };
 
   const columns: ColumnsType<DatasetInfo> = [
+    {
+      title: "ID",
+      dataIndex: "key",
+      render: (_, __, index) => {
+        return <>{index + 1}</>;
+      },
+    },
     {
       title: "Title",
       dataIndex: "title",
@@ -30,12 +45,23 @@ export default function useColumn() {
       key: "date",
     },
     {
+      title: "Anonymized",
+      key: "is_anonymized",
+      dataIndex: "is_anonymized",
+      render: (_, { is_anonymized }) =>
+        is_anonymized ? <CheckOutlined /> : <CloseOutlined />,
+      align: "center",
+    },
+    {
       title: "Status",
       key: "status",
       dataIndex: "status",
       render: (_, { status }) => (
-        <Tag key={status}>{status?.toUpperCase() || "UNDEFINED"}</Tag>
+        <Tag color={mappingColorStatus[status]} key={status}>
+          {status?.toUpperCase() || "UNDEFINED"}
+        </Tag>
       ),
+      align: "center",
     },
     {
       title: "Action",

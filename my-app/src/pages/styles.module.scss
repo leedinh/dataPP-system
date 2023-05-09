@@ -41,6 +41,7 @@ $bg-img: url("../assets/bg.png");
 }
 
 $bg-user: url("../assets/bg_user.png");
+$avatar: url("../assets/avatar.png");
 $width-avt: 80px;
 .bgUser {
   padding: 8px;
@@ -65,7 +66,7 @@ $width-avt: 80px;
       position: relative;
       height: 70px;
       width: 70px;
-      background-image: $bg-user;
+      background-image: $avatar;
       background-size: cover;
       left: 6%;
       top: 6%;

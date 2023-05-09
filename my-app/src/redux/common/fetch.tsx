@@ -52,7 +52,6 @@ export const sendGetRequest = (path: string, auth?: boolean) => {
 };
 
 const fetchHandler = (res: Response) => {
-  console.log("Response:", res);
   if (!res.ok) {
     return Promise.reject(new Error(res.statusText));
   }

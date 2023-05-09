@@ -110,14 +110,16 @@ $width-avt: 80px;
     font-size: 1.5rem;
     text-align: left;
   }
+
 }
 
 .rankDetail {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 60px;
-  margin-bottom: 16px;
+  height: 70px;
+  margin: 16px 16px;
+  padding: 24px;
 
   div {
     flex: 1;
@@ -129,4 +131,10 @@ $width-avt: 80px;
     background-size: cover;
     border-radius: 20px;
   }
+}
+
+.champion {
+  // border: 1px solid black;
+  border-radius: 20px;
+  box-shadow: 0 20px 25px 3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }

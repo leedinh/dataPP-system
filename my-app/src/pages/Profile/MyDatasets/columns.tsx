@@ -6,7 +6,7 @@ import { DatasetInfo } from "redux/features/datasets/slice";
 import { deleteDatasetThunk } from "redux/features/profile/thunks";
 import { useAppDispatch } from "redux/store";
 import EditModal from "./EditModal";
-import { DatasetTopic, getTopicLabel, optionTopic } from "redux/constant";
+import { getTopicLabel } from "redux/constant";
 
 const mappingColorStatus: any = {
   completed: "success",

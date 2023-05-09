@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Form, Checkbox, Input, Select, message, Typography } from "antd";
+import { Form, Checkbox, Input, Select, message } from "antd";
 import { optionTopic } from "redux/constant";
 import { selectUploadState } from "redux/features/uploadProcess/slice";
 import { useAppDispatch, useAppSelector } from "redux/store";

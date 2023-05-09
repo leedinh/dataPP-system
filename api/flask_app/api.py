@@ -243,7 +243,7 @@ def update_info(did):
         if user_id != str(ds.uid):
             return jsonify(msg='You have no access to this file'), Status.HTTP_BAD_FORBIDDEN
         args = request.json
-        ds.update_info(args['title'], args['is_anonymized'], args['topic'])
+        ds.update_info(args['title'], args['is_anonymized'], args['topic'], args['description'])
         if not args['is_anonymized']:
             ds.update_status('completed')
 

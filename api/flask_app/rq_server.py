@@ -1,6 +1,5 @@
 from redis import Redis
-from rq import Queue, Worker
-from rq_scheduler import Scheduler
+from rq import Queue
 import os
 
 os.environ['RQ_TIMEOUT'] = '3600'

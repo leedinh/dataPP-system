@@ -37,7 +37,6 @@ const LogInForm: React.FC = () => {
           form={signUpForm}
           name="signUp"
           size="large"
-          labelCol={{ span: 8 }}
           style={{ maxWidth: 600 }}
           initialValues={{ remember: true }}
           onFinish={signUp}
@@ -77,14 +76,13 @@ const LogInForm: React.FC = () => {
               },
             ]}
           >
-            <Input.Password size="large" />
+            <Input.Password size="large" visibilityToggle={false} />
           </Form.Item>
-
           <Form.Item>
             <Button
               type="primary"
               htmlType="submit"
-              className="w-full"
+              className="w-full mt-4"
               size="large"
             >
               Sign Up

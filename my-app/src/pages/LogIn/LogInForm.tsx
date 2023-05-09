@@ -75,7 +75,7 @@ const LogInForm: React.FC = () => {
             <Button
               type="primary"
               htmlType="submit"
-              className="w-full"
+              className="w-full h-10"
               size="large"
             >
               Log In

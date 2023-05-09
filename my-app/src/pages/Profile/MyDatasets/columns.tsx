@@ -28,6 +28,7 @@ export default function useColumn() {
       render: (_, __, index) => {
         return <>{index + 1}</>;
       },
+      align: "center",
     },
     {
       title: "Title",
@@ -35,9 +36,10 @@ export default function useColumn() {
       key: "title",
     },
     {
-      title: "Author",
-      dataIndex: "author",
-      key: "author",
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
+      width: 700,
     },
     {
       title: "Date",

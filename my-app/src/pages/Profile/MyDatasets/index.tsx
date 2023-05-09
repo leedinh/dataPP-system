@@ -8,16 +8,6 @@ import { selectUserProfileState } from "redux/features/profile/slice";
 import useColumn from "./columns";
 import styles from "pages/styles.module.scss";
 
-// const rowSelection = {
-//   onChange: (selectedRowKeys: React.Key[], selectedRows: DatasetInfo[]) => {
-//     console.log(
-//       `selectedRowKeys: ${selectedRowKeys}`,
-//       "selectedRows: ",
-//       selectedRows
-//     );
-//   },
-// };
-
 const MyDatasets: React.FC = () => {
   const dispatch = useAppDispatch();
   const { datasets } = useAppSelector(selectUserProfileState);
@@ -29,10 +19,6 @@ const MyDatasets: React.FC = () => {
   return (
     <Table
       className={styles.datasetsTable}
-      // rowSelection={{
-      //   type: "checkbox",
-      // ...rowSelection,
-      // }}
       rowKey={"did"}
       columns={columns}
       dataSource={datasets}

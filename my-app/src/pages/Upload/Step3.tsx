@@ -24,19 +24,19 @@ const columns: ColumnsType<FieldsTableType> = [
 const marks: SliderMarks = {
   0: {
     style: {
-      color: "red",
+      color: "#E76161",
     },
     label: <strong>Low</strong>,
   },
   50: {
     style: {
-      color: "yellow",
+      color: "#FFD95A",
     },
     label: <strong>Medium</strong>,
   },
   100: {
     style: {
-      color: "green",
+      color: "#A4D0A4",
     },
     label: <strong>High</strong>,
   },
@@ -86,10 +86,16 @@ const Step3: React.FC<Step3Props> = () => {
   };
 
   return (
-    <Form id="form3" form={formStep3} onFinish={onFinish}>
+    <Form
+      className="grid grid-cols-3 gap-16"
+      id="form3"
+      form={formStep3}
+      onFinish={onFinish}
+      layout="vertical"
+    >
       <Form.Item name="qsi">
         <Table
-          className="w-1/3 border-collapse rounded-full"
+          className="border-collapse rounded-full"
           rowSelection={{
             type: "checkbox",
             ...rowSelection,
@@ -100,12 +106,14 @@ const Step3: React.FC<Step3Props> = () => {
           pagination={false}
         />
       </Form.Item>
-      <Form.Item name="sec_level" initialValue={50}>
-        <Slider onChange={onSlider1Change} marks={marks} step={1} />
-      </Form.Item>
-      <Form.Item name="rule_level" initialValue={50}>
-        <Slider onChange={onSlider2Change} marks={marks} step={1} />
-      </Form.Item>
+      <div className="col-span-2">
+        <Form.Item label="Security level" name="sec_level" initialValue={50}>
+          <Slider onChange={onSlider1Change} marks={marks} step={1} />
+        </Form.Item>
+        <Form.Item label="Rule level" name="rule_level" initialValue={50}>
+          <Slider onChange={onSlider2Change} marks={marks} step={1} />
+        </Form.Item>
+      </div>
     </Form>
   );
 };

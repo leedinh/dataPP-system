@@ -2,14 +2,23 @@ import { RouterProvider } from "react-router-dom";
 import routes from "config/routes";
 import "./App.css";
 import RequiredAuth from "components/RequiredAuth";
+import { ConfigProvider } from "antd";
 
 function App() {
   return (
-    <div className="App">
-      <RequiredAuth>
-        <RouterProvider router={routes} />
-      </RequiredAuth>
-    </div>
+    <ConfigProvider
+      theme={{
+        token: {
+          fontFamily: "DM Sans",
+        },
+      }}
+    >
+      <div className="App">
+        <RequiredAuth>
+          <RouterProvider router={routes} />
+        </RequiredAuth>
+      </div>
+    </ConfigProvider>
   );
 }
 

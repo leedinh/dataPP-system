@@ -66,8 +66,8 @@ const Step1: React.FC<Step1Props> = () => {
   };
 
   return (
-    <Form id="form1" onFinish={handleUpload}>
-      <Form.Item className="mt-4">
+    <Form id="form1" onFinish={handleUpload} className="w-2/3">
+      <Form.Item>
         <Dragger {...props}>
           <p className="ant-upload-drag-icon">
             <InboxOutlined />
@@ -75,10 +75,7 @@ const Step1: React.FC<Step1Props> = () => {
           <p className="ant-upload-text">
             Click or drag file to this area to upload
           </p>
-          <p className="ant-upload-hint">
-            Support for a single or bulk upload. Strictly prohibited from
-            uploading company data or other banned files.
-          </p>
+          <p className="ant-upload-hint">File type: .csv</p>
         </Dragger>
       </Form.Item>
     </Form>

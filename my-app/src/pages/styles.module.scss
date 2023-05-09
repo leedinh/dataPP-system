@@ -19,6 +19,9 @@ $bg-img: url("../assets/bg.png");
   height: 100vh;
   border-bottom-left-radius: 200px;
   background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .tab {

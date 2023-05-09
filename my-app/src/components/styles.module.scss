@@ -13,6 +13,11 @@
   }
 }
 
+.borderBasic {
+  border: 2px solid white;
+  border-radius: 20px;
+}
+
 $banner-img: url("../assets/banner.png");
 .banner {
   height: 300px;
@@ -24,6 +29,7 @@ $banner-img: url("../assets/banner.png");
 }
 
 $bg-img: url("../assets/default_dataset.png");
+$logo-img: url("../assets/default_dataset.png");
 
 .datasetCard {
   width: 100%;

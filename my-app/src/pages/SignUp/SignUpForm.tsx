@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Col, Form, Input, Row } from "antd";
+import { Button, Col, Divider, Form, Input, Row } from "antd";
 import { useForm } from "antd/es/form/Form";
 
 import { useAppDispatch, useAppSelector } from "redux/store";
@@ -30,12 +30,13 @@ const LogInForm: React.FC = () => {
   return (
     <Row justify="center" align="middle" style={{ minHeight: "100vh" }}>
       <Col xs={24} sm={20} md={16} lg={12} xl={10} xxl={8}>
-        <div className="text-center mb-8">
+        <div className="text-left mb-8">
           <h1 className="text-5xl font-semibold">Sign Up</h1>
         </div>
         <Form
           form={signUpForm}
           name="signUp"
+          size="large"
           labelCol={{ span: 8 }}
           style={{ maxWidth: 600 }}
           initialValues={{ remember: true }}
@@ -86,13 +87,13 @@ const LogInForm: React.FC = () => {
               className="w-full"
               size="large"
             >
-              Submit
+              Sign Up
             </Button>
           </Form.Item>
         </Form>
-        <div className="">
+        <Divider>
           Don't have an account? <a href="/logIn">Log In</a>
-        </div>
+        </Divider>
       </Col>
     </Row>
   );

@@ -86,6 +86,19 @@ $width-avt: 80px;
   // }
 }
 
+.uploadContainer {
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  background-color: white;
+  padding: 80px;
+  margin-bottom: 8px;
+  border-radius: 34px;
+  height: 600px;
+}
+
+.form {
+  width: 40%;
+}
+
 .topDataset {
   border-radius: 20px;
   padding: 24px;

@@ -1,17 +1,13 @@
 import React, { useContext } from "react";
-import { Form, Checkbox, Input, Select, message } from "antd";
+import { Form, Checkbox, Input, Select, message, Typography } from "antd";
 import { optionTopic } from "redux/constant";
 import { selectUploadState } from "redux/features/uploadProcess/slice";
 import { useAppDispatch, useAppSelector } from "redux/store";
 import { updateDatasetInfoThunk } from "redux/features/uploadProcess/thunks";
 import { UploadingContext } from "context/UploadingContext";
+import styles from "pages/styles.module.scss";
 
 type Step2Props = {};
-
-const layout = {
-  labelCol: { span: 8 },
-  wrapperCol: { span: 16 },
-};
 
 /* eslint-disable no-template-curly-in-string */
 const validateMessages = {
@@ -46,39 +42,43 @@ const Step2: React.FC<Step2Props> = () => {
   };
 
   return (
-    <Form
-      {...layout}
-      id="form2"
-      form={formStep2}
-      name="datasetInfo"
-      style={{ maxWidth: 600 }}
-      validateMessages={validateMessages}
-      onFinish={onFinish}
-    >
-      <Form.Item name="title" label="Name" rules={[{ required: true }]}>
-        <Input />
-      </Form.Item>
-      <Form.Item name="description" label="Description">
-        <Input.TextArea />
-      </Form.Item>
-      <Form.Item name="topic" label="Topic" rules={[{ required: true }]}>
-        <Select
-          style={{ width: 120 }}
-          onChange={handleChange}
-          options={optionTopic}
-        />
-      </Form.Item>
-      <Form.Item
-        className="mt-4"
-        name="is_anonymized"
-        valuePropName="checked"
-        initialValue={false}
+    <>
+      <Form
+        id="form2"
+        className={styles.form}
+        layout="vertical"
+        form={formStep2}
+        name="datasetInfo"
+        validateMessages={validateMessages}
+        onFinish={onFinish}
+        title="Dataset Information"
+        size="large"
       >
-        <Checkbox defaultChecked={false}>
-          I want to anonymize this dataset
-        </Checkbox>
-      </Form.Item>
-    </Form>
+        <Form.Item name="title" label="Title" rules={[{ required: true }]}>
+          <Input />
+        </Form.Item>
+        <Form.Item name="description" label="Description">
+          <Input.TextArea />
+        </Form.Item>
+        <Form.Item
+          initialValue={1}
+          name="topic"
+          label="Topic"
+          rules={[{ required: true }]}
+        >
+          <Select onChange={handleChange} options={optionTopic} />
+        </Form.Item>
+        <Form.Item
+          name="is_anonymized"
+          valuePropName="checked"
+          initialValue={true}
+        >
+          <Checkbox className="w-full" defaultChecked={true}>
+            I want to anonymize this dataset
+          </Checkbox>
+        </Form.Item>
+      </Form>
+    </>
   );
 };
 

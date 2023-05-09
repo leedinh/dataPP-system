@@ -1,5 +1,6 @@
 import React from "react";
-import { Button, Steps, Space, Form } from "antd";
+import { Button, Steps, Space, Divider } from "antd";
+import { ArrowRightOutlined, ArrowLeftOutlined } from "@ant-design/icons";
 
 import { selectUploadState } from "redux/features/uploadProcess/slice";
 import { useAppSelector } from "redux/store";
@@ -9,13 +10,14 @@ import Step3 from "./Step3";
 import Step4 from "./Step4";
 import useUploading from "hook/useUploading";
 import { UploadingContext } from "context/UploadingContext";
+import styles from "pages/styles.module.scss";
 
 const items = [
   {
-    title: "Dataset",
+    title: "Upload Dataset",
   },
   {
-    title: "Raw Dataset",
+    title: "Dataset Information",
   },
   {
     title: "Config",
@@ -30,19 +32,21 @@ const UploadDataset: React.FC = () => {
   const contextInit = useUploading();
   const { currentStep, prev } = contextInit;
 
-  const MAX_STEP = items.length - 1;
-
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center mt-8">
       <div className="w-1/2">
-        <div className="shadow-xl shadow-outer p-16 rounded-3xl mb-8">
-          <Steps
-            current={currentStep - 1}
-            percent={50}
-            labelPlacement="vertical"
-            items={items}
-          />
-          <div className="mt-8">
+        <div className={styles.uploadContainer}>
+          <div className="px-16">
+            <Steps
+              responsive
+              current={currentStep - 1}
+              percent={50}
+              labelPlacement="vertical"
+              items={items}
+            />
+          </div>
+          <Divider className="border-2" />
+          <div className="mt-8 flex justify-center items-center h-[450px]">
             <UploadingContext.Provider value={contextInit}>
               {currentStep === 1 && <Step1 />}
               {currentStep === 2 && <Step2 />}
@@ -51,26 +55,26 @@ const UploadDataset: React.FC = () => {
             </UploadingContext.Provider>
           </div>
         </div>
-        <Space wrap className="flex justify-between">
+        <Space wrap className="flex justify-between mt-8">
           {currentStep < 4 && (
             <>
               <Button
+                shape="circle"
+                size="large"
                 ghost={currentStep === 1}
                 disabled={currentStep === 1}
                 onClick={() => prev()}
-              >
-                Back
-              </Button>
-              <Form.Item>
-                <Button
-                  form={`form${currentStep}`}
-                  type="primary"
-                  htmlType="submit"
-                  loading={loading}
-                >
-                  {currentStep === MAX_STEP ? "Finish" : "Continue"}
-                </Button>
-              </Form.Item>
+                icon={<ArrowLeftOutlined />}
+              ></Button>
+              <Button
+                shape="circle"
+                size="large"
+                form={`form${currentStep}`}
+                type="primary"
+                htmlType="submit"
+                loading={loading}
+                icon={<ArrowRightOutlined />}
+              ></Button>
             </>
           )}
         </Space>

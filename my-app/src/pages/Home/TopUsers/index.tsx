@@ -11,7 +11,7 @@ const TopUser: React.FC<TopUserProps> = ({ title, data }) => {
     <div className={`mx-8 ${styles.topDataset}`}>
       <div className={styles.header}>{title}</div>
       {data.map((item, idx) => {
-        return <RankUser key={idx} {...item} />;
+        return <RankUser key={idx} {...item} rank={idx + 1} />;
       })}
     </div>
   );

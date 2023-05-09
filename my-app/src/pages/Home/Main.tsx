@@ -30,16 +30,16 @@ const Main: React.FC = () => {
 
   useEffect(() => {
     dispatch(getTopDownloadThunk());
-    dispatch(getTopUploadThunk());  
+    dispatch(getTopUploadThunk());
   }, [dispatch]);
 
   return (
-    <div className="grid grid-cols-4">
-      <div className="p-4 flex flex-col gap-8">
+    <div className="grid grid-cols-7">
+      <div className="col-span-2 p-4 flex flex-col gap-8">
         <TopDataset title="Top Download" data={topDownload} />
         <TopUser title="Top Contribution" data={topUpload} />
       </div>
-      <div className="col-span-3 p-4 mx-16">
+      <div className="col-span-5 p-4 mx-8">
         <Banner />
         <Datasets data={datasets} />
       </div>

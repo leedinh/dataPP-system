@@ -1,11 +1,7 @@
 import React, { memo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import {
-  AppstoreOutlined,
-  HomeOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
-import { Button, Typography, Menu, Input } from "antd";
+import { AppstoreOutlined, HomeOutlined } from "@ant-design/icons";
+import { Button, Typography, Menu } from "antd";
 import type { MenuProps } from "antd";
 
 import { useAuth } from "hook/useAuth";
@@ -46,13 +42,6 @@ const NavBar: React.FC<NavBarProps> = () => {
       </div>
       <div className={`self-center ${styles.navBar}`}>
         <div className="self-center">
-          <Input
-            className={styles.searchBar}
-            placeholder="dataset name"
-            prefix={<Button type="ghost" icon={<SearchOutlined />} />}
-          />
-        </div>
-        <div className="flex-2 self-center">
           <Menu
             onClick={onClick}
             selectedKeys={[pathname]}

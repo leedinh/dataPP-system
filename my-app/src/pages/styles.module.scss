@@ -41,6 +41,7 @@ $bg-img: url("../assets/bg.png");
 }
 
 $bg-user: url("../assets/bg_user.png");
+$bg-dataset: url("../assets/default_dataset.png");
 $avatar: url("../assets/avatar.png");
 $width-avt: 80px;
 .bgUser {
@@ -50,6 +51,7 @@ $width-avt: 80px;
   margin-bottom: 16px;
   background-image: $bg-user;
   position: relative;
+  background-size: cover;
 
 
   .bgAvatar {
@@ -123,7 +125,7 @@ $width-avt: 80px;
   justify-content: center;
   align-items: center;
   height: 60px;
-  margin-bottom: 8px;
+  margin-bottom: 16px;
 
   div {
     flex: 1;
@@ -131,6 +133,8 @@ $width-avt: 80px;
 
   .imgDataset {
     height: 100%;
-    background-color: black;
+    background-image: $bg-dataset;
+    background-size: cover;
+    border-radius: 20px;
   }
 }

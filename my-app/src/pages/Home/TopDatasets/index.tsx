@@ -11,7 +11,7 @@ const TopDataset: React.FC<TopDatasetProps> = ({ title, data }) => {
     <div className={`mx-8 ${styles.topDataset}`}>
       <div className={styles.header}>{title}</div>
       {data.map((item, idx) => {
-        return <RankDataset key={idx} {...item} />;
+        return <RankDataset key={idx} {...item} rank={idx + 1} />;
       })}
     </div>
   );

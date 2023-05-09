@@ -26,6 +26,10 @@ $banner-img: url("../assets/banner.png");
   background-image: $banner-img;
   background-repeat: no-repeat;
   background-size: 100%;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  justify-content: center;
 }
 
 $bg-img: url("../assets/default_dataset.png");
@@ -53,8 +57,9 @@ $logo-img: url("../assets/default_dataset.png");
   padding-left: 20px;
   padding-right: 20px;
   border-radius: 35px;
+}
 
-  .searchBar {
-    border-radius: 20px;
-  }
+.downloadButton {
+  color: white;
+  background-color: #11047A;
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Card, Typography, Button, Input } from "antd";
+import { Card, Typography, Button, Input, notification } from "antd";
 import { EditFilled } from "@ant-design/icons";
 
 import { selectUserProfileState } from "redux/features/profile/slice";
@@ -14,7 +14,7 @@ const UserProfile: React.FC = () => {
   const { userInfo } = useAppSelector(selectUserProfileState);
   const { username, email } = userInfo;
   const [edit, setEdit] = useState(false);
-  const [newUsername, setNewUsername] = useState(username);
+  const [newUsername, setNewUsername] = useState<string>(username);
   const dispatch = useAppDispatch();
 
   const handleChangeUsername = (
@@ -24,7 +24,13 @@ const UserProfile: React.FC = () => {
   };
 
   const changeUsername = () => {
-    dispatch(updateUsernameThunk(newUsername));
+    if (newUsername && username !== newUsername) {
+      dispatch(updateUsernameThunk(newUsername));
+    } else {
+      notification.info({
+        message: "Please enter new username",
+      });
+    }
     setEdit(false);
   };
 
@@ -40,28 +46,34 @@ const UserProfile: React.FC = () => {
         </div>
       </div>
       <div className="mt-16">
-        {edit ? (
-          <>
-            <Input
-              className="w-1/2 mr-4"
-              defaultValue={username}
-              maxLength={20}
-              onChange={handleChangeUsername}
-            />
-            <Button type="primary" onClick={changeUsername}>
-              Save
-            </Button>
-          </>
-        ) : (
-          <div>
-            <Typography>{username || "---"}</Typography>
-            <Button
-              icon={<EditFilled />}
-              onClick={() => setEdit(true)}
-            ></Button>
-          </div>
-        )}
-        <Typography>{email || "---"}</Typography>
+        <div className="flex justify-center items-center gap-4">
+          <Typography className="font-bold">Username: </Typography>
+          {edit ? (
+            <>
+              <Input
+                className="w-1/4 mr-2"
+                defaultValue={username}
+                maxLength={20}
+                onChange={handleChangeUsername}
+              />
+              <Button type="primary" onClick={changeUsername}>
+                Save
+              </Button>
+            </>
+          ) : (
+            <>
+              <Typography>{username || "---"}</Typography>
+              <Button
+                icon={<EditFilled />}
+                onClick={() => setEdit(true)}
+              ></Button>
+            </>
+          )}
+        </div>
+        <div className="flex justify-center gap-4 mt-2">
+          <Typography className="font-bold">Email:</Typography>
+          <Typography> {email || "---"}</Typography>
+        </div>
       </div>
     </Card>
   );

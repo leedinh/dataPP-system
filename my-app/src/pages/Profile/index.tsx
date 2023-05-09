@@ -8,6 +8,7 @@ const Profile: React.FC = () => {
         <UserProfile />
       </div>
       <div className="col-span-3">
+        <h1 className="text-left mt-0">My Datasets</h1>
         <MyDatasets />
       </div>
     </div>

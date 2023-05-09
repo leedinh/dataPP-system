@@ -4,6 +4,7 @@ import { AppstoreOutlined, HomeOutlined } from "@ant-design/icons";
 import { Button, Typography, Menu } from "antd";
 import type { MenuProps } from "antd";
 
+import logo from "assets/logo.png";
 import { useAuth } from "hook/useAuth";
 import UserAvatar from "./UserAvatar";
 import styles from "./styles.module.scss";
@@ -38,7 +39,12 @@ const NavBar: React.FC<NavBarProps> = () => {
   return (
     <div className="flex items-stretch px-4">
       <div className="flex-auto text-left">
-        <Title className="inline-block align-top">LOGO</Title>
+        <div className="w-fit	flex items-stretch">
+          <div className="self-center mr-2">
+            <img src={logo} width={40} />
+          </div>
+          <Title className="inline-block align-top">BRAND</Title>
+        </div>
       </div>
       <div className={`self-center ${styles.navBar}`}>
         <div className="self-center w-[250px]">
@@ -51,7 +57,7 @@ const NavBar: React.FC<NavBarProps> = () => {
         </div>
         <div className="self-center flex gap-4">
           {authenticated || !!localStorage.getItem(KEY_ACCESS_TOKEN) ? (
-            <UserAvatar/>
+            <UserAvatar />
           ) : (
             <>
               <Button

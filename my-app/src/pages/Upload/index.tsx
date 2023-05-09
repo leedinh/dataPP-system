@@ -20,10 +20,10 @@ const items = [
     title: "Dataset Information",
   },
   {
-    title: "Config",
+    title: "Anonymization Config",
   },
   {
-    title: "Completed",
+    title: "Finished",
   },
 ];
 

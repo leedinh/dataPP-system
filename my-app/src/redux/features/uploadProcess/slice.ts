@@ -17,7 +17,7 @@ import {
 
 export type UploadState = {
   loading: boolean;
-  fields: FieldsTableType[];
+  fields: any[];
   fileid?: string;
 } & CommonState;
 
@@ -80,8 +80,8 @@ const slice = createSlice({
         state.fields = (action.payload.columns as Array<string>).map(
           (value, index) => {
             return {
-              key: index,
-              name: value,
+              label: value,
+              value: index,
             };
           }
         );

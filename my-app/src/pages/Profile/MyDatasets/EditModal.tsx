@@ -51,12 +51,11 @@ const EditModal: React.FC<DatasetInfo> = ({
         <Form
           name="basic"
           form={formDataset}
-          labelCol={{ span: 8 }}
-          wrapperCol={{ span: 16 }}
           style={{ maxWidth: 600 }}
           initialValues={{ title, topic }}
           onFinish={onFinish}
           autoComplete="off"
+          className="px-4 pt-4"
         >
           <Form.Item
             label="Title"
@@ -67,7 +66,11 @@ const EditModal: React.FC<DatasetInfo> = ({
           >
             <Input />
           </Form.Item>
-          <Form.Item name="topic" label="Topic" rules={[{ required: true }]}>
+          <Form.Item
+            name="topic"
+            label="Topic"
+            rules={[{ required: true, message: "Please choose the topic!" }]}
+          >
             <Select style={{ width: 120 }} options={optionTopic} />
           </Form.Item>
         </Form>

@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Form, Table, Slider } from "antd";
+import { Form, Table, Slider, Select } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import type { SliderMarks } from "antd/es/slider";
 
@@ -46,20 +46,6 @@ const Step3: React.FC<Step3Props> = () => {
   const dispatch = useAppDispatch();
   const { formStep3, next } = useContext(UploadingContext)!;
   const { fields, fileid } = useAppSelector(selectUploadState);
-  // rowSelection object indicates the need for row selection
-  const rowSelection = {
-    onChange: (
-      selectedRowKeys: React.Key[],
-      selectedRows: FieldsTableType[]
-    ) => {
-      console.log(
-        `selectedRowKeys: ${selectedRowKeys}`,
-        "selectedRows: ",
-        selectedRows
-      );
-      formStep3.setFieldValue("qsi", selectedRowKeys);
-    },
-  };
 
   const onFinish = (values: any) => {
     console.log("Send request step 3", values);
@@ -76,6 +62,10 @@ const Step3: React.FC<Step3Props> = () => {
     });
   };
 
+  const handleChange = (value: string[]) => {
+    formStep3.setFieldValue("qsi", value);
+  };
+
   const onSlider1Change = (value: any) => {
     console.log(value);
     formStep3.setFieldValue("sec_level", Number(value));
@@ -87,30 +77,33 @@ const Step3: React.FC<Step3Props> = () => {
 
   return (
     <Form
-      className="grid grid-cols-3 gap-16"
+      className="w-2/3"
       id="form3"
       form={formStep3}
       onFinish={onFinish}
       layout="vertical"
     >
-      <Form.Item name="qsi">
-        <Table
-          className="border-collapse rounded-full w-[300px]"
-          rowSelection={{
-            type: "checkbox",
-            ...rowSelection,
-          }}
-          columns={columns}
-          dataSource={fields}
-          scroll={{ y: 240 }}
-          pagination={false}
+      <Form.Item
+        label="Choose sensitive attributes: "
+        name="qsi"
+        rules={[
+          { required: true, message: "Please choose at least 1 attribute" },
+        ]}
+      >
+        <Select
+          mode="multiple"
+          allowClear
+          className=""
+          placeholder="Please select"
+          onChange={handleChange}
+          options={fields}
         />
       </Form.Item>
       <div className="col-span-2">
-        <Form.Item label="Security level" name="sec_level" initialValue={50}>
+        <Form.Item label="Security level:" name="sec_level" initialValue={50}>
           <Slider onChange={onSlider1Change} marks={marks} step={1} />
         </Form.Item>
-        <Form.Item label="Rule level" name="rule_level" initialValue={50}>
+        <Form.Item label="Rule level:" name="rule_level" initialValue={50}>
           <Slider onChange={onSlider2Change} marks={marks} step={1} />
         </Form.Item>
       </div>

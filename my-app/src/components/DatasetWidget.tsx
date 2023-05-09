@@ -11,7 +11,7 @@ const DataSetWidget: React.FC<DatasetInfo> = ({ author, title, date, did }) => (
     <div className={styles.img}></div>
     <div className="flex justify-between">
       <div className="text-left">
-        <Typography>{title}</Typography>
+        <Typography className="font-semibold">{title}</Typography>
         <Typography className="text-left">By {author}</Typography>
       </div>
       <div className="">
@@ -28,6 +28,9 @@ const DataSetWidget: React.FC<DatasetInfo> = ({ author, title, date, did }) => (
       <Button
         href={`http://localhost:5050/api/downloads/${did}`}
         shape="circle"
+        size="large"
+        className={styles.downloadButton}
+        type="text"
         icon={<DownloadOutlined />}
       ></Button>
     </div>

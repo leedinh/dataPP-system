@@ -20,7 +20,7 @@ const Datasets: React.FC<DatasetsProps> = ({ data }) => {
   return (
     <>
       <div className="grid grid-cols-3 mt-8">
-        <div className="col-span-2 justify-self-start">Dataset</div>
+        <div className="col-span-2 justify-self-start text-3xl">Dataset</div>
         <div className="justify-self-end flex gap-4">
           {Object.entries(topicLabels).map(([key, value]) => {
             return (

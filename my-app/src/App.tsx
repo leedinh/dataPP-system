@@ -10,6 +10,7 @@ function App() {
       theme={{
         token: {
           fontFamily: "DM Sans",
+          fontSize: 17,
         },
       }}
     >

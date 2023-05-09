@@ -81,11 +81,17 @@ const slice = createSlice({
         state.datasets = state.datasets.filter(
           (value) => value.did !== action.meta.arg
         );
+        notification.success({
+          message: `Delete dataset successfully`,
+        });
       })
       .addMatcher(isFulfilled(updateUsernameThunk), (state, action) => {
         state.status = StatusEnum.SUCCEEDED;
         state.loading = false;
         state.userInfo.username = action.meta.arg;
+        notification.success({
+          message: `Update username successfully`,
+        });
       })
       .addMatcher(isFulfilled(updateDatasetThunk), (state, action) => {
         state.status = StatusEnum.SUCCEEDED;
@@ -94,6 +100,9 @@ const slice = createSlice({
         const idx = state.datasets.findIndex((value) => value.did === did);
         state.datasets[idx].title = title;
         state.datasets[idx].topic = topic;
+        notification.success({
+          message: `Update dataset successfully`,
+        });
       })
       .addMatcher(isFulfilled(getUserDatasetsThunk), (state, action) => {
         state.status = StatusEnum.SUCCEEDED;

@@ -56,6 +56,7 @@ const EditModal: React.FC<DatasetInfo> = ({
           onFinish={onFinish}
           autoComplete="off"
           className="px-4 pt-4"
+          layout="vertical"
         >
           <Form.Item
             label="Title"
@@ -64,7 +65,10 @@ const EditModal: React.FC<DatasetInfo> = ({
               { required: true, message: "Please input the dataset title!" },
             ]}
           >
-            <Input />
+            <Input maxLength={120} />
+          </Form.Item>
+          <Form.Item label="Description" name="description">
+            <Input.TextArea maxLength={200} showCount />
           </Form.Item>
           <Form.Item
             name="topic"

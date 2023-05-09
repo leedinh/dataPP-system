@@ -41,6 +41,10 @@ export const optionTopic = [
   },
 ];
 
+export const getTopicLabel = (topic: DatasetTopic) => {
+  return optionTopic.find((value) => value.value === topic)?.label;
+};
+
 export const isLoading = (status: StatusEnum) => status === StatusEnum.LOADING;
 
 export const RECORD_LIMIT = 100;

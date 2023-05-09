@@ -81,15 +81,7 @@ $width-avt: 80px;
 }
 
 .datasetsTable {
-
-  display: block;
-
-  th:first-child {
-    border-top-left-radius: 20px;
-  }
-  // th {
-  //   background-color: rgb(233, 233, 233) !important;
-  // }
+  padding-right: 16px;
 }
 
 .uploadContainer {

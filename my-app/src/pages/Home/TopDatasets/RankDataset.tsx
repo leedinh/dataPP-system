@@ -7,7 +7,7 @@ const RankDataset: React.FC<any> = ({ title, is_anonymized, author, rank }) => {
     <div className={styles.rankDetail}>
       <div className={styles.imgDataset}></div>
       <div className="text-left ml-4">
-        <Typography className="font-semibold">{title}</Typography>
+        <Typography className="font-semibold text-ellipsis">{title}</Typography>
         <Typography className="text-slate-400">By {author}</Typography>
       </div>
       <div>

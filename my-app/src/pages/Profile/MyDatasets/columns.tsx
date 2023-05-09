@@ -6,6 +6,7 @@ import { DatasetInfo } from "redux/features/datasets/slice";
 import { deleteDatasetThunk } from "redux/features/profile/thunks";
 import { useAppDispatch } from "redux/store";
 import EditModal from "./EditModal";
+import { DatasetTopic, getTopicLabel, optionTopic } from "redux/constant";
 
 const mappingColorStatus: any = {
   completed: "success",
@@ -34,13 +35,16 @@ export default function useColumn() {
       title: "Title",
       dataIndex: "title",
       key: "title",
-      width: 300,
+      width: 250,
     },
     {
       title: "Description",
       dataIndex: "description",
       key: "description",
-      width: 700,
+      render: (_, { description }) => (
+        <span className="inline">{description}</span>
+      ),
+      width: 1000,
     },
     {
       title: "Date",
@@ -53,6 +57,17 @@ export default function useColumn() {
       dataIndex: "is_anonymized",
       render: (_, { is_anonymized }) =>
         is_anonymized ? <CheckOutlined /> : <CloseOutlined />,
+      align: "center",
+    },
+    {
+      title: "Topic",
+      key: "topic",
+      dataIndex: "topic",
+      render: (_, { topic }) => (
+        <Tag color={mappingColorStatus[topic]} key={topic}>
+          {getTopicLabel(Number(topic)) || "-"}
+        </Tag>
+      ),
       align: "center",
     },
     {

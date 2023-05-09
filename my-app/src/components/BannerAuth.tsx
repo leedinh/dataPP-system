@@ -6,7 +6,7 @@ const BannerAuth: React.FC = () => {
   return (
     <div className="flex flex-col">
       <div className="mb-4  ">
-        <img src={logo} width={300} />
+        <img src={logo} width={300} alt="#" />
       </div>
       <h1 className="text-5xl font-semibold text-white">BRAND</h1>
       <div className={styles.borderBasic}>

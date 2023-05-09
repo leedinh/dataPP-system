@@ -5,7 +5,6 @@ import { Button, Checkbox, Col, Divider, Form, Input, Row } from "antd";
 import { useAppDispatch, useAppSelector } from "redux/store";
 import { logInThunk } from "redux/features/auth/thunks";
 import { selectEmail } from "redux/features/auth/slice";
-import { useAuth } from "hook/useAuth";
 
 const onFinishFailed = (errorInfo: any) => {
   console.log("Failed:", errorInfo);
@@ -15,7 +14,6 @@ const LogInForm: React.FC = () => {
   const dispatch = useAppDispatch();
   const email = useAppSelector(selectEmail);
   const navigate = useNavigate();
-  const { setAuth } = useAuth();
 
   const logIn = useCallback(
     (values: any) => {
@@ -30,7 +28,7 @@ const LogInForm: React.FC = () => {
         }
       });
     },
-    [dispatch, navigate, setAuth]
+    [dispatch, navigate]
   );
 
   return (

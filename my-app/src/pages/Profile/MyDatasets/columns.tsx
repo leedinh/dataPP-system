@@ -34,6 +34,7 @@ export default function useColumn() {
       title: "Title",
       dataIndex: "title",
       key: "title",
+      width: 300,
     },
     {
       title: "Description",

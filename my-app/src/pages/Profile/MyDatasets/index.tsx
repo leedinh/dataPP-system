@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { Table } from "antd";
 
-import { DatasetInfo } from "redux/features/datasets/slice";
 import { useAppDispatch, useAppSelector } from "redux/store";
 import { getUserDatasetsThunk } from "redux/features/profile/thunks";
 import { selectUserProfileState } from "redux/features/profile/slice";

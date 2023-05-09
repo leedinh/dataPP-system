@@ -41,7 +41,7 @@ const NavBar: React.FC<NavBarProps> = () => {
         <Title className="inline-block align-top">LOGO</Title>
       </div>
       <div className={`self-center ${styles.navBar}`}>
-        <div className="self-center">
+        <div className="self-center w-[250px]">
           <Menu
             onClick={onClick}
             selectedKeys={[pathname]}
@@ -51,7 +51,7 @@ const NavBar: React.FC<NavBarProps> = () => {
         </div>
         <div className="self-center flex gap-4">
           {authenticated || !!localStorage.getItem(KEY_ACCESS_TOKEN) ? (
-            <UserAvatar />
+            <UserAvatar/>
           ) : (
             <>
               <Button

@@ -26,7 +26,7 @@ const UserAvatar: React.FC = () => {
     },
   ];
   return (
-    <Dropdown arrow menu={{ items }} trigger={["click"]}>
+    <Dropdown className="mr-2" arrow menu={{ items }} trigger={["click"]}>
       <Avatar src={avatar} />
     </Dropdown>
   );

@@ -4,7 +4,7 @@ from mlxtend.preprocessing import TransactionEncoder
 
 
 class Rule:
-    def __init__(self, df: pd.DataFrame, quasi_identifiers: list[str], min_support: float, min_confidence: float):
+    def __init__(self, df: pd.DataFrame, quasi_identifiers, min_support: float, min_confidence: float):
         self.df = df
         self.quasi_identifiers = quasi_identifiers
         self.min_sup = min_support

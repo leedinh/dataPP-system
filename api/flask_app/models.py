@@ -13,6 +13,7 @@ class Dataset(db.Model):
     filename = db.Column(db.String(255), nullable=False)
     author = db.Column(db.String(255), nullable=False, default='anonymous')
     path = db.Column(db.String(255), nullable=False)
+    description =  db.Column(db.String(255))
     date = db.Column(db.Date, nullable=False)
     title = db.Column(db.String(255))
     is_anonymized = db.Column(db.Boolean)
@@ -41,6 +42,7 @@ class Dataset(db.Model):
             'is_anonymized': self.is_anonymized,
             'topic': self.topic,
             'author': self.author,
+            'description': self.description,
             'download_count': self.download_count
         }
 
@@ -58,12 +60,12 @@ class Dataset(db.Model):
         self.author = author
         db.session.commit()
 
-    def update_info(self, title=None, is_anonymized=None, topic=None):
+    def update_info(self, title=None, is_anonymized=None, topic=None, description=None):
         # Update the attributes if they are not None
         self.title = title
         self.is_anonymized = is_anonymized
         self.topic = topic
-
+        self.description = description
         # Save the changes to the database
         db.session.commit()
 
@@ -128,7 +130,7 @@ class Dataset(db.Model):
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(80), unique=True, nullable=False)
-    username = db.Column(db.String(80), nullable=False, default='anonymize')
+    username = db.Column(db.String(80), nullable=False, default='anonymous')
     hash_password = db.Column(db.String(120), nullable=False)
     upload_count = db.Column(db.Integer, nullable=False, default=0)
 

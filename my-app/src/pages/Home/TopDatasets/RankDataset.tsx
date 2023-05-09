@@ -4,7 +4,10 @@ import styles from "pages/styles.module.scss";
 
 const RankDataset: React.FC<any> = ({ title, is_anonymized, author, rank }) => {
   return (
-    <div className={styles.rankDetail}>
+    <div
+      id="rank"
+      className={`${styles.rankDetail} ${rank === 1 && styles.champion}`}
+    >
       <div className={styles.imgDataset}></div>
       <div className="text-left ml-4">
         <Typography className="font-semibold text-ellipsis">{title}</Typography>

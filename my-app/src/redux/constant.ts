@@ -6,7 +6,6 @@ export enum StatusEnum {
 }
 
 export enum DatasetTopic {
-  UNSPECIFIED = 0,
   SCIENCE = 1,
   EDUCATION = 2,
   ENTERTAINMENT = 3,
@@ -34,10 +33,6 @@ export const optionTopic = [
   {
     value: DatasetTopic.SOCIAL,
     label: "Social",
-  },
-  {
-    value: DatasetTopic.UNSPECIFIED,
-    label: "Other",
   },
 ];
 

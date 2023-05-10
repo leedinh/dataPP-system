@@ -34,12 +34,12 @@ const Main: React.FC = () => {
   }, [dispatch]);
 
   return (
-    <div className="grid grid-cols-7">
-      <div className="col-span-2 p-4 flex flex-col gap-8">
+    <div className="grid grid-cols-1 lg:grid-cols-7">
+      <div className="lg:col-span-2 p-4 flex flex-row lg:flex-col xs:flex-col gap-8">
         <TopUser title="Top Contribution" data={topUpload} />
         <TopDataset title="Top Download" data={topDownload} />
       </div>
-      <div className="col-span-5 p-4 mx-8">
+      <div className="lg:col-span-5 p-4 mx-8">
         <Banner />
         <Datasets data={datasets} />
       </div>

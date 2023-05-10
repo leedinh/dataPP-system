@@ -42,7 +42,7 @@ const Datasets: React.FC<DatasetsProps> = ({ data }) => {
         </div>
         <div className="justify-self-end flex gap-4 mb-4">
           <Input
-            className="rounded-full w-[300px] px-4"
+            className="rounded-full w-[300px] sm:w-[200px] px-4"
             placeholder="dataset name"
             onChange={(e) => setSearchKey(e.target.value)}
             onPressEnter={() => handleSearch()}

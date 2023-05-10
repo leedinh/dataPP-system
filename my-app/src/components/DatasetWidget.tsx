@@ -12,7 +12,9 @@ const DataSetWidget: React.FC<DatasetInfo> = ({ author, title, date, did }) => (
     <div className="flex justify-between">
       <div className="text-left">
         <Typography className="font-semibold">{title}</Typography>
-        <Typography className="text-left">By {author}</Typography>
+        <Typography className="text-left text-slate-400">
+          By {author}
+        </Typography>
       </div>
       <div className="">
         <Avatar
@@ -23,7 +25,8 @@ const DataSetWidget: React.FC<DatasetInfo> = ({ author, title, date, did }) => (
     </div>
     <div className="flex justify-between mt-4">
       <div className="">
-        <Typography>Latest update: {date}</Typography>
+        <Typography>Uploaded at: </Typography>
+        <Typography>{date}</Typography>
       </div>
       <Button
         href={`http://localhost:5050/api/downloads/${did}`}

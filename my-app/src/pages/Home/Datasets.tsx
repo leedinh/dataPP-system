@@ -37,35 +37,41 @@ const Datasets: React.FC<DatasetsProps> = ({ data }) => {
   return (
     <>
       <div className="grid grid-cols-3 mt-8">
-        <div className="col-span-2 justify-self-start text-3xl font-semibold">
+        <div className="col-span-1 justify-self-start text-3xl font-semibold">
           Dataset
         </div>
-        <div className="justify-self-end flex gap-4 mb-4">
-          <Input
-            className="rounded-full w-[300px] sm:w-[200px] px-4"
-            placeholder="dataset name"
-            onChange={(e) => setSearchKey(e.target.value)}
-            onPressEnter={() => handleSearch()}
-            suffix={
-              <Button
-                shape="circle"
-                type="text"
-                onClick={() => handleSearch()}
-                icon={<SearchOutlined />}
-              ></Button>
-            }
-          />
-          {Object.entries(topicLabels).map(([key, value]) => {
-            return (
-              <div
-                onClick={() => onChange(key)}
-                key={key}
-                className={`${styles.tab} ${topic === key && styles.tabActive}`}
-              >
-                {value}
-              </div>
-            );
-          })}
+        <div className="justify-end col-span-2 flex flex-wrap gap-4 mb-4">
+          <div className="">
+            <Input
+              className="rounded-full w-[100px] lg:w-[200px] px-4"
+              placeholder="dataset name"
+              onChange={(e) => setSearchKey(e.target.value)}
+              onPressEnter={() => handleSearch()}
+              suffix={
+                <Button
+                  shape="circle"
+                  type="text"
+                  onClick={() => handleSearch()}
+                  icon={<SearchOutlined />}
+                ></Button>
+              }
+            />
+          </div>
+          <div className="flex flex-wrap justify-end">
+            {Object.entries(topicLabels).map(([key, value]) => {
+              return (
+                <div
+                  onClick={() => onChange(key)}
+                  key={key}
+                  className={`${styles.tab} ${
+                    topic === key && styles.tabActive
+                  }`}
+                >
+                  {value}
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
       <List

@@ -2,7 +2,6 @@ import { DatasetTopic } from "redux/constant";
 
 export default function useTopic() {
   const topicLabels = {
-    [DatasetTopic.UNSPECIFIED]: "Other",
     [DatasetTopic.EDUCATION]: "Education",
     [DatasetTopic.ENTERTAINMENT]: "Entertainment",
     [DatasetTopic.MEDICAL]: "Medical",

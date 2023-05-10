@@ -44,12 +44,13 @@ export default function useColumn() {
       render: (_, { description }) => (
         <span className="inline">{description}</span>
       ),
-      width: 1000,
+      width: 900,
     },
     {
       title: "Date",
       dataIndex: "date",
       key: "date",
+      width: 200,
     },
     {
       title: "Anonymized",

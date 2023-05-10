@@ -1,4 +1,4 @@
-import { Typography, Tag } from "antd";
+import { Typography } from "antd";
 
 import styles from "pages/styles.module.scss";
 import rank1 from "assets/rank1.png";
@@ -11,7 +11,7 @@ const mappingRankImage: any = {
   [3]: rank3,
 };
 
-const RankDataset: React.FC<any> = ({ title, is_anonymized, author, rank }) => {
+const RankDataset: React.FC<any> = ({ title, author, rank }) => {
   return (
     <div
       id="rank"

@@ -2,7 +2,7 @@ from .db import db
 import enum
 
 
-from datetime import date
+from datetime import datetime
 
 
 class Dataset(db.Model):
@@ -27,7 +27,7 @@ class Dataset(db.Model):
         self.uid = uid
         self.filename = name
         self.path = path
-        self.date = date.today()
+        self.date = datetime.now()
         self.status = status
         self.author = author
 
@@ -102,7 +102,8 @@ class Dataset(db.Model):
 
     @classmethod
     def find_user_datasets(cls, uid):
-        return cls.query.filter_by(uid=uid).all()
+        return Dataset.query.filter_by(uid=uid).\
+        filter(Dataset.status.in_(('completed', 'pending', 'anonymizing'))).all()
 
     @classmethod
     def find_all(cls):
@@ -112,9 +113,6 @@ class Dataset(db.Model):
     def query_datasets_by_topic(cls, topic):
         return cls.query.filter_by(topic=topic).all()
 
-    @classmethod
-    def query_datasets_by_uid(cls, uid):
-        return cls.query.filter_by(uid=uid).all()
 
     def update_status(self, new_status):
         self.status = new_status

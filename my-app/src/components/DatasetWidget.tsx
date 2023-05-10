@@ -1,21 +1,15 @@
 import React, { useState } from "react";
-import { Avatar, Button, Card, Descriptions, Modal, Tag } from "antd";
+import { Avatar, Button, Card, Tag } from "antd";
 import { AntDesignOutlined, DownloadOutlined } from "@ant-design/icons";
 
 import { DatasetInfo } from "redux/features/datasets/slice";
 import styles from "./styles.module.scss";
 import Typography from "antd/es/typography/Typography";
+import DetailDataset from "./DetailDataset";
 
-const DataSetWidget: React.FC<DatasetInfo> = ({
-  author,
-  title,
-  date,
-  did,
-  is_anonymized,
-  download_count,
-  description,
-}) => {
+const DataSetWidget: React.FC<DatasetInfo> = (data) => {
   const [modalOpen, setModalOpen] = useState(false);
+  const { author, is_anonymized, date, title, did } = data;
 
   return (
     <>
@@ -27,7 +21,7 @@ const DataSetWidget: React.FC<DatasetInfo> = ({
             <Typography className="text-left text-slate-400">
               By {author}
             </Typography>
-            {!is_anonymized ? (
+            {is_anonymized ? (
               <Tag className="w-fit mt-2 bg-black text-white px-3 py-1 rounded-lg">
                 Anonymized
               </Tag>
@@ -59,34 +53,11 @@ const DataSetWidget: React.FC<DatasetInfo> = ({
           ></Button>
         </div>
       </Card>
-      <Modal
-        title="Dataset Information"
-        maskClosable
-        centered
-        cancelText="Close"
+      <DetailDataset
+        data={data}
         open={modalOpen}
-        onCancel={() => setModalOpen(false)}
-        footer={
-          <Button onClick={() => setModalOpen(false)} type="primary">
-            Close
-          </Button>
-        }
-      >
-        <Descriptions bordered column={1} className="pt-4">
-          <Descriptions.Item label="Title">
-            {title}
-            <Tag className="ml-4">{is_anonymized ? "Anonymized" : "Raw"}</Tag>
-          </Descriptions.Item>
-          <Descriptions.Item label="Author">{author}</Descriptions.Item>
-          <Descriptions.Item label="Description">
-            {description}
-          </Descriptions.Item>
-          <Descriptions.Item label="Uploaded at:">{date}</Descriptions.Item>
-          <Descriptions.Item label="Downloaded:">
-            {download_count}
-          </Descriptions.Item>
-        </Descriptions>
-      </Modal>
+        close={() => setModalOpen(false)}
+      />
     </>
   );
 };

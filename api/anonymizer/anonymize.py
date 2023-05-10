@@ -205,12 +205,9 @@ class Anonymizer:
         UG_BIG = list(sorted(UG_BIG, key=lambda x: self.freq[x], reverse=True))
         UG_SMALL = list(filter(lambda g: self.freq[g] <= self.k//2, UG))
         UG_SMALL = list(sorted(UG_SMALL, key=lambda x: self.freq[x]))
-        print([self.freq[i] for i in UG_BIG])
-        print([self.freq[i] for i in UG_SMALL])
         assert (len(SG) + len(UG) == len(self.groups))
         assert (len(UG_BIG) + len(UG_SMALL) == len(UG))
         UG = list(sorted(UG, key=lambda x: self.freq[x]))
-        print([self.freq[i] for i in UG])
         self.is_received = {key: False for key in self.freq}
 
         SelG = None

@@ -52,7 +52,7 @@ class Rule:
         assert (self.rule_care['budget'] > 1e-03).all()
 
     def generate_rules(self):
-        self.frequent_itemsets = fpgrowth(
+        self.frequent_itemsets = apriori(
             self.df, min_support=self.min_sup, use_colnames=True)
         rules = association_rules(
             self.frequent_itemsets, metric="confidence", min_threshold=self.min_conf)
@@ -65,3 +65,4 @@ class Rule:
 
         self.rule_care = qi_rules[[
             'antecedents', 'consequents', 'support', 'confidence', 'qi_rhs']]
+        print('Finalized rule set number: ', self.rule_care.size)

@@ -1,19 +1,17 @@
 import re
 import time
-from flask import Flask, jsonify, send_from_directory, request
+from flask import jsonify, send_from_directory, request
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt
-# from task import *
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
 import psycopg2
+import shutil
 import uuid
 import hashlib
 from datetime import timedelta
 from sqlalchemy import exc
 from anonymizer.anonymize import Anonymizer
-from rq.registry import ScheduledJobRegistry
-from datetime import datetime, timedelta
-from pytz import timezone
+from datetime import timedelta
 from gevent.pywsgi import WSGIServer
 import logging
 import os
@@ -26,6 +24,15 @@ from .factory import create_app
 logger = logging.getLogger(__name__)
 app = create_app()
 jwt = JWTManager(app)
+
+
+
+def callback_function(job, connection, type, value, traceback):
+    with app.app_context():
+    # Perform actions with the result
+        print(f"Task result: ", vars(job))
+
+
 
 
 def task_anonymize(args, did):
@@ -43,6 +50,7 @@ def task_delete_dataset(did):
         ds = Dataset.find_by_did(did)
         if ds and ds.status == 'idle':
             try:
+                os.remove(os.path.join(ds.path,ds.filename))
                 os.rmdir(ds.path)
                 logger.info("directory is deleted")
             except OSError as x:
@@ -274,7 +282,7 @@ def enqueue_anonymize(did):
             k = 5
         if sec_level in range(30, 70):
             k = 15
-        if sec_level in range(70, 100):
+        if sec_level in range(70, 101):
             k = 23
 
         min_conf = 0.6
@@ -282,7 +290,7 @@ def enqueue_anonymize(did):
             min_sup = 0.6
         if rule_level in range(30, 70):
             min_sup = 0.4
-        if rule_level in range(70, 100):
+        if rule_level in range(70, 101):
             min_sup = 0.2
 
         param = {}
@@ -292,8 +300,7 @@ def enqueue_anonymize(did):
         param['conf'] = min_conf
         param['input'] = os.path.join(ds.path, ds.filename)
         param['output'] = os.path.join(ds.path, ds.filename)
-        rq_queue.enqueue(task_anonymize, param, str(did)
-                         )  # enqueue the function
+        rq_queue.enqueue(task_anonymize, args=(param, str(did)), on_failure=callback_function, )  # enqueue the function
         ds.update_status('pending')
         return jsonify(msg="Task enqueued"), Status.HTTP_OK_ACCEPTED
     else:
@@ -374,7 +381,12 @@ def delete_dataset(did):
         user_id = claims['user_id']
         if user_id != str(ds.uid):
             return jsonify(msg='You have no access to this file'), Status.HTTP_BAD_FORBIDDEN
-
+        try:
+                os.remove(os.path.join(ds.path,ds.filename))
+                os.rmdir(ds.path)
+                logger.info("directory is deleted")
+        except OSError as x:
+                logger.info("Error occured: %s : %s" % (ds.path, x.strerror))
         ds.delete_from_db()
         return jsonify(msg='Dataset deleted'), Status.HTTP_OK_ACCEPTED
     else:
@@ -430,7 +442,7 @@ def get_dataset_history(did):
 def main():
     try:
         port = 5050
-        ip = '127.0.0.1'
+        ip = '0.0.0.0'
         http_server = WSGIServer(
             (ip, port), app, log=logging, error_log=logging)
         print("Server started at : {0}:{1}".format(ip, port))

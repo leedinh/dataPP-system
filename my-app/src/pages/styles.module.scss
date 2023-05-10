@@ -8,7 +8,7 @@
   background-color: #F0F4FF;
   padding-left: 24px;
   padding-right: 24px;
-  height: 100vh;
+  min-height: 100vh;
 }
 
 $bg-img: url("../assets/bg.png");
@@ -99,7 +99,7 @@ $width-avt: 80px;
 
 .topDataset {
   border-radius: 20px;
-  padding: 24px;
+  padding: 36px;
   display: flex;
   flex-direction: column;
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
@@ -115,18 +115,22 @@ $width-avt: 80px;
 
 .rankDetail {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  height: 70px;
-  margin: 16px 16px;
-  padding: 24px;
+  margin: 8px 8px;
+  padding: 24px 24px;
 
   div {
-    flex: 1;
+    width: 100px;
+  }
+  .tag {
+    width: 70px;
   }
 
   .imgDataset {
     height: 100%;
+    width: 70px;
     background-image: $bg-dataset;
     background-size: cover;
     border-radius: 20px;

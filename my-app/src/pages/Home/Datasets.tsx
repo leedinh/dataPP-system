@@ -1,8 +1,12 @@
 import { DatasetInfo } from "redux/features/datasets/slice";
+import { List, Input, Button } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
+
 import DatasetWidget from "components/DatasetWidget";
 import useFilter from "hook/useFilter";
 import useTopic from "hook/useTopic";
 import styles from "pages/styles.module.scss";
+import { useState } from "react";
 
 type DatasetsProps = {
   data: DatasetInfo[];
@@ -10,18 +14,47 @@ type DatasetsProps = {
 
 const Datasets: React.FC<DatasetsProps> = ({ data }) => {
   const { topicLabels } = useTopic();
-  const { pushQuery, topic } = useFilter();
+  const { pushQuery, topic, popQueries, dataset } = useFilter();
+  const [searchKey, setSearchKey] = useState("");
 
   const onChange = (topic: string) => {
-    console.log("Click button ", topic);
-    pushQuery("topic", topic);
+    // console.log("Click button ", topic);
+    if (topic === "-1") {
+      popQueries(["topic"]);
+    } else {
+      pushQuery("topic", topic);
+    }
+  };
+
+  const handleSearch = () => {
+    if (!!searchKey) {
+      pushQuery("dataset", searchKey);
+    } else {
+      popQueries(["dataset"]);
+    }
   };
 
   return (
     <>
       <div className="grid grid-cols-3 mt-8">
-        <div className="col-span-2 justify-self-start text-3xl">Dataset</div>
-        <div className="justify-self-end flex gap-4">
+        <div className="col-span-2 justify-self-start text-3xl font-semibold">
+          Dataset
+        </div>
+        <div className="justify-self-end flex gap-4 mb-4">
+          <Input
+            className="rounded-full w-[300px] px-4"
+            placeholder="dataset name"
+            onChange={(e) => setSearchKey(e.target.value)}
+            onPressEnter={() => handleSearch()}
+            suffix={
+              <Button
+                shape="circle"
+                type="text"
+                onClick={() => handleSearch()}
+                icon={<SearchOutlined />}
+              ></Button>
+            }
+          />
           {Object.entries(topicLabels).map(([key, value]) => {
             return (
               <div
@@ -35,11 +68,20 @@ const Datasets: React.FC<DatasetsProps> = ({ data }) => {
           })}
         </div>
       </div>
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 justify-items-center mt-4">
-        {data.map((item) => {
-          return <DatasetWidget key={item.did} {...item} />;
-        })}
-      </div>
+      <List
+        grid={{ gutter: 16, column: 4 }}
+        dataSource={
+          dataset ? data.filter((value) => value.title.includes(dataset)) : data
+        }
+        pagination={{
+          pageSize: 8,
+        }}
+        renderItem={(item) => (
+          <List.Item key={item.did}>
+            <DatasetWidget {...item} />
+          </List.Item>
+        )}
+      />
     </>
   );
 };

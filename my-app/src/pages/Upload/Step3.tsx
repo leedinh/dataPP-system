@@ -1,33 +1,18 @@
-import React, { useContext } from "react";
-import { Form, Slider, Select } from "antd";
-import type { SliderMarks } from "antd/es/slider";
+import React, { useContext, useState } from "react";
+import { Form, Select } from "antd";
+import Slider from "rc-slider";
+import "rc-slider/assets/index.css";
 
 import { selectUploadState } from "redux/features/uploadProcess/slice";
 import { useAppSelector, useAppDispatch } from "redux/store";
 import { updateAnonymizedInfoThunk } from "redux/features/uploadProcess/thunks";
 import { UploadingContext } from "context/UploadingContext";
+import styles from "pages/styles.module.scss";
 
 type Step3Props = {};
 
-const marks: SliderMarks = {
-  0: {
-    style: {
-      color: "#E76161",
-    },
-    label: <strong>Low</strong>,
-  },
-  50: {
-    style: {
-      color: "#FFD95A",
-    },
-    label: <strong>Medium</strong>,
-  },
-  100: {
-    style: {
-      color: "#A4D0A4",
-    },
-    label: <strong>High</strong>,
-  },
+const trackStyle: React.CSSProperties = {
+  backgroundColor: `linear-gradient(to right, #E76161, #FFD95A, #A4D0A4)`,
 };
 
 const Step3: React.FC<Step3Props> = () => {
@@ -55,11 +40,11 @@ const Step3: React.FC<Step3Props> = () => {
   };
 
   const onSlider1Change = (value: any) => {
-    console.log(value);
+    // console.log(value);
     formStep3.setFieldValue("sec_level", Number(value));
   };
   const onSlider2Change = (value: any) => {
-    console.log(value);
+    // console.log(value);
     formStep3.setFieldValue("sec_level", Number(value));
   };
 
@@ -89,10 +74,16 @@ const Step3: React.FC<Step3Props> = () => {
       </Form.Item>
       <div className="col-span-2">
         <Form.Item label="Security level:" name="sec_level" initialValue={50}>
-          <Slider onChange={onSlider1Change} marks={marks} step={1} />
+          <Slider
+            trackStyle={trackStyle}
+            onChange={onSlider1Change}
+            min={0}
+            max={100}
+            step={1}
+          />
         </Form.Item>
         <Form.Item label="Rule level:" name="rule_level" initialValue={50}>
-          <Slider onChange={onSlider2Change} marks={marks} step={1} />
+          <Slider onChange={onSlider2Change} min={0} max={100} step={1} />
         </Form.Item>
       </div>
     </Form>

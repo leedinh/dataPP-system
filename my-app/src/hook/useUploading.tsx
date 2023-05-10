@@ -2,8 +2,6 @@ import { useState } from "react";
 import { useForm } from "antd/es/form/Form";
 import type { UploadFile } from "antd/es/upload/interface";
 
-import { clear } from "redux/features/uploadProcess/slice";
-import { useAppDispatch } from "redux/store";
 import {
   UpdateAnonymizedInfoRequest,
   UpdateDatasetInfoRequest,
@@ -15,8 +13,6 @@ export default function useUploading() {
   const [formStep2] = useForm<UpdateDatasetInfoRequest>();
   const [formStep3] = useForm<UpdateAnonymizedInfoRequest>();
   const [file, setFile] = useState<UploadFile>();
-  const dispatch = useAppDispatch();
-  dispatch(clear());
 
   const next = (step: number) => {
     setCurrentStep(currentStep + step);

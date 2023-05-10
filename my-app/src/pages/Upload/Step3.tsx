@@ -7,18 +7,24 @@ import { selectUploadState } from "redux/features/uploadProcess/slice";
 import { useAppSelector, useAppDispatch } from "redux/store";
 import { updateAnonymizedInfoThunk } from "redux/features/uploadProcess/thunks";
 import { UploadingContext } from "context/UploadingContext";
-import styles from "pages/styles.module.scss";
 
 type Step3Props = {};
 
-const trackStyle: React.CSSProperties = {
-  backgroundColor: `linear-gradient(to right, #E76161, #FFD95A, #A4D0A4)`,
+const getDegree = (value: number) => {
+  if (value < 50) {
+    return "Low";
+  } else if (value < 70) {
+    return "Medium";
+  }
+  return "High";
 };
 
 const Step3: React.FC<Step3Props> = () => {
   const dispatch = useAppDispatch();
   const { formStep3, next } = useContext(UploadingContext)!;
   const { fields, fileid } = useAppSelector(selectUploadState);
+  const [secDegree, setSecDegree] = useState<string>("Medium");
+  const [ruleDegree, setRuleDegree] = useState<string>("Medium");
 
   const onFinish = (values: any) => {
     console.log("Send request step 3", values);
@@ -41,11 +47,13 @@ const Step3: React.FC<Step3Props> = () => {
 
   const onSlider1Change = (value: any) => {
     // console.log(value);
+    setSecDegree(getDegree(value));
     formStep3.setFieldValue("sec_level", Number(value));
   };
   const onSlider2Change = (value: any) => {
     // console.log(value);
-    formStep3.setFieldValue("sec_level", Number(value));
+    setRuleDegree(getDegree(value));
+    formStep3.setFieldValue("rule_level", Number(value));
   };
 
   return (
@@ -72,20 +80,14 @@ const Step3: React.FC<Step3Props> = () => {
           options={fields}
         />
       </Form.Item>
-      <div className="col-span-2">
-        <Form.Item label="Security level:" name="sec_level" initialValue={50}>
-          <Slider
-            trackStyle={trackStyle}
-            onChange={onSlider1Change}
-            min={0}
-            max={100}
-            step={1}
-          />
-        </Form.Item>
-        <Form.Item label="Rule level:" name="rule_level" initialValue={50}>
-          <Slider onChange={onSlider2Change} min={0} max={100} step={1} />
-        </Form.Item>
-      </div>
+      <Form.Item label="Security level:" name="sec_level" initialValue={50}>
+        <Slider onChange={onSlider1Change} min={0} max={100} step={1} />
+      </Form.Item>
+      <div className="">{secDegree}</div>
+      <Form.Item label="Rule level:" name="rule_level" initialValue={50}>
+        <Slider onChange={onSlider2Change} min={0} max={100} step={1} />
+      </Form.Item>
+      <div className="">{ruleDegree}</div>
     </Form>
   );
 };

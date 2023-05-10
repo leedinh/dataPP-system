@@ -92,7 +92,7 @@ export default function useFilter(options?: UseFilterProps) {
     pushGroupQuery,
     clearQuery,
     getQueryParam,
-    topic: getQueryParam(options.topic),
+    topic: getQueryParam(options.topic) || "-1",
     dataset: getQueryParam("dataset"),
     pathname,
   };

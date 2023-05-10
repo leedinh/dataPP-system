@@ -11,6 +11,7 @@ const EditModal: React.FC<DatasetInfo> = ({
   title,
   topic,
   did,
+  description,
   is_anonymized,
 }) => {
   const dispatch = useAppDispatch();
@@ -52,7 +53,7 @@ const EditModal: React.FC<DatasetInfo> = ({
           name="basic"
           form={formDataset}
           style={{ maxWidth: 600 }}
-          initialValues={{ title, topic }}
+          initialValues={{ title, topic, description }}
           onFinish={onFinish}
           autoComplete="off"
           className="px-4 pt-4"

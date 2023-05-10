@@ -14,5 +14,4 @@ rq
 Flask-SocketIO
 gevent-websocket
 gevent
-flask-security-too
 git+https://github.com/ansrivas/pylogging.git

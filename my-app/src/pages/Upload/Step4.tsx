@@ -6,10 +6,16 @@ const Step4: React.FC = () => (
   <Result
     icon={<SmileOutlined />}
     title="Great, we have done all the operations!"
+    subTitle="Thank for your contribution"
     extra={
-      <Button href="/profile" type="primary">
-        Next
-      </Button>
+      <>
+        <Button href="/" type="primary">
+          Back to Homepage
+        </Button>
+        <Button type="text" href="/profile">
+          See your datasets
+        </Button>
+      </>
     }
   />
 );

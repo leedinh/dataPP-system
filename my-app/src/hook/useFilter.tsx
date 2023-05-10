@@ -93,6 +93,7 @@ export default function useFilter(options?: UseFilterProps) {
     clearQuery,
     getQueryParam,
     topic: getQueryParam(options.topic),
+    dataset: getQueryParam("dataset"),
     pathname,
   };
 }

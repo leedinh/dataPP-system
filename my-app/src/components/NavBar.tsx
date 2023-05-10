@@ -1,16 +1,14 @@
 import React, { memo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AppstoreOutlined, HomeOutlined } from "@ant-design/icons";
-import { Button, Typography, Menu } from "antd";
+import { Button, Menu } from "antd";
 import type { MenuProps } from "antd";
 
-import logo from "assets/logo.png";
 import { useAuth } from "hook/useAuth";
 import UserAvatar from "./UserAvatar";
 import styles from "./styles.module.scss";
 import { KEY_ACCESS_TOKEN } from "redux/common/fetch";
-
-const { Title } = Typography;
+import Logo from "./Logo";
 
 const items: MenuProps["items"] = [
   {
@@ -37,13 +35,10 @@ const NavBar: React.FC<NavBarProps> = () => {
   };
 
   return (
-    <div className="flex items-stretch px-4">
+    <div className="flex items-center px-4 py-4 sticky top-0 z-50">
       <div className="flex-auto text-left">
-        <div className="w-fit	flex items-stretch">
-          <div className="self-center mr-2">
-            <img src={logo} width={40} alt="#" />
-          </div>
-          <Title className="inline-block align-top">BRAND</Title>
+        <div className="w-fit">
+          <Logo />
         </div>
       </div>
       <div className={`self-center ${styles.navBar}`}>

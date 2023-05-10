@@ -7,6 +7,7 @@ import { selectUploadState } from "redux/features/uploadProcess/slice";
 import { useAppSelector, useAppDispatch } from "redux/store";
 import { updateAnonymizedInfoThunk } from "redux/features/uploadProcess/thunks";
 import { UploadingContext } from "context/UploadingContext";
+import CustomTooltip from "components/Tooltip";
 
 type Step3Props = {};
 
@@ -65,7 +66,13 @@ const Step3: React.FC<Step3Props> = () => {
       layout="vertical"
     >
       <Form.Item
-        label="Choose sensitive attributes: "
+        label={
+          <div className="">
+            Choose quasi-attributes{" "}
+            <CustomTooltip message="A set of attributes that can be used to identify object" />{" "}
+            :
+          </div>
+        }
         name="qsi"
         rules={[
           { required: true, message: "Please choose at least 1 attribute" },

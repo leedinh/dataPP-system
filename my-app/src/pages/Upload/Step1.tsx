@@ -18,20 +18,28 @@ const Step1: React.FC<Step1Props> = () => {
     multiple: false,
     fileList: file ? [file] : [],
     accept: ".csv",
+    maxCount: 1,
     beforeUpload: () => {
       return false;
     },
-    maxCount: 1,
     onChange(info) {
       const { status } = info.file;
-      if (status !== "uploading") {
-        console.log(info.file, info.fileList);
-        setFile(info.file);
-      }
-      if (status === "done") {
-        message.success(`${info.file.name} file uploaded successfully.`);
-      } else if (status === "error") {
-        message.error(`${info.file.name} file upload failed.`);
+      console.log(info.file, info.fileList);
+      if (!!status) {
+        if (status === "removed") setFile(undefined);
+      } else {
+        if (info.file.type && info.file.type === "text/csv") setFile(info.file);
+        else {
+          notification.error({
+            message:
+              "Our system supports only file in csv format. Please try again!",
+          });
+        }
+        if (status === "done") {
+          message.success(`${info.file.name} file uploaded successfully.`);
+        } else if (status === "error") {
+          message.error(`${info.file.name} file upload failed.`);
+        }
       }
     },
     onDrop(e) {

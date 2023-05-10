@@ -19,7 +19,7 @@ export interface UploadingContextType {
   currentStep: number;
   formStep2: FormInstance<UpdateDatasetInfoRequest>;
   formStep3: FormInstance<UpdateAnonymizedInfoRequest>;
-  setFile: (file: UploadFile) => void;
+  setFile: (file: UploadFile | undefined) => void;
   next: (step: number) => void;
   prev: () => void;
 }

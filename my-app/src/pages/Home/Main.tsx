@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect } from "react";
 
 import { useAppDispatch, useAppSelector } from "redux/store";
 import { selectDatasetState } from "redux/features/datasets/slice";
@@ -13,7 +13,6 @@ import TopDataset from "./TopDatasets";
 import Banner from "components/Banner";
 import Datasets from "./Datasets";
 import TopUser from "./TopUsers";
-import { DatasetInfo } from "redux/features/datasets/slice";
 
 const Main: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -22,7 +21,7 @@ const Main: React.FC = () => {
   const { topic } = useFilter();
 
   useEffect(() => {
-    if (!!topic) {
+    if (topic !== "-1") {
       dispatch(getTopicDatasetsThunk(topic));
     } else {
       dispatch(getAllDatasetsThunk());
@@ -37,8 +36,8 @@ const Main: React.FC = () => {
   return (
     <div className="grid grid-cols-7">
       <div className="col-span-2 p-4 flex flex-col gap-8">
-        <TopDataset title="Top Download" data={topDownload} />
         <TopUser title="Top Contribution" data={topUpload} />
+        <TopDataset title="Top Download" data={topDownload} />
       </div>
       <div className="col-span-5 p-4 mx-8">
         <Banner />

@@ -4,7 +4,7 @@ import UserProfile from "./UserProfile/index";
 const Profile: React.FC = () => {
   return (
     <div className="grid grid-cols-5 gap-8">
-      <div className="">
+      <div>
         <UserProfile />
       </div>
       <div className="col-span-4">

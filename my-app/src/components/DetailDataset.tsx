@@ -40,7 +40,17 @@ const DetailDataset: React.FC<DetailDatasetProps> = ({ open, close, data }) => {
       <Descriptions bordered column={1} className="p-4">
         <Descriptions.Item label="Title">
           {title}
-          <Tag className="ml-4">{is_anonymized ? "Anonymized" : "Raw"}</Tag>
+          <span className="ml-2">
+            {is_anonymized ? (
+              <Tag className="w-fit mt-2 bg-black text-white py-1 rounded-lg">
+                Anonymized
+              </Tag>
+            ) : (
+              <Tag color="blue" className="w-fit mt-2 py-1 rounded-lg">
+                Raw
+              </Tag>
+            )}
+          </span>
         </Descriptions.Item>
         <Descriptions.Item label="Author">{author}</Descriptions.Item>
         <Descriptions.Item label="Description">{description}</Descriptions.Item>

@@ -13,6 +13,15 @@ export enum DatasetTopic {
   MEDICAL = 5,
 }
 
+export const mappingColorStatus: { [key: string]: string } = {
+  completed: "success",
+  idle: "cyan",
+  anonymizing: "processing",
+  pending: "orange",
+  created: "success",
+  failed: "red",
+};
+
 export const optionTopic = [
   {
     value: DatasetTopic.EDUCATION,

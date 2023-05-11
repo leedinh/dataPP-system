@@ -6,15 +6,7 @@ import { DatasetInfo } from "redux/features/datasets/slice";
 import { deleteDatasetThunk } from "redux/features/profile/thunks";
 import { useAppDispatch } from "redux/store";
 import EditModal from "./EditModal";
-import { getTopicLabel } from "redux/constant";
-
-const mappingColorStatus: any = {
-  completed: "success",
-  idle: "cyan",
-  anonymizing: "processing",
-  pending: "orange",
-  created: "success",
-};
+import { getTopicLabel, mappingColorStatus } from "redux/constant";
 
 export default function useColumn() {
   const dispatch = useAppDispatch();

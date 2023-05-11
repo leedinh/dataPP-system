@@ -16,6 +16,7 @@ class Dataset(db.Model):
     path = db.Column(db.String(255), nullable=False)
     description =  db.Column(db.String(255))
     date = db.Column(db.Date, nullable=False)
+    file_size = db.Column(db.Integer, nullable=False)
     title = db.Column(db.String(255))
     is_anonymized = db.Column(db.Boolean)
     status = db.Column(db.Enum('pending', 'anonymizing',
@@ -23,10 +24,11 @@ class Dataset(db.Model):
     topic = db.Column(db.Integer)
     download_count = db.Column(db.Integer, default=0)
 
-    def __init__(self, did, uid, name, path, author, status='idle'):
+    def __init__(self, did, uid, name, path, file_size, author, status='idle'):
         self.did = did
         self.uid = uid
         self.filename = name
+        self.file_size = file_size
         self.path = path
         self.date = datetime.now()
         self.status = status
@@ -44,7 +46,8 @@ class Dataset(db.Model):
             'topic': self.topic,
             'author': self.author,
             'description': self.description,
-            'download_count': self.download_count
+            'download_count': self.download_count,
+            'file_size': self.file_size
         }
 
     def inc_download(self):
@@ -53,8 +56,11 @@ class Dataset(db.Model):
 
     @classmethod
     def get_datasets_with_most_download(cls):
-        ds = cls.query.filter_by(status='completed').order_by(
-            cls.download_count.desc()).limit(5).all()
+        ds = cls.query.filter_by(status='completed')\
+            .filter(cls.download_count>0)\
+            .order_by(cls.download_count.desc())\
+            .limit(5)\
+            .all()
         return ds
 
     def update_author(self, author):
@@ -135,21 +141,31 @@ class Dataset(db.Model):
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(80), unique=True, nullable=False)
+    storage_count = db.Column(db.Integer,  default=0)
     username = db.Column(db.String(80), nullable=False, default='anonymous')
     hash_password = db.Column(db.String(120), nullable=False)
-    upload_count = db.Column(db.Integer, nullable=False, default=0)
+    upload_count = db.Column(db.Integer, default=0)
 
     def serialize(self):
         return {
             'id': self.id,
             'email': self.email,
             'username': self.username,
-            'upload_count': self.upload_count
+            'upload_count': self.upload_count,
+            'storage_count': self.storage_count
         }
 
     def save_to_db(self):
         try:
             db.session.add(self)
+            db.session.commit()
+        except Exception as err:
+            db.session.rollback()
+            raise err
+        
+    def inc_storage(self, amount):
+        try:
+            self.storage_count += amount
             db.session.commit()
         except Exception as err:
             db.session.rollback()
@@ -173,7 +189,10 @@ class User(db.Model):
 
     @classmethod
     def get_users_with_most_uploads(cls):
-        users = cls.query.order_by(cls.upload_count.desc()).limit(5).all()
+        users = cls.query.filter(cls.upload_count > 0)\
+                 .order_by(cls.upload_count.desc())\
+                 .limit(5)\
+                 .all()
         return users
 
     @classmethod

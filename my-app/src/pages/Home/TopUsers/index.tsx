@@ -13,7 +13,7 @@ const TopUser: React.FC<TopUserProps> = ({ title, data }) => {
       <div className={`font-semibold ${styles.header}`}>{title}</div>
       {!!data.length ? (
         data.map((item, idx) => {
-          return <RankUser key={idx} {...item} rank={idx + 1} />;
+          return <RankUser key={idx} {...item} rank={idx} />;
         })
       ) : (
         <NoData />

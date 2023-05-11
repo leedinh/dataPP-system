@@ -14,7 +14,7 @@ const TopDataset: React.FC<TopDatasetProps> = ({ title, data }) => {
       <div className={`font-semibold ${styles.header}`}>{title}</div>
       {!!data.length ? (
         data.map((item, idx) => {
-          return <RankDataset key={idx} data={item} rank={idx + 1} />;
+          return <RankDataset key={idx} data={item} rank={idx} />;
         })
       ) : (
         <NoData />

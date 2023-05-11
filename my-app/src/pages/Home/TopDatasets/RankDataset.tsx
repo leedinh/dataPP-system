@@ -8,11 +8,7 @@ import rank3 from "assets/copper_trophy.png";
 import DetailDataset from "components/DetailDataset";
 import { DatasetInfo } from "redux/features/datasets/slice";
 
-const mappingRankImage: any = {
-  [1]: rank1,
-  [2]: rank2,
-  [3]: rank3,
-};
+const mappingRankImage = [rank1, rank2, rank3];
 
 type RankDatasetProps = {
   data: DatasetInfo;
@@ -27,7 +23,7 @@ const RankDataset: React.FC<RankDatasetProps> = ({ data, rank }) => {
       <div
         id="rank"
         className={`hover:cursor-pointer ${styles.rankDetail} ${
-          rank === 1 && styles.champion
+          rank === 0 && styles.champion
         }`}
         onClick={() => setModalOpen(true)}
       >
@@ -45,7 +41,7 @@ const RankDataset: React.FC<RankDatasetProps> = ({ data, rank }) => {
           {!!mappingRankImage[rank] ? (
             <img width={40} src={mappingRankImage[rank]} alt="#" />
           ) : (
-            rank
+            rank + 1
           )}
         </div>
       </div>

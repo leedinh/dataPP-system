@@ -30,7 +30,7 @@ jwt = JWTManager(app)
 def callback_function(job, connection, type, value, traceback):
     with app.app_context():
     # Perform actions with the result
-        print(f"Task result: ", vars(job))
+        print(f"Task result: ", job['_args'])
 
 
 
@@ -381,14 +381,22 @@ def delete_dataset(did):
         user_id = claims['user_id']
         if user_id != str(ds.uid):
             return jsonify(msg='You have no access to this file'), Status.HTTP_BAD_FORBIDDEN
-        try:
-                os.remove(os.path.join(ds.path,ds.filename))
-                os.rmdir(ds.path)
-                logger.info("directory is deleted")
-        except OSError as x:
-                logger.info("Error occured: %s : %s" % (ds.path, x.strerror))
         ds.delete_from_db()
         return jsonify(msg='Dataset deleted'), Status.HTTP_OK_ACCEPTED
+    else:
+        return jsonify(msg='Dataset not found'), Status.HTTP_BAD_NOTFOUND
+
+
+@app.route('/api/user/datasets/delete', methods=['DELETE'])
+@jwt_required()
+def delete_datasets():
+    claims = get_jwt()
+    user_id = claims['user_id']
+    dss = Dataset.find_user_datasets(user_id)
+    if dss:
+        for ds in dss:
+            ds.delete_from_db()
+            return jsonify(msg='Dataset deleted'), Status.HTTP_OK_ACCEPTED
     else:
         return jsonify(msg='Dataset not found'), Status.HTTP_BAD_NOTFOUND
 

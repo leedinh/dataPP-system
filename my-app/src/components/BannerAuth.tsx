@@ -8,7 +8,7 @@ const BannerAuth: React.FC = () => {
       <div className="mb-4  ">
         <img src={logo} width={300} alt="#" />
       </div>
-      <h1 className="text-5xl font-semibold text-white">BRAND</h1>
+      <h1 className="text-5xl font-semibold text-white">PrivOpen</h1>
       <div className={styles.borderBasic}>
         <Button className="text-white w-full" type="text" size="large" href="/">
           Go to Home Page

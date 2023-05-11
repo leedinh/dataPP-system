@@ -11,7 +11,7 @@ const Logo: React.FC = () => {
       <div className="self-center mr-2">
         <img src={logo} width={25} alt="#" />
       </div>
-      <div className="text-3xl text-white font-bold self-center">Brand</div>
+      <div className="text-3xl text-white font-bold self-center">PrivOpen</div>
     </div>
   );
 };

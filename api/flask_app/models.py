@@ -1,5 +1,6 @@
 from .db import db
 import enum
+import os
 
 
 from datetime import datetime
@@ -120,9 +121,15 @@ class Dataset(db.Model):
         DatasetStatusHistory.add_dataset_status_history(self.did, new_status)
 
     def delete_from_db(self):
-        db.session.delete(self)
-        db.session.commit()
-        DatasetStatusHistory.add_dataset_status_history(self.did, "deleted")
+        try:
+            os.remove(os.path.join(self.path,self.filename))
+            os.rmdir(self.path)
+            db.session.delete(self)
+            db.session.commit()
+            DatasetStatusHistory.add_dataset_status_history(self.did, "deleted")
+        except Exception as err:
+            db.session.rollback()
+            raise err
 
 
 class User(db.Model):
@@ -153,8 +160,12 @@ class User(db.Model):
         db.session.commit()
 
     def delete_from_db(self):
-        db.session.delete(self)
-        db.session.commit()
+        try:
+            db.session.delete(self)
+            db.session.commit()
+        except Exception as err:
+            db.session.rollback()
+            raise err
 
     def update_username(self, new_username):
         self.username = new_username
@@ -212,7 +223,7 @@ class DatasetStatusHistory(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     did = db.Column(db.String(50), nullable=False)
     status = db.Column(db.Enum('pending', 'anonymizing', 'completed',
-                       'idle', 'deleted', name='dataset_status'), nullable=False)
+                       'idle', 'deleted', 'failed', name='dataset_status'), nullable=False)
     timestamp = db.Column(db.DateTime(timezone=True),
                           server_default=db.func.now())
 

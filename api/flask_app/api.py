@@ -26,6 +26,8 @@ app = create_app()
 jwt = JWTManager(app)
 
 
+USER_MAX_STORAGE = 3221225472
+
 
 def callback_function(job, connection, type, value, traceback):
     with app.app_context():
@@ -148,7 +150,8 @@ def get_top_upload_user():
     try:
         users = User.get_users_with_most_uploads()
         return jsonify([u.serialize() for u in users]), Status.HTTP_OK_BASIC
-    except:
+    except Exception as err:
+        logger.info(err)
         return jsonify(msg="User not found"), Status.HTTP_BAD_NOTFOUND
 
 
@@ -210,12 +213,21 @@ def upload_file():
 
     if not file.filename.endswith('.csv'):
         return jsonify(msg='File must have .csv extension'), Status.HTTP_BAD_REQUEST
-
+    
+    file_size = request.content_length
     claims = get_jwt()
     user_id = claims['user_id']
     user = User.find_by_uid(user_id)
+
+
     if not user:
         return jsonify(msg='Not found user'), Status.HTTP_BAD_NOTFOUND
+    logger.info(type(user.storage_count))
+    if user.storage_count + file_size > USER_MAX_STORAGE:
+        return jsonify(msg='Exceed User Storage Capacity'), Status.HTTP_BAD_FORBIDDEN
+    user.inc_storage(file_size)
+
+
     file_id = generate_uuid()
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], user_id, file_id)
 
@@ -226,7 +238,7 @@ def upload_file():
         file.save(os.path.join(file_path, file.filename))
 
         dataset = Dataset(file_id, user_id, file.filename,
-                          file_path, user.username)
+                          file_path, file_size, user.username)
         dataset.save_to_db()
         user.update_upload(len(Dataset.find_user_datasets(user_id)))
     # Create a timedelta object from the delay_seconds
@@ -393,10 +405,11 @@ def delete_datasets():
     claims = get_jwt()
     user_id = claims['user_id']
     dss = Dataset.find_user_datasets(user_id)
+    logger.info(dss)
     if dss:
         for ds in dss:
             ds.delete_from_db()
-            return jsonify(msg='Dataset deleted'), Status.HTTP_OK_ACCEPTED
+        return jsonify(msg='Dataset deleted'), Status.HTTP_OK_ACCEPTED
     else:
         return jsonify(msg='Dataset not found'), Status.HTTP_BAD_NOTFOUND
 

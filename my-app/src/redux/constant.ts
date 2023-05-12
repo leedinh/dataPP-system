@@ -53,3 +53,4 @@ export const isLoading = (status: StatusEnum) => status === StatusEnum.LOADING;
 
 export const RECORD_LIMIT = 100;
 export const ALL_RECORD_LIMIT = 999;
+export const MAX_STORAGE = 3221225472 / Math.pow(2, 30);

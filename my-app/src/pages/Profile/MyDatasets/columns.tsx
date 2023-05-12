@@ -32,7 +32,7 @@ export default function useColumn() {
       title: "Title",
       dataIndex: "title",
       key: "title",
-      width: 250,
+      width: 150,
     },
     {
       title: "Description",
@@ -41,13 +41,22 @@ export default function useColumn() {
       render: (_, { description }) => (
         <span className="inline">{description}</span>
       ),
-      width: 900,
+      width: 250,
+    },
+    {
+      title: "Size",
+      dataIndex: "file_size",
+      key: "file_size",
+      width: 100,
+      render: (_, { file_size }) => (
+        <span>{(file_size / Math.pow(2, 10)).toFixed(2)} MB</span>
+      ),
     },
     {
       title: "Date",
       dataIndex: "date",
       key: "date",
-      width: 200,
+      width: 130,
     },
     {
       title: "Anonymized",

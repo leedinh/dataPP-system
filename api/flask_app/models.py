@@ -152,8 +152,15 @@ class Dataset(db.Model):
 
     def delete_from_db(self):
         try:
-            os.remove(os.path.join(self.path,self.filename))
-            os.rmdir(self.path)
+            if self.is_anonymized and self.status == 'completed':
+                result_path = os.path.join(self.path,'result.json')
+                if os.path.exists(result_path):
+                    os.remove(result_path)
+            file_path = os.path.join(self.path,self.filename)
+            if os.path.exists(file_path):
+                    os.remove(file_path)
+            if os.path.exists(self.path):
+                os.rmdir(self.path)
             db.session.delete(self)
             db.session.commit()
             DatasetStatusHistory.add_dataset_status_history(self.did, "deleted")

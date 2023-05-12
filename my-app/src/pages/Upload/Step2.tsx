@@ -57,7 +57,7 @@ const Step2: React.FC<Step2Props> = () => {
         <Form.Item name="title" label="Title" rules={[{ required: true }]}>
           <Input maxLength={120} />
         </Form.Item>
-        <Form.Item name="description" label="Description">
+        <Form.Item name="description" label="Description" initialValue={""}>
           <Input.TextArea maxLength={200} showCount />
         </Form.Item>
         <Form.Item

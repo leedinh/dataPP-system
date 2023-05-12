@@ -12,6 +12,8 @@ import { useAppDispatch } from "redux/store";
 import EditModal from "./EditModal";
 import { getTopicLabel, mappingColorStatus } from "redux/constant";
 import HistoryModal from "./HistoryModal";
+import RuleSet from "./RuleSet";
+import styles from "pages/styles.module.scss";
 
 export default function useColumn() {
   const dispatch = useAppDispatch();
@@ -47,7 +49,7 @@ export default function useColumn() {
       title: "Size",
       dataIndex: "file_size",
       key: "file_size",
-      width: 100,
+      width: 150,
       render: (_, { file_size }) => (
         <span>{(file_size / Math.pow(2, 10)).toFixed(2)} MB</span>
       ),
@@ -62,8 +64,18 @@ export default function useColumn() {
       title: "Anonymized",
       key: "is_anonymized",
       dataIndex: "is_anonymized",
-      render: (_, { is_anonymized }) =>
-        is_anonymized ? <CheckCircleOutlined /> : <CloseCircleOutlined />,
+      render: (_, { is_anonymized, did, status }) => (
+        <div>
+          {is_anonymized ? (
+            <CheckCircleOutlined className={styles.greenIcon} />
+          ) : (
+            <CloseCircleOutlined className={styles.redIcon} />
+          )}
+          {is_anonymized && (
+            <RuleSet did={did} disabled={status !== "completed"} />
+          )}
+        </div>
+      ),
       align: "center",
     },
     {

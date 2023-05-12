@@ -25,7 +25,7 @@ export type UserProfileState = {
   datasets: DatasetInfo[];
   userInfo: any;
   history: HistoryInfo[];
-  result: any;
+  result?: RuleResultInfo;
 } & CommonState;
 
 const initialState: UserProfileState = {
@@ -34,12 +34,24 @@ const initialState: UserProfileState = {
   datasets: [],
   userInfo: {},
   history: [],
-  result: {},
 };
 
 type HistoryInfo = {
   status: string;
   time: string;
+};
+
+type RuleResultInfo = {
+  k: number;
+  no_rule: number;
+  sec_level: string;
+  rule_level: string;
+  rules: RuleInfo[];
+};
+
+export type RuleInfo = {
+  antecedents: string[];
+  consequents: string[];
 };
 
 const slice = createSlice({

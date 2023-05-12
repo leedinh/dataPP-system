@@ -44,7 +44,7 @@ const DataSetWidget: React.FC<DatasetInfo> = (data) => {
             <Typography>{date}</Typography>
           </div>
           <Button
-            href={`http://localhost:5050/api/downloads/${did}`}
+            href={`http://localhost:5050/api/dataset/download/${did}`}
             shape="circle"
             size="large"
             className={styles.downloadButton}

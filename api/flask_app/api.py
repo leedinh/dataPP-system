@@ -76,7 +76,7 @@ def generate_uuid():
 """ Admin Api  
 
 """
-@app.route('/api/admin/greet')
+@app.route('/api/admin/check')
 @basic_auth.required
 def greet():
     return jsonify(msg='Admin xin chao'), Status.HTTP_OK_BASIC
@@ -249,6 +249,17 @@ def delete_account():
     else:
         return jsonify(msg='User not found'), Status.HTTP_BAD_NOTFOUND
 
+@ app.route('/api/user/datasets', methods=['GET'])
+@ jwt_required()
+def get_user_datasets():
+    try:
+        claims = get_jwt()
+        user_id = claims['user_id']
+        datasets = Dataset.find_user_datasets(user_id)
+        return jsonify([d.serialize() for d in datasets]), Status.HTTP_OK_BASIC
+        # return jsonify([d.serialize() for d in datasets])
+    except exc.SQLAlchemyError as e:
+        return jsonify(error=str(e)), Status.HTTP_SERVICE_UNAVAILABLE
 
 """ Dataset Api
 """
@@ -329,7 +340,7 @@ def update_info(did):
         return jsonify(msg='Dataset not found'), Status.HTTP_BAD_NOTFOUND
 
 
-@ app.route('/api/anonymize/<string:did>', methods=['POST'])
+@ app.route('/api/dataset/anonymize/<string:did>', methods=['POST'])
 @ jwt_required()
 def enqueue_anonymize(did):
     ds = Dataset.find_by_did(did)
@@ -372,18 +383,6 @@ def enqueue_anonymize(did):
     else:
         return jsonify(msg='Dataset not found'), Status.HTTP_BAD_NOTFOUND
 
-
-@ app.route('/api/user/datasets', methods=['GET'])
-@ jwt_required()
-def get_user_datasets():
-    try:
-        claims = get_jwt()
-        user_id = claims['user_id']
-        datasets = Dataset.find_user_datasets(user_id)
-        return jsonify([d.serialize() for d in datasets]), Status.HTTP_OK_BASIC
-        # return jsonify([d.serialize() for d in datasets])
-    except exc.SQLAlchemyError as e:
-        return jsonify(error=str(e)), Status.HTTP_SERVICE_UNAVAILABLE
 
 
 @ app.route('/api/datasets', methods=['GET'])
@@ -428,7 +427,7 @@ def get_metadata(did):
         return jsonify(msg='Dataset not found'), Status.HTTP_BAD_NOTFOUND
 
 
-@ app.route('/api/downloads/<string:did>', methods=['GET'])
+@ app.route('/api/dataset/download/<string:did>', methods=['GET'])
 def download_file(did):
     try:
         ds = Dataset.find_by_did(did)

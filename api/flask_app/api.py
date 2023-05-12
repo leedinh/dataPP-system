@@ -258,7 +258,8 @@ def get_user_datasets():
         datasets = Dataset.find_user_datasets(user_id)
         return jsonify([d.serialize() for d in datasets]), Status.HTTP_OK_BASIC
         # return jsonify([d.serialize() for d in datasets])
-    except exc.SQLAlchemyError as e:
+    except Exception as e:
+        logger.info(e)
         return jsonify(error=str(e)), Status.HTTP_SERVICE_UNAVAILABLE
 
 """ Dataset Api

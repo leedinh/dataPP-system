@@ -20,7 +20,7 @@ class Dataset(db.Model):
     title = db.Column(db.String(255))
     is_anonymized = db.Column(db.Boolean)
     status = db.Column(db.Enum('pending', 'anonymizing',
-                       'completed', 'idle'), default='idle', nullable=False)
+                       'completed', 'idle', 'failed'), default='idle', nullable=False)
     topic = db.Column(db.Integer)
     download_count = db.Column(db.Integer, default=0)
 

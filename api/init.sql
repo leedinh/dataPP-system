@@ -5,11 +5,11 @@ CREATE TABLE "user" (
     email VARCHAR(80) UNIQUE NOT NULL,
     username VARCHAR(255) DEFAULT 'anonymous' NOT NULL,
     hash_password VARCHAR(120) NOT NULL,
-    storage_count INTEGER DEFAULT 0 CHECK (storage_count >= 0 AND storage_count <=  3,221,225,472),
+    storage_count INTEGER DEFAULT 0 CHECK (storage_count >= 0 AND storage_count <=  3221225472),
     upload_count INTEGER DEFAULT 0
 );
 
-CREATE TYPE dataset_status AS ENUM ('created', 'pending', 'anonymizing', 'completed', 'idle', 'deleted');
+CREATE TYPE dataset_status AS ENUM ('created', 'pending', 'anonymizing', 'completed', 'idle', 'deleted','failed' );
 
 CREATE TABLE "topic" (
     id SERIAL PRIMARY KEY,

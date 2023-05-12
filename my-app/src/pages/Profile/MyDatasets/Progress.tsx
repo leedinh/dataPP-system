@@ -10,7 +10,7 @@ const Progress: React.FC = () => {
     <>
       <Steps
         progressDot
-        current={1}
+        current={history.length - 1}
         direction="vertical"
         items={
           history?.map(({ status, time }) => {

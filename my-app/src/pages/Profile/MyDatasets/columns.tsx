@@ -14,6 +14,7 @@ import { getTopicLabel, mappingColorStatus } from "redux/constant";
 import HistoryModal from "./HistoryModal";
 import RuleSet from "./RuleSet";
 import styles from "pages/styles.module.scss";
+import { RuleInfo } from "redux/features/profile/slice";
 
 export default function useColumn() {
   const dispatch = useAppDispatch();
@@ -117,7 +118,64 @@ export default function useColumn() {
     },
   ];
 
+  const ruleSetColumns: ColumnsType<RuleInfo> = [
+    {
+      title: "Antecedents",
+      dataIndex: "antecedents",
+      render: (_, { antecedents }) => {
+        return <>{antecedents}</>;
+      },
+      align: "center",
+    },
+    {
+      title: "Consequents",
+      dataIndex: "key",
+      render: (_, { consequents }) => {
+        return <>{consequents}</>;
+      },
+      align: "center",
+    },
+  ];
+
+  return {
+    columns,
+    ruleSetColumns,
+  };
+}
+
+export const useRuleColumn = () => {
+  const columns: ColumnsType<RuleInfo> = [
+    {
+      title: "Antecedents",
+      dataIndex: "antecedents",
+      render: (_, { antecedents }) => {
+        return (
+          <div className="flex flex-wrap gap-8">
+            {antecedents.map((value) => {
+              return <div className="">{value}</div>;
+            })}
+          </div>
+        );
+      },
+      align: "center",
+    },
+    {
+      title: "Consequents",
+      dataIndex: "consequents",
+      render: (_, { consequents }) => {
+        return (
+          <div className="flex flex-wrap gap-8">
+            {consequents.map((value) => {
+              return <div className="">{value}</div>;
+            })}
+          </div>
+        );
+      },
+      align: "center",
+    },
+  ];
+
   return {
     columns,
   };
-}
+};

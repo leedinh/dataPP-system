@@ -22,6 +22,12 @@ export const mappingColorStatus: { [key: string]: string } = {
   failed: "red",
 };
 
+export const mappingColorLevel: { [key: string]: string } = {
+  MEDIUM: "orange",
+  LOW: "red",
+  HIGH: "success",
+};
+
 export const optionTopic = [
   {
     value: DatasetTopic.EDUCATION,

@@ -68,9 +68,9 @@ export default function useColumn() {
       render: (_, { is_anonymized, did, status }) => (
         <div>
           {is_anonymized ? (
-            <CheckCircleOutlined className={styles.greenIcon} />
+            <CheckCircleOutlined className={styles.icon} />
           ) : (
-            <CloseCircleOutlined className={styles.redIcon} />
+            <CloseCircleOutlined className={styles.icon} />
           )}
           {is_anonymized && (
             <RuleSet did={did} disabled={status !== "completed"} />

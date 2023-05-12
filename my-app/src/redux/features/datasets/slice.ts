@@ -44,6 +44,7 @@ export type DatasetInfo = {
   status: string;
   author: string;
   download_count: number;
+  file_size: number;
 };
 
 const slice = createSlice({

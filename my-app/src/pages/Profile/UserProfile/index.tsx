@@ -1,14 +1,24 @@
 import { useEffect, useState } from "react";
-import { Card, Typography, Button, Input, notification, Slider } from "antd";
+import { Card, Typography, Button, Input, notification, Progress } from "antd";
 import { EditFilled, CloudOutlined } from "@ant-design/icons";
 
 import { selectUserProfileState } from "redux/features/profile/slice";
+import { MAX_STORAGE } from "redux/constant";
 import {
   getUserProfileThunk,
   updateUsernameThunk,
 } from "redux/features/profile/thunks";
 import { useAppDispatch, useAppSelector } from "redux/store";
 import styles from "pages/styles.module.scss";
+
+const calculatePercentage = (storageCount: number) => {
+  const res = ((storageCount / Math.pow(2, 30)) * 100) / MAX_STORAGE;
+  return res < 1 ? 1 : res;
+};
+
+const calculateRestStorage = (storageCount: number) => {
+  return (MAX_STORAGE - storageCount / Math.pow(2, 30)).toFixed(3);
+};
 
 const UserProfile: React.FC = () => {
   const { userInfo } = useAppSelector(selectUserProfileState);
@@ -83,7 +93,14 @@ const UserProfile: React.FC = () => {
         <span className="text-slate-400">
           Supervise your drive space in the easiest way
         </span>
-        <Slider disabled min={0} max={3221225472} value={5000} />
+        <div className="flex justify-between mt-4">
+          <div className="">Free: {calculateRestStorage(storage_count)} GB</div>
+          <div className="">{MAX_STORAGE} GB</div>
+        </div>
+        <Progress
+          percent={calculatePercentage(storage_count)}
+          showInfo={false}
+        />
       </Card>
     </>
   );

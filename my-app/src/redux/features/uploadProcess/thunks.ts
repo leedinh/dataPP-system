@@ -25,7 +25,7 @@ export const updateAnonymizedInfoThunk = createAsyncThunk(
   async (request: any) => {
     return sendRequest(
       "POST",
-      `/api/anonymize/${request.fileid || ""}`,
+      `/api/dataset/anonymize/${request.fileid || ""}`,
       request,
       true
     ).then((res: any) => res.json());

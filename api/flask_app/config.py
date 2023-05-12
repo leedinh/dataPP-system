@@ -37,8 +37,7 @@ class BaseConfig(object):
     COMPRESS_MIN_SIZE = 500
 
     # Change it based on your admin user, should ideally read from DB.
-    ADMIN_USER = 'admin'
-    ADMIN_PASSWORD = 'admin'
+
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=1)
 
 
@@ -50,6 +49,10 @@ class DevelopmentConfig(BaseConfig):
     BASEDIR = os.path.abspath(os.path.dirname(__file__))
     SQLALCHEMY_DATABASE_URI = 'postgresql://myuser:mypassword@localhost:5432/mydatabase'
     UPLOAD_FOLDER = "/Users/dinh.le/School/dataPP-system/upload"
+    ADMIN_USER = 'admin'
+    ADMIN_PASSWORD = 'thisnotadmin'
+    BASIC_AUTH_USERNAME = ADMIN_USER
+    BASIC_AUTH_PASSWORD = ADMIN_PASSWORD
     SECRET_KEY = 'not-so-super-secret'
     JWT_SECRET_KEY = "super-secret"
 

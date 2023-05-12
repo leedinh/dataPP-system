@@ -1,12 +1,17 @@
 import { Button, Space, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { DeleteFilled, CheckOutlined, CloseOutlined } from "@ant-design/icons";
+import {
+  DeleteFilled,
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+} from "@ant-design/icons";
 
 import { DatasetInfo } from "redux/features/datasets/slice";
 import { deleteDatasetThunk } from "redux/features/profile/thunks";
 import { useAppDispatch } from "redux/store";
 import EditModal from "./EditModal";
 import { getTopicLabel, mappingColorStatus } from "redux/constant";
+import HistoryModal from "./HistoryModal";
 
 export default function useColumn() {
   const dispatch = useAppDispatch();
@@ -49,7 +54,7 @@ export default function useColumn() {
       key: "is_anonymized",
       dataIndex: "is_anonymized",
       render: (_, { is_anonymized }) =>
-        is_anonymized ? <CheckOutlined /> : <CloseOutlined />,
+        is_anonymized ? <CheckCircleOutlined /> : <CloseCircleOutlined />,
       align: "center",
     },
     {
@@ -85,6 +90,7 @@ export default function useColumn() {
             onClick={() => handleDelete(value.did)}
           ></Button>
           <EditModal {...value} />
+          <HistoryModal did={value.did} />
         </Space>
       ),
     },

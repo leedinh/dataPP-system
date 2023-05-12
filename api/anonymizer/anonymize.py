@@ -4,6 +4,7 @@ import collections
 import math
 import os
 import numpy as np
+import json
 import pandas as pd
 pd.options.mode.chained_assignment = None  # default='warn'
 
@@ -288,6 +289,16 @@ class Anonymizer:
         assert all(val >= self.k or val == 0 for val in self.freq.values())
         self.last_update()
 
-    def output(self, path):
+    def output(self, path, rule_path, sec_level, rule_level):
         self.ds.to_csv(path, index=False)
-        print(self.rule.rule_care)
+        results = {}
+        rules = self.rule.rule_care[['antecedents', 'consequents']].to_dict(orient='records')
+        for i, rule in enumerate(rules):
+            rule['antecedents'] = list(rule['antecedents'])
+            rule['consequents'] = list(rule['consequents'])
+            rules[i] = rule
+        results = {'k': self.k,'no_rule':len(rules), 'sec_level':sec_level, 'rule_level': rule_level, 'rules': rules}
+        with open(rule_path, "w") as file:
+            # Write the rules as JSON to the file
+            json.dump(results, file)
+        print(rule_path)

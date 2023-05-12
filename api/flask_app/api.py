@@ -2,6 +2,7 @@ import re
 import time
 from flask import jsonify, send_from_directory, request
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt
+from flask_basicauth import BasicAuth
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
 import psycopg2
@@ -24,6 +25,7 @@ from .factory import create_app
 logger = logging.getLogger(__name__)
 app = create_app()
 jwt = JWTManager(app)
+basic_auth = BasicAuth(app)
 
 
 USER_MAX_STORAGE = 3221225472
@@ -47,16 +49,10 @@ def task_anonymize(args, did):
         ds.update_status('completed')
 
 
-def task_delete_dataset(did):
+def task_check_dataset(did):
     with app.app_context():
         ds = Dataset.find_by_did(did)
         if ds and ds.status == 'idle':
-            try:
-                os.remove(os.path.join(ds.path,ds.filename))
-                os.rmdir(ds.path)
-                logger.info("directory is deleted")
-            except OSError as x:
-                logger.info("Error occured: %s : %s" % (ds.path, x.strerror))
             ds.delete_from_db()
 
 
@@ -75,6 +71,63 @@ def generate_uuid():
     # Take the first 8 characters of the hash as the unique ID
     unique_id = str(hash_hex[:10])
     return unique_id
+
+
+""" Admin Api  
+
+"""
+@app.route('/api/admin/greet')
+@basic_auth.required
+def greet():
+    return jsonify(msg='Admin xin chao'), Status.HTTP_OK_BASIC
+
+
+@app.route('/api/admin/add/topic',  methods=["POST"])
+@basic_auth.required
+def add_topic():
+    topic = Topic(name = request.json.get('name'))
+    topic.save_to_db()
+    return jsonify(msg='New topic added'), Status.HTTP_OK_BASIC
+
+@app.route('/api/admin/users')
+@basic_auth.required
+def get_all_users():
+    try:
+        users = User.find_all()
+        return jsonify([u.serialize() for u in users]), Status.HTTP_OK_BASIC
+    except Exception as err:
+        logger.info(err)
+        return jsonify(msg="User not found"), Status.HTTP_BAD_NOTFOUND
+    
+
+    
+
+@app.route('/api/admin/user/<string:uid>/delete', methods=["DELETE"])
+@basic_auth.required
+def delete_user(uid):
+    try:
+        user = User.find_by_uid(uid)
+        if user:
+            Dataset.remove_datasets_by_uid(user.id)
+            user.delete_from_db()
+            return jsonify(msg='User deleted'), Status.HTTP_OK_BASIC
+        else:
+            return jsonify(msg="User not found"), Status.HTTP_BAD_NOTFOUND
+    except Exception as err:
+        logger.info(err)
+        return jsonify(msg="Something wrong"), Status.HTTP_BAD_REQUEST
+
+@ app.route('/api/admin/user/<string:uid>/datasets', methods=['GET'])
+def admin_get_all_user_datasets(uid):
+    try:
+        user = User.find_by_uid(uid)
+        if not user:
+            return jsonify(msg="User not found"), Status.HTTP_BAD_NOTFOUND
+        datasets = Dataset.admin_find_user_datasets(uid)
+        return jsonify([d.serialize() for d in datasets]), Status.HTTP_OK_BASIC
+        # return jsonify([d.serialize() for d in datasets])
+    except exc.SQLAlchemyError as e:
+        return jsonify(error=str(e)), Status.HTTP_SERVICE_UNAVAILABLE
 
 
 """ User Api
@@ -186,7 +239,7 @@ def update_user_info():
 
 @app.route('/api/user/delete', methods=['DELETE'])
 @jwt_required()
-def delete_user():
+def delete_account():
     claims = get_jwt()
     user_id = claims['user_id']
     user = User.find_by_uid(user_id)
@@ -240,13 +293,12 @@ def upload_file():
         dataset = Dataset(file_id, user_id, file.filename,
                           file_path, file_size, user.username)
         dataset.save_to_db()
-        user.update_upload(len(Dataset.find_user_datasets(user_id)))
     # Create a timedelta object from the delay_seconds
-        delay = timedelta(minutes=10)
+        delay = timedelta(minutes=5)
     # Calculate the datetime for when the task should be executed
         logger.info("Add task")
     # Enqueue the task with the calculated execution time
-        rq_queue.enqueue_in(delay, task_delete_dataset, file_id)
+        rq_queue.enqueue_in(delay, task_check_dataset, file_id)
         return jsonify(msg='File uploaded successfully', file_id=file_id), Status.HTTP_OK_CREATED
     except Exception as e:
         logger.info(e)
@@ -262,6 +314,8 @@ def update_info(did):
         user_id = claims['user_id']
         if user_id != str(ds.uid):
             return jsonify(msg='You have no access to this file'), Status.HTTP_BAD_FORBIDDEN
+        user = User.find_by_uid(user_id)
+        user.inc_upload(1)
         args = request.json
         ds.update_info(args['title'], args['is_anonymized'], args['topic'], args['description'])
         if not args['is_anonymized']:
@@ -394,6 +448,8 @@ def delete_dataset(did):
         if user_id != str(ds.uid):
             return jsonify(msg='You have no access to this file'), Status.HTTP_BAD_FORBIDDEN
         ds.delete_from_db()
+        user = User.find_by_uid(user_id)
+        user.inc_upload(-1)
         return jsonify(msg='Dataset deleted'), Status.HTTP_OK_ACCEPTED
     else:
         return jsonify(msg='Dataset not found'), Status.HTTP_BAD_NOTFOUND
@@ -404,14 +460,13 @@ def delete_dataset(did):
 def delete_datasets():
     claims = get_jwt()
     user_id = claims['user_id']
-    dss = Dataset.find_user_datasets(user_id)
-    logger.info(dss)
-    if dss:
-        for ds in dss:
-            ds.delete_from_db()
-        return jsonify(msg='Dataset deleted'), Status.HTTP_OK_ACCEPTED
-    else:
-        return jsonify(msg='Dataset not found'), Status.HTTP_BAD_NOTFOUND
+    user = User.find_by_uid(user_id)
+    try: 
+        Dataset.remove_datasets_by_uid(user_id)
+        user.update_upload(0)
+        return jsonify(msg='Delete dataset success'), Status.HTTP_OK_ACCEPTED
+    except:
+        return jsonify(msg='Delete dataset failed'), Status.HTTP_BAD_REQUEST
 
 
 """ Cheat Api

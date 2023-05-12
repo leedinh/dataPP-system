@@ -67,6 +67,26 @@ class Dataset(db.Model):
         self.author = author
         db.session.commit()
 
+    def remove_datasets_by_uid(uid):
+        try:
+            # Retrieve all datasets with the given uid
+            datasets = Dataset.query.filter_by(uid=uid).all()
+
+            # Delete each dataset from the database
+            for dataset in datasets:
+                dataset.delete_from_db()
+
+            # Commit the changes to the database
+            db.session.commit()
+
+            return True
+
+        except Exception as e:
+            # Handle any exceptions that may occur during the deletion process
+            print(f"Error removing datasets for uid {uid}: {str(e)}")
+            db.session.rollback()
+            return False
+
     def update_info(self, title=None, is_anonymized=None, topic=None, description=None):
         # Update the attributes if they are not None
         self.title = title
@@ -110,7 +130,11 @@ class Dataset(db.Model):
     @classmethod
     def find_user_datasets(cls, uid):
         return Dataset.query.filter_by(uid=uid).\
-        filter(Dataset.status.in_(('completed', 'pending', 'anonymizing'))).all()
+        filter(Dataset.status.in_(('completed', 'pending', 'anonymizing','failed'))).all()
+    
+    @classmethod
+    def admin_find_user_datasets(cls, uid):
+        return Dataset.query.filter_by(uid=uid).all()
 
     @classmethod
     def find_all(cls):
@@ -175,6 +199,10 @@ class User(db.Model):
         self.upload_count = count
         db.session.commit()
 
+    def inc_upload(self, count):
+        self.upload_count += count
+        db.session.commit()
+
     def delete_from_db(self):
         try:
             db.session.delete(self)
@@ -235,6 +263,10 @@ class Topic(db.Model):
     @classmethod
     def find_all(cls):
         return cls.query.all()
+    
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit()
 
 
 class DatasetStatusHistory(db.Model):

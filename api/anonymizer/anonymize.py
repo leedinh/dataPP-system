@@ -290,3 +290,4 @@ class Anonymizer:
 
     def output(self, path):
         self.ds.to_csv(path, index=False)
+        print(self.rule.rule_care)

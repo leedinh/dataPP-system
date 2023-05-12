@@ -142,6 +142,10 @@ def admin_get_all_user_datasets(uid):
 def check_token():
     jwt = get_jwt()
     if jwt:
+        user_id = jwt['user_id']
+        user = User.find_by_uid(user_id)
+        if not user:
+             return jsonify(msg='Access token is invalid'), Status.HTTP_BAD_UNAUTHORIZED
         # user is authenticated, access token is valid
         return jsonify(msg='Access token is valid'), Status.HTTP_OK_BASIC
     else:

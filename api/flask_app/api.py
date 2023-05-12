@@ -9,6 +9,7 @@ import psycopg2
 import shutil
 import uuid
 import hashlib
+import json
 from datetime import timedelta
 from sqlalchemy import exc
 from anonymizer.anonymize import Anonymizer
@@ -34,7 +35,9 @@ USER_MAX_STORAGE = 3221225472
 def callback_function(job, connection, type, value, traceback):
     with app.app_context():
     # Perform actions with the result
-        print(f"Task result: ", job['_args'])
+        ds = Dataset.find_by_did(job._args[1])
+        ds.update_status('failed')
+
 
 
 
@@ -45,7 +48,7 @@ def task_anonymize(args, did):
         ds.update_status('anonymizing')
         anonymizer = Anonymizer(args)
         anonymizer.anonymize()
-        anonymizer.output(args['output'])
+        anonymizer.output(args['output'], args['rule_output'], args['sec_level'], args['rule_level'])
         ds.update_status('completed')
 
 
@@ -362,18 +365,24 @@ def enqueue_anonymize(did):
         # Parse security level
         if sec_level in range(30):
             k = 5
+            s_level = 'LOW'
         if sec_level in range(30, 70):
             k = 15
+            s_level = 'MEDIUM'
         if sec_level in range(70, 101):
             k = 23
+            s_level = 'HIGH'
 
         min_conf = 0.6
         if rule_level in range(30):
             min_sup = 0.6
+            r_level = 'LOW'
         if rule_level in range(30, 70):
             min_sup = 0.4
+            r_level = 'MEDIUM'
         if rule_level in range(70, 101):
             min_sup = 0.2
+            r_level = 'HIGH'
 
         param = {}
         param['qsi'] = [int(value) for value in args['qsi']]
@@ -382,12 +391,37 @@ def enqueue_anonymize(did):
         param['conf'] = min_conf
         param['input'] = os.path.join(ds.path, ds.filename)
         param['output'] = os.path.join(ds.path, ds.filename)
+        param['rule_level'] =r_level
+        param['sec_level'] =s_level
+        param['rule_output'] = os.path.join(ds.path, 'result.json')
         rq_queue.enqueue(task_anonymize, args=(param, str(did)), on_failure=callback_function, )  # enqueue the function
         ds.update_status('pending')
         return jsonify(msg="Task enqueued"), Status.HTTP_OK_ACCEPTED
     else:
         return jsonify(msg='Dataset not found'), Status.HTTP_BAD_NOTFOUND
 
+
+@ app.route('/api/dataset/anonymize/<string:did>/result', methods=['GET'])
+@ jwt_required()
+def get_anonymize_result(did):
+        ds = Dataset.find_by_did(did)
+        if ds:
+            claims = get_jwt()
+            user_id = claims['user_id']
+            if user_id != str(ds.uid):
+                return jsonify(msg='You have no access to this file'), Status.HTTP_BAD_FORBIDDEN
+            if ds.status != 'completed' or not ds.is_anonymized:
+                return jsonify(msg='No result'), Status.HTTP_BAD_REQUEST
+            try:
+                res_path = os.path.join(ds.path, 'result.json')
+                with open(res_path, 'r') as file:
+                    data = json.load(file)
+                return data, Status.HTTP_OK_BASIC
+            except Exception as e:
+                logger.info(e)
+                return jsonify(error=str(e)), Status.HTTP_BAD_CONFLICT
+        else:
+            return jsonify(msg='Dataset not found'), Status.HTTP_BAD_NOTFOUND
 
 
 @ app.route('/api/datasets', methods=['GET'])

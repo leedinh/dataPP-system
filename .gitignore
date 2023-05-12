@@ -7,3 +7,4 @@ anonymizer/adult.csv
 results/
 *.csv
 output*
+result*

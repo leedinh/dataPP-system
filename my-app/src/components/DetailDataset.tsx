@@ -29,7 +29,7 @@ const DetailDataset: React.FC<DetailDatasetProps> = ({ open, close, data }) => {
         <>
           <Button onClick={() => close()}>Close</Button>
           <Button
-            href={`http://localhost:5050/api/downloads/${did}`}
+            href={`http://localhost:5050/api/dataset/download/${did}`}
             type="primary"
           >
             Download

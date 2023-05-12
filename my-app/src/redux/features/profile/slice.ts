@@ -16,6 +16,7 @@ import {
   updateUsernameThunk,
   updateDatasetThunk,
   getHistoryDatasetThunk,
+  getResultDatasetThunk,
 } from "./thunks";
 import { DatasetInfo } from "../datasets/slice";
 
@@ -24,6 +25,7 @@ export type UserProfileState = {
   datasets: DatasetInfo[];
   userInfo: any;
   history: HistoryInfo[];
+  result: any;
 } & CommonState;
 
 const initialState: UserProfileState = {
@@ -32,6 +34,7 @@ const initialState: UserProfileState = {
   datasets: [],
   userInfo: {},
   history: [],
+  result: {},
 };
 
 type HistoryInfo = {
@@ -56,7 +59,8 @@ const slice = createSlice({
           deleteDatasetThunk,
           updateUsernameThunk,
           updateDatasetThunk,
-          getHistoryDatasetThunk
+          getHistoryDatasetThunk,
+          getResultDatasetThunk
         ),
         (state, action) => {
           state.status = StatusEnum.FAILED;
@@ -73,7 +77,8 @@ const slice = createSlice({
           deleteDatasetThunk,
           updateUsernameThunk,
           updateDatasetThunk,
-          getHistoryDatasetThunk
+          getHistoryDatasetThunk,
+          getResultDatasetThunk
         ),
         (state) => {
           state.status = StatusEnum.LOADING;
@@ -89,7 +94,13 @@ const slice = createSlice({
         state.status = StatusEnum.SUCCEEDED;
         state.loading = false;
         state.history = action.payload.histories;
-        console.log("History: ", state.history);
+        // console.log("History: ", state.history);
+      })
+      .addMatcher(isFulfilled(getResultDatasetThunk), (state, action) => {
+        state.status = StatusEnum.SUCCEEDED;
+        state.loading = false;
+        state.result = action.payload;
+        console.log("Result: ", state.history);
       })
       .addMatcher(isFulfilled(deleteDatasetThunk), (state, action) => {
         state.status = StatusEnum.SUCCEEDED;

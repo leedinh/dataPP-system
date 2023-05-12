@@ -67,3 +67,12 @@ export const getRuleSetThunk = createAsyncThunk(
     );
   }
 );
+
+export const getResultDatasetThunk = createAsyncThunk(
+  "getResultDataset",
+  async (did: string) => {
+    return sendGetRequest(`/api/dataset/anonymize/${did}/result`, true).then(
+      (res: any) => res.json()
+    );
+  }
+);

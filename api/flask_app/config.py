@@ -5,6 +5,7 @@
 import logging
 import os
 from datetime import timedelta
+from dotenv import dotenv_values
 CONFIG = {
     "development": "flask_app.config.DevelopmentConfig",
     "testing": "flask_app.config.TestingConfig",
@@ -12,6 +13,7 @@ CONFIG = {
     "default": "flask_app.config.ProductionConfig"
 }
 
+env_vars = dotenv_values('.flaskenv')
 
 class BaseConfig(object):
     """Base class for default set of configs."""
@@ -47,14 +49,14 @@ class DevelopmentConfig(BaseConfig):
     DEBUG = True
     TESTING = False
     BASEDIR = os.path.abspath(os.path.dirname(__file__))
-    SQLALCHEMY_DATABASE_URI = 'postgresql://myuser:mypassword@localhost:5432/mydatabase'
-    UPLOAD_FOLDER = "/Users/dinh.le/School/dataPP-system/upload"
-    ADMIN_USER = 'admin'
-    ADMIN_PASSWORD = 'thisnotadmin'
+    SQLALCHEMY_DATABASE_URI = env_vars['POSGREST_URL']
+    UPLOAD_FOLDER = env_vars['UPLOAD_FOLDER']
+    ADMIN_USER = env_vars['ADMIN_USER']
+    ADMIN_PASSWORD = env_vars['ADMIN_PASSWORD']
     BASIC_AUTH_USERNAME = ADMIN_USER
     BASIC_AUTH_PASSWORD = ADMIN_PASSWORD
     SECRET_KEY = 'not-so-super-secret'
-    JWT_SECRET_KEY = "super-secret"
+    JWT_SECRET_KEY = env_vars['JWT_SECRET_KEY']
 
 
 class ProductionConfig(BaseConfig):

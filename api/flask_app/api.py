@@ -6,7 +6,6 @@ from flask_basicauth import BasicAuth
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
 import psycopg2
-import shutil
 import uuid
 import hashlib
 import json
@@ -42,6 +41,8 @@ def callback_function(job, connection, type, value, traceback):
 
 
 
+    
+def is_k_anonymous(df, selected_columns, k):
     grouped_df = df.groupby(selected_columns).size()
     return all(group >= k for group in grouped_df.values)
 

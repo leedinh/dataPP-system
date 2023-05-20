@@ -1,5 +1,4 @@
 flask
-gunicorn
 flask-jwt-extended
 flask_sqlalchemy
 psycopg2-binary
@@ -11,8 +10,6 @@ mlxtend
 bcrypt
 redis
 rq
-Flask-SocketIO
-gevent-websocket
 gevent
 flask_basicauth
 git+https://github.com/ansrivas/pylogging.git

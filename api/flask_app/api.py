@@ -10,6 +10,7 @@ import shutil
 import uuid
 import hashlib
 import json
+import pandas as pd
 from datetime import timedelta
 from sqlalchemy import exc
 from anonymizer.anonymize import Anonymizer
@@ -41,15 +42,35 @@ def callback_function(job, connection, type, value, traceback):
 
 
 
+    grouped_df = df.groupby(selected_columns).size()
+    return all(group >= k for group in grouped_df.values)
 
-def task_anonymize(args, did):
+# Read CSV file
+def validate_k_anonymity(did, csv_file, column_indices, k):
+    print('Validating k-anonymity of Dataset with id: ',did)
+    df = pd.read_csv(csv_file)
+    selected_columns = df.columns[column_indices].tolist()
+    
+    # Validate k-anonymity
+    is_k_anon = is_k_anonymous(df, selected_columns, k)
+    if is_k_anon:
+        print("The dataset satisfies k-anonymity of", k)
+    else:
+        print("The dataset does not satisfy k-anonymity of", k)
+    return is_k_anon
+
+
+
     with app.app_context():
         ds = Dataset.find_by_did(did)
         ds.update_status('anonymizing')
         anonymizer = Anonymizer(args)
         anonymizer.anonymize()
-        anonymizer.output(args['output'], args['rule_output'], args['sec_level'], args['rule_level'])
-        ds.update_status('completed')
+        k = anonymizer.output(args['output'], args['rule_output'], args['sec_level'], args['rule_level'])
+        if validate_k_anonymity(did, args['output'], args['qsi'], k):
+            ds.update_status('completed')
+        else:
+            ds.update_status('failed')
 
 
 def task_check_dataset(did):

@@ -1,0 +1,21 @@
+version: '3'
+services:
+  flask:
+    build:
+      context: .
+      dockerfile: Dockerfile.be
+    ports:
+      - 5050:5050
+    volumes:
+      - ./flask_app:/app/flask_app
+    depends_on:
+      - db
+      - redis
+  db:
+    build:
+      context: .
+      dockerfile: Dockerfile.postgresql
+  redis:
+    build:
+      context: .
+      dockerfile: Dockerfile.redis

@@ -302,3 +302,4 @@ class Anonymizer:
             # Write the rules as JSON to the file
             json.dump(results, file)
         print(rule_path)
+        return self.k

@@ -1,6 +1,9 @@
 # Use the official Python base image
 FROM python:3.9-slim
 
+# Install Git and Supervisor
+RUN apt-get update && apt-get install -y git supervisor
+
 # Set the working directory in the container
 WORKDIR /app
 
@@ -18,13 +21,15 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY run.py .
 COPY flask_app flask_app
 COPY anonymizer anonymizer
+COPY upload upload
+COPY .flaskenv .
 
 
-# Set the FLASK_APP environment variable
-ENV FLASK_APP=app.py
+# Configure Supervisor
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Expose the Flask application port
 EXPOSE 5050
 
-# # Start the Flask application
-CMD ["python3", "run.py"]
+# Start Supervisor
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

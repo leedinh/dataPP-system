@@ -152,7 +152,7 @@ class Dataset(db.Model):
 
     def delete_from_db(self):
         try:
-            if self.is_anonymized and self.status == 'completed':
+            if self.is_anonymized and self.status in ['completed', 'failed']:
                 result_path = os.path.join(self.path,'result.json')
                 if os.path.exists(result_path):
                     os.remove(result_path)

@@ -73,6 +73,9 @@ const NavBar: React.FC<NavBarProps> = () => {
           )}
         </div>
       </div>
+      {/* <div className="border-solid border-4 text-3xl font-bold px-4 py-1 text-blue-700 rounded-[25px]">
+        Admin
+      </div> */}
     </div>
   );
 };

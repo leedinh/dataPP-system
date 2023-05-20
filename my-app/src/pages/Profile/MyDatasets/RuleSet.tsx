@@ -37,8 +37,8 @@ const RuleSet: React.FC<RuleSetProps> = ({ did, disabled }) => {
         footer={<Button onClick={() => setModalOpen(false)}>Cancle</Button>}
       >
         <Descriptions column={2} className="mt-4">
-          <Descriptions.Item label="K: ">{result?.k}</Descriptions.Item>
-          <Descriptions.Item label="Security level: ">
+          <Descriptions.Item label="K">{result?.k}</Descriptions.Item>
+          <Descriptions.Item label="Security level ">
             {!!result ? (
               <Tag color={mappingColorLevel[result.sec_level]}>
                 {result.sec_level}
@@ -47,10 +47,10 @@ const RuleSet: React.FC<RuleSetProps> = ({ did, disabled }) => {
               "---"
             )}
           </Descriptions.Item>
-          <Descriptions.Item label="Rule amount: ">
+          <Descriptions.Item label="Rule amount ">
             {result?.no_rule || "---"}
           </Descriptions.Item>
-          <Descriptions.Item label="Rule level: ">
+          <Descriptions.Item label="Rule level ">
             {!!result ? (
               <Tag color={mappingColorLevel[result.rule_level]}>
                 {result.rule_level}

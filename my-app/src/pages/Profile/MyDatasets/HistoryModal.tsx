@@ -27,7 +27,7 @@ const HistoryModal: React.FC<HistoryModalProps> = ({ did }) => {
         centered
         open={modalOpen}
         onCancel={() => setModalOpen(false)}
-        footer={<Button onClick={() => setModalOpen(false)}>Cancle</Button>}
+        footer={<Button onClick={() => setModalOpen(false)}>Cancel</Button>}
       >
         <Progress />
       </Modal>

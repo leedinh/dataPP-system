@@ -1,8 +1,9 @@
-export const KEY_ACCESS_TOKEN = "accessToken";
-const API_URL = process.env.REACT_APP_API_URL;
+import {API_HOST} from "config/config"
 
+
+export const KEY_ACCESS_TOKEN = "accessToken";
 export const uploadFile = (path: string, file: FormData) => {
-  const requestOptions = new Request(API_URL + path, {
+  const requestOptions = new Request(API_HOST + path, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${localStorage.getItem(KEY_ACCESS_TOKEN)}`,
@@ -18,7 +19,7 @@ export const sendRequest = (
   body: any,
   auth?: boolean
 ) => {
-  const requestOptions = new Request(path, {
+  const requestOptions = new Request(API_HOST + path, {
     method: method,
     headers: {
       "Content-Type": "application/json",
@@ -36,7 +37,7 @@ export const sendRequest = (
 };
 
 export const sendGetRequest = (path: string, auth?: boolean) => {
-  const requestOptions = new Request(API_URL + path, {
+  const requestOptions = new Request(API_HOST + path, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

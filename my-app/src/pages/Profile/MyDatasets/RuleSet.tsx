@@ -34,7 +34,7 @@ const RuleSet: React.FC<RuleSetProps> = ({ did, disabled }) => {
         width={1200}
         open={modalOpen}
         onCancel={() => setModalOpen(false)}
-        footer={<Button onClick={() => setModalOpen(false)}>Cancle</Button>}
+        footer={<Button onClick={() => setModalOpen(false)}>Cancel</Button>}
       >
         <Descriptions column={2} className="mt-4">
           <Descriptions.Item label="K">{result?.k}</Descriptions.Item>

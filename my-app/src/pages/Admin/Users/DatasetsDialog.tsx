@@ -18,7 +18,7 @@ const DatasetDialog: React.FC = () => {
         width={1200}
         open={modalOpen}
         onCancel={() => setModalOpen(false)}
-        footer={<Button onClick={() => setModalOpen(false)}>Cancle</Button>}
+        footer={<Button onClick={() => setModalOpen(false)}>Cancel</Button>}
       >
         <DatasetManagement />
       </Modal>

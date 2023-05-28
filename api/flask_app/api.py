@@ -62,7 +62,6 @@ def validate_k_anonymity(did, csv_file, column_indices, k):
 
 
 
-def task_anonymize(args, did):
     with app.app_context():
         ds = Dataset.find_by_did(did)
         ds.update_status('anonymizing')

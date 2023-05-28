@@ -55,6 +55,7 @@ class DevelopmentConfig(BaseConfig):
     ADMIN_PASSWORD = env_vars['ADMIN_PASSWORD']
     BASIC_AUTH_USERNAME = ADMIN_USER
     BASIC_AUTH_PASSWORD = ADMIN_PASSWORD
+    UPLOAD_FOLDER = "/home/nttv/Documents/HK222/Luan van/dataPP-system/upload"
     SECRET_KEY = 'not-so-super-secret'
     JWT_SECRET_KEY = env_vars['JWT_SECRET_KEY']
 

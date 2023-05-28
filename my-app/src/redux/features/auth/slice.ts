@@ -43,7 +43,7 @@ const slice = createSlice({
       .addMatcher(
         isRejected(logInThunk, signUpThunk, checkTokenThunk),
         (state, action) => {
-          state.status = StatusEnum.FAILED;
+          state.status = StatusEnum.FAILED; 
           notification.error({
             message: action.error.message || "",
           });

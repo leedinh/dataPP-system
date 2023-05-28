@@ -59,15 +59,6 @@ export const getHistoryDatasetThunk = createAsyncThunk(
   }
 );
 
-export const getRuleSetThunk = createAsyncThunk(
-  "getRuleSet",
-  async (did: string) => {
-    return sendGetRequest(`/api/dataset/history/${did}`, true).then(
-      (res: any) => res.json()
-    );
-  }
-);
-
 export const getResultDatasetThunk = createAsyncThunk(
   "getResultDataset",
   async (did: string) => {

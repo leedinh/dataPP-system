@@ -1,21 +1,14 @@
-import { Button, Space, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { DeleteFilled } from "@ant-design/icons";
 
 import { DatasetInfo } from "redux/features/datasets/slice";
-import { deleteDatasetThunk } from "redux/features/profile/thunks";
 import { useAppDispatch } from "redux/store";
-import EditModal from "./EditModal";
-import { getTopicLabel, mappingColorStatus } from "redux/constant";
-import HistoryModal from "./HistoryModal";
 import { RuleInfo } from "redux/features/profile/slice";
-import AnonymizeIcon from "./AnonymizeIcon";
+import { Tag } from "antd";
+import { getTopicLabel, mappingColorStatus } from "redux/constant";
+import AnonymizeIcon from "pages/Profile/MyDatasets/AnonymizeIcon";
 
 export default function useColumn() {
   const dispatch = useAppDispatch();
-  const handleDelete = (did: string) => {
-    dispatch(deleteDatasetThunk(did));
-  };
 
   const columns: ColumnsType<DatasetInfo> = [
     {
@@ -91,81 +84,12 @@ export default function useColumn() {
       ),
       align: "center",
     },
-    {
-      title: "Action",
-      key: "action",
-      render: (_, value) => (
-        <Space size="middle">
-          <Button
-            danger
-            icon={<DeleteFilled />}
-            onClick={() => handleDelete(value.did)}
-          ></Button>
-          <EditModal {...value} />
-          <HistoryModal did={value.did} />
-        </Space>
-      ),
-    },
   ];
 
-  const ruleSetColumns: ColumnsType<RuleInfo> = [
-    {
-      title: "Antecedents",
-      dataIndex: "antecedents",
-      render: (_, { antecedents }) => {
-        return <>{antecedents}</>;
-      },
-      align: "center",
-    },
-    {
-      title: "Consequents",
-      dataIndex: "key",
-      render: (_, { consequents }) => {
-        return <>{consequents}</>;
-      },
-      align: "center",
-    },
-  ];
+  const ruleSetColumns: ColumnsType<RuleInfo> = [];
 
   return {
     columns,
     ruleSetColumns,
   };
 }
-
-export const useRuleColumn = () => {
-  const columns: ColumnsType<RuleInfo> = [
-    {
-      title: "Antecedents",
-      dataIndex: "antecedents",
-      render: (_, { antecedents }) => {
-        return (
-          <div className="flex flex-wrap gap-8">
-            {antecedents.map((value) => {
-              return <div className="">{value}</div>;
-            })}
-          </div>
-        );
-      },
-      align: "center",
-    },
-    {
-      title: "Consequents",
-      dataIndex: "consequents",
-      render: (_, { consequents }) => {
-        return (
-          <div className="flex flex-wrap gap-8">
-            {consequents.map((value) => {
-              return <div className="">{value}</div>;
-            })}
-          </div>
-        );
-      },
-      align: "center",
-    },
-  ];
-
-  return {
-    columns,
-  };
-};

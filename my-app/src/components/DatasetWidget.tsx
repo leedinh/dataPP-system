@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Avatar, Button, Card, Tag } from "antd";
 import { AntDesignOutlined, DownloadOutlined } from "@ant-design/icons";
-
+import { API_HOST } from "config/config";
 import { DatasetInfo } from "redux/features/datasets/slice";
 import styles from "./styles.module.scss";
 import Typography from "antd/es/typography/Typography";
@@ -44,7 +44,7 @@ const DataSetWidget: React.FC<DatasetInfo> = (data) => {
             <Typography>{date}</Typography>
           </div>
           <Button
-            href={`http://localhost:5050/api/dataset/download/${did}`}
+            href={`${API_HOST}/api/dataset/download/${did}`}
             shape="circle"
             size="large"
             className={styles.downloadButton}

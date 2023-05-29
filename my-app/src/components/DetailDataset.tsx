@@ -1,5 +1,6 @@
 import { Modal, Button, Descriptions, Tag } from "antd";
 import { DatasetInfo } from "redux/features/datasets/slice";
+import { API_HOST } from "config/config";
 
 type DetailDatasetProps = {
   open: boolean;
@@ -29,7 +30,7 @@ const DetailDataset: React.FC<DetailDatasetProps> = ({ open, close, data }) => {
         <>
           <Button onClick={() => close()}>Close</Button>
           <Button
-            href={`http://localhost:5050/api/dataset/download/${did}`}
+            href={`${API_HOST}/api/dataset/download/${did}`}
             type="primary"
           >
             Download
